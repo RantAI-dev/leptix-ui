@@ -1,0 +1,15 @@
+[package]
+name = "leptix-select"
+description = "Leptix Select component — a dropdown for selecting from a list of options."
+
+authors.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+version.workspace = true
+
+[dependencies]
+leptos.workspace = true
+leptos-node-ref.workspace = true
+leptix-core.workspace = true
+web-sys = { workspace = true, features = ["HtmlElement", "Element", "Node", "NodeList", "Document", "Window"] }

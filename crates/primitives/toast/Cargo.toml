@@ -1,0 +1,14 @@
+[package]
+name = "leptix-toast"
+description = "Leptix Toast component — a succinct message displayed temporarily as a notification."
+
+authors.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+version.workspace = true
+
+[dependencies]
+leptos.workspace = true
+leptos-node-ref.workspace = true
+leptix-core.workspace = true

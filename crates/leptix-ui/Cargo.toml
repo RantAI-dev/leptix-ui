@@ -15,6 +15,8 @@ default = [
     "checkbox", "collapsible", "toggle-group", "radio-group",
     "tabs", "accordion", "slider",
     "dialog", "alert-dialog", "popover", "tooltip", "hover-card", "toolbar",
+    "dropdown-menu", "context-menu", "menubar", "select",
+    "navigation-menu", "toast", "scroll-area", "form",
 ]
 label = ["dep:leptix-label"]
 separator = ["dep:leptix-separator"]
@@ -37,6 +39,14 @@ popover = ["dep:leptix-popover"]
 tooltip = ["dep:leptix-tooltip"]
 hover-card = ["dep:leptix-hover-card"]
 toolbar = ["dep:leptix-toolbar"]
+dropdown-menu = ["dep:leptix-dropdown-menu"]
+context-menu = ["dep:leptix-context-menu"]
+menubar = ["dep:leptix-menubar"]
+select = ["dep:leptix-select"]
+navigation-menu = ["dep:leptix-navigation-menu"]
+toast = ["dep:leptix-toast"]
+scroll-area = ["dep:leptix-scroll-area"]
+form = ["dep:leptix-form"]
 
 [dependencies]
 leptix-core.workspace = true
@@ -61,3 +71,11 @@ leptix-popover = { workspace = true, optional = true }
 leptix-tooltip = { workspace = true, optional = true }
 leptix-hover-card = { workspace = true, optional = true }
 leptix-toolbar = { workspace = true, optional = true }
+leptix-dropdown-menu = { workspace = true, optional = true }
+leptix-context-menu = { workspace = true, optional = true }
+leptix-menubar = { workspace = true, optional = true }
+leptix-select = { workspace = true, optional = true }
+leptix-navigation-menu = { workspace = true, optional = true }
+leptix-toast = { workspace = true, optional = true }
+leptix-scroll-area = { workspace = true, optional = true }
+leptix-form = { workspace = true, optional = true }

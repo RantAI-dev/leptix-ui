@@ -1,0 +1,15 @@
+[package]
+name = "leptix-dropdown-menu"
+description = "Leptix Dropdown Menu component — a menu triggered by a button, extending the Menu primitive."
+
+authors.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+version.workspace = true
+
+[dependencies]
+leptos.workspace = true
+leptos-node-ref.workspace = true
+leptix-core.workspace = true
+web-sys.workspace = true

@@ -1,0 +1,16 @@
+[package]
+name = "leptix-menubar"
+description = "Leptix Menubar component — a horizontal menu bar with keyboard navigation between menus."
+
+authors.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+version.workspace = true
+
+[dependencies]
+leptos.workspace = true
+leptos-node-ref.workspace = true
+leptix-core.workspace = true
+leptix-dropdown-menu = { path = "../dropdown-menu", version = "0.1.0-alpha.1" }
+web-sys.workspace = true

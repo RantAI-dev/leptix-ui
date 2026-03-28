@@ -1,0 +1,15 @@
+[package]
+name = "leptix-scroll-area"
+description = "Leptix Scroll Area component — augments native scroll functionality with custom scrollbars."
+
+authors.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+version.workspace = true
+
+[dependencies]
+leptos.workspace = true
+leptos-node-ref.workspace = true
+leptix-core.workspace = true
+web-sys = { workspace = true, features = ["HtmlElement", "ScrollIntoViewOptions"] }

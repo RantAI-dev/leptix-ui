@@ -1,5 +1,17 @@
 # Changelog
 
+## 1.0.0 — Phase 4: Menu Family + Full Parity
+
+- Dropdown Menu with keyboard navigation, item focus, separator, label
+- Context Menu (right-click triggered)
+- Menubar with horizontal keyboard navigation
+- Select with combobox trigger, listbox content, keyboard navigation
+- Navigation Menu with hover/click sub-menus, links
+- Toast with provider, viewport, auto-dismiss, title/description/action/close
+- Scroll Area with viewport, scrollbar, thumb, corner
+- Form with field, label, control, message, submit
+- 29 component crates + leptix-core = 30 packages total
+
 ## 0.3.0 — Phase 3: Overlays & Floating
 
 - Implemented `dismissable_layer` core module (escape key, click/focus outside detection)

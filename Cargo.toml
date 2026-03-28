@@ -23,8 +23,14 @@ members = [
     "crates/primitives/tooltip",
     "crates/primitives/hover-card",
     "crates/primitives/toolbar",
-    # Disabled: need full infrastructure port
-    # "crates/primitives/menu",
+    "crates/primitives/dropdown-menu",
+    "crates/primitives/context-menu",
+    "crates/primitives/menubar",
+    "crates/primitives/select",
+    "crates/primitives/navigation-menu",
+    "crates/primitives/toast",
+    "crates/primitives/scroll-area",
+    "crates/primitives/form",
 ]
 resolver = "2"
 
@@ -70,3 +76,11 @@ leptix-popover = { path = "./crates/primitives/popover", version = "0.1.0-alpha.
 leptix-tooltip = { path = "./crates/primitives/tooltip", version = "0.1.0-alpha.1" }
 leptix-hover-card = { path = "./crates/primitives/hover-card", version = "0.1.0-alpha.1" }
 leptix-toolbar = { path = "./crates/primitives/toolbar", version = "0.1.0-alpha.1" }
+leptix-dropdown-menu = { path = "./crates/primitives/dropdown-menu", version = "0.1.0-alpha.1" }
+leptix-context-menu = { path = "./crates/primitives/context-menu", version = "0.1.0-alpha.1" }
+leptix-menubar = { path = "./crates/primitives/menubar", version = "0.1.0-alpha.1" }
+leptix-select = { path = "./crates/primitives/select", version = "0.1.0-alpha.1" }
+leptix-navigation-menu = { path = "./crates/primitives/navigation-menu", version = "0.1.0-alpha.1" }
+leptix-toast = { path = "./crates/primitives/toast", version = "0.1.0-alpha.1" }
+leptix-scroll-area = { path = "./crates/primitives/scroll-area", version = "0.1.0-alpha.1" }
+leptix-form = { path = "./crates/primitives/form", version = "0.1.0-alpha.1" }
