@@ -293,14 +293,23 @@ This is the make-or-break phase. Dialog and Popover are the most complex and mos
 
 **Goal:** Full sub-component parity for the menu family — the largest gap from Radix 1:1.
 
-| Work Item | Details |
-|-----------|---------|
-| Shared menu base | Extract common menu logic from dropdown-menu into a shared `leptix-menu` module in core or a dedicated crate. CheckboxItem, RadioGroup, RadioItem, ItemIndicator, Group, Sub, SubTrigger, SubContent, Arrow. |
-| Dropdown Menu | Add CheckboxItem, RadioGroup/RadioItem, ItemIndicator, Group, Sub/SubTrigger/SubContent, Arrow. Wire typeahead search. |
-| Context Menu | Mirror all Dropdown Menu sub-components. Add position-at-cursor support. |
-| Menubar | Add Menu/Trigger/Content per-menu + shared item variants. Wire cross-menu keyboard navigation (arrow between menus opens adjacent). |
+*Reference: `ref/radix-ui-primitives/packages/react/menu/`, `dropdown-menu/`, `context-menu/`, `menubar/`*
 
-**Validates:** Nested submenu open/close delay, typeahead search, checkbox/radio menu items, arrow positioning.
+The Radix menu family shares a common `Menu` base with 16 sub-components. Dropdown Menu, Context Menu, and Menubar all re-export the same item variants.
+
+| Work Item | Sub-components to add |
+|-----------|----------------------|
+| **Shared menu base** | Extract common logic from dropdown-menu. Implement: `MenuGroup`, `MenuCheckboxItem`, `MenuRadioGroup`, `MenuRadioItem`, `MenuItemIndicator`, `MenuSub`, `MenuSubTrigger`, `MenuSubContent`, `MenuArrow`. |
+| **Dropdown Menu** | Add: `DropdownMenuGroup`, `DropdownMenuCheckboxItem`, `DropdownMenuRadioGroup`, `DropdownMenuRadioItem`, `DropdownMenuItemIndicator`, `DropdownMenuSub`, `DropdownMenuSubTrigger`, `DropdownMenuSubContent`, `DropdownMenuArrow`. Wire typeahead search. |
+| **Context Menu** | Add: `ContextMenuGroup`, `ContextMenuCheckboxItem`, `ContextMenuRadioGroup`, `ContextMenuRadioItem`, `ContextMenuItemIndicator`, `ContextMenuSub`, `ContextMenuSubTrigger`, `ContextMenuSubContent`, `ContextMenuArrow`. Position-at-cursor. |
+| **Menubar** | Add: `MenubarPortal`, `MenubarGroup`, `MenubarCheckboxItem`, `MenubarRadioGroup`, `MenubarRadioItem`, `MenubarItemIndicator`, `MenubarArrow`, `MenubarSub`, `MenubarSubTrigger`, `MenubarSubContent`. Cross-menu arrow-key navigation. |
+
+**Key behaviors to implement:**
+- Submenu open/close with delay (pointer grace area)
+- Typeahead character search across menu items
+- `checked`/`onCheckedChange` for CheckboxItem
+- `value`/`onValueChange` for RadioGroup/RadioItem
+- ItemIndicator renders only when parent is checked
 
 **Ship:** `0.5.0`
 
@@ -310,38 +319,56 @@ This is the make-or-break phase. Dialog and Popover are the most complex and mos
 
 **Goal:** Full Radix Select parity — the second largest gap.
 
+*Reference: `ref/radix-ui-primitives/packages/react/select/`*
+
+Radix Select exports 16 sub-components. Leptix has 7.
+
 | Work Item | Details |
 |-----------|---------|
-| SelectIcon | Decorative icon next to trigger |
-| SelectViewport | Scrollable container inside content |
-| SelectScrollUpButton / SelectScrollDownButton | Auto-scroll when items overflow viewport |
-| SelectItemText | Text portion of item (separate from indicator) |
-| SelectItemIndicator | Checkmark or custom indicator for selected item |
-| SelectGroup / SelectLabel | Grouped items with accessible group labels |
-| SelectArrow | Popper arrow pointing at trigger |
-| SelectSeparator | Already exists but verify API parity |
-| Floating UI positioning | Wire `floating-ui-leptos` into SelectContent for side/align/offset/collision props |
-| Typeahead | Keyboard character search to jump to matching items |
+| `SelectIcon` | Decorative icon next to trigger value |
+| `SelectViewport` | Scrollable container inside content, handles scroll position |
+| `SelectScrollUpButton` / `SelectScrollDownButton` | Auto-scroll indicators when items overflow viewport |
+| `SelectItemText` | Text portion of item (separate from indicator, used for typeahead matching) |
+| `SelectItemIndicator` | Checkmark or custom indicator for the selected item |
+| `SelectGroup` / `SelectLabel` | Grouped items with accessible group label (`role="group"` + `aria-labelledby`) |
+| `SelectArrow` | Popper arrow pointing at trigger |
+| Floating UI positioning | Wire `floating-ui-leptos` into `SelectContent` — add `side`, `side_offset`, `align`, `align_offset`, `position` props |
+| Typeahead | Keyboard character search to jump to matching `SelectItemText` values |
+| Native select fallback | Hidden `<select>` for form submission (like Switch/Checkbox BubbleInput pattern) |
 
 **Ship:** `0.6.0`
 
 ---
 
-### Phase 7: Behavioral Completeness
+### Phase 7: Behavioral Completeness + Missing Sub-components
 
-**Goal:** Wire the real behaviors that are currently stubbed or missing across all existing components.
+**Goal:** Wire real behaviors that are currently stubbed. Add all missing sub-components across well-implemented primitives.
+
+*Reference: read each component's `src/` directory in `ref/radix-ui-primitives/packages/react/`*
+
+**Missing sub-components to add:**
+
+| Component | Missing | From Radix |
+|-----------|---------|------------|
+| Accordion | `AccordionHeader` | Semantic wrapper with `data-orientation`, `data-state` |
+| Popover | `PopoverAnchor`, `PopoverArrow` | Anchor for custom trigger positioning; Arrow via floating-ui |
+| Tooltip | `TooltipArrow` | Arrow via floating-ui |
+| Hover Card | `HoverCardArrow` | Arrow via floating-ui |
+| Toolbar | `ToolbarToggleGroup`, `ToolbarToggleItem` | Inline toggle group within toolbar |
+| Navigation Menu | `NavigationMenuSub`, `NavigationMenuIndicator` | Nested sub-navigation; animated active indicator |
+| Form | `FormValidityState` | Render-prop exposing native validation state |
+
+**Behavioral work:**
 
 | Area | Components Affected | Work |
 |------|-------------------|------|
-| **Floating UI integration** | Popover, Tooltip, Hover Card, Select, Menu family | Wire `floating-ui-leptos` `use_floating()` into content positioning. Add `side`, `side_offset`, `align`, `align_offset`, `avoid_collisions`, `collision_boundary`, `collision_padding` props. |
-| **Toast auto-dismiss** | Toast | Wire timeout timer. Pause on hover/focus. Swipe-to-dismiss. Proper viewport stacking. |
-| **Scroll Area mechanics** | Scroll Area | Wire thumb size calculation from scroll ratio. Drag-to-scroll. Auto-hide scrollbar. Scroll-type behavior (hover/scroll/auto/always). |
-| **Accordion Header** | Accordion | Add `AccordionHeader` wrapper component (semantic `<h3>` with correct data attributes). |
-| **Arrow components** | Hover Card, Tooltip, Popover, Menu family | Add `Arrow` sub-component using core `arrow` module + floating-ui arrow middleware. |
-| **Navigation Menu completeness** | Navigation Menu | Add `NavigationMenuSub` for nested menus. Add proper `NavigationMenuViewport` with enter/exit animation. Indicator component for active item. |
-| **Alert Dialog structure** | Alert Dialog | Add explicit `AlertDialogPortal`, `AlertDialogOverlay` as proper wrapper components (not just re-exports). |
-| **Dismiss layer stacking** | Dialog, Popover, Menu family | Implement stacked dismiss layer manager so nested overlays dismiss in correct order (innermost first). |
-| **Form validation** | Form | Wire native HTML constraint validation. Add `FormValidityState` render-prop component. Wire server error clearing. |
+| **Floating UI integration** | Popover, Tooltip, Hover Card, Select, all Menus | Wire `floating-ui-leptos` `use_floating()` with full middleware (Offset, Flip, Shift, Arrow, Hide). Add `side`, `side_offset`, `align`, `align_offset`, `avoid_collisions`, `collision_boundary`, `collision_padding`, `sticky`, `hide_when_detached` props to all content components. |
+| **Toast auto-dismiss** | Toast | Wire timeout timer via `set_timeout`. Pause on hover/focus. Resume on leave/blur. Swipe-to-dismiss gesture. Proper viewport queue management. |
+| **Scroll Area mechanics** | Scroll Area | Wire thumb size calculation from content/viewport ratio. Pointer-drag scrolling. Auto-hide scrollbar based on type (hover/scroll/auto/always). Track click to jump. |
+| **Dismiss layer stacking** | Dialog, Popover, Menu family | Implement stacked dismiss layer manager — global stack tracks active layers, Escape/click-outside targets innermost layer only. |
+| **Focus scope improvements** | Dialog, Alert Dialog, Popover | Focus on mount should prefer `[data-autofocus]` element, then first tabbable. Focus scope should handle `pointer-events: none` on body when modal. |
+| **Hover intent** | Tooltip, Hover Card | Open/close delay timers. Pointer grace area (triangle between trigger and content). Skip delay when quickly moving between tooltips. |
+| **Roving focus improvements** | Radio Group, Tabs, Toolbar, Menu | Use core roving-focus infrastructure instead of inline DOM queries. Support `orientation` prop, `dir` prop, `loop` prop consistently. |
 
 **Ship:** `0.7.0`
 
@@ -349,31 +376,53 @@ This is the make-or-break phase. Dialog and Popover are the most complex and mos
 
 ### Phase 8: New Components (OTP + Password Toggle)
 
-**Goal:** Implement the two Radix preview components that don't exist yet.
+**Goal:** Implement the two Radix components that don't exist yet in Leptix.
 
-| Component | Complexity | Details |
-|-----------|-----------|---------|
-| OTP Field | Medium | Multi-input OTP entry. Paste handling across inputs. Auto-advance on keypress. Backspace navigation. `OTPField`, `OTPFieldInput`, `OTPFieldSlot`, `OTPFieldSeparator`. |
-| Password Toggle | Low | Password input with visibility toggle. `PasswordToggleField`, `PasswordToggleFieldInput`, `PasswordToggleFieldToggle`, `PasswordToggleFieldSlot`. |
+*Reference: `ref/radix-ui-primitives/packages/react/one-time-password-field/`, `password-toggle-field/`*
+
+| Component | Radix sub-components | Details |
+|-----------|---------------------|---------|
+| **OneTimePasswordField** | `OneTimePasswordField` (Root), `OneTimePasswordFieldInput`, `OneTimePasswordFieldHiddenInput` | Multi-segment OTP input. Single hidden `<input>` for form submission. Per-character slots rendered visually. Paste handling distributes across slots. Auto-advance cursor on keypress. Backspace navigates backward. `InputValidationType` enum (numeric, alphanumeric, etc.). |
+| **PasswordToggleField** | `PasswordToggleField` (Root), `PasswordToggleFieldInput`, `PasswordToggleFieldToggle`, `PasswordToggleFieldIcon`, `PasswordToggleFieldSlot` | Password input with reveal toggle. Slot for custom input rendering. Icon slot shows current visibility state. Toggle button switches `type="password"` ↔ `type="text"`. |
 
 **Ship:** `0.8.0`
 
 ---
 
-### Phase 9: Testing + Documentation + Polish
+### Phase 9: Prop Audit + Testing + Documentation
 
-**Goal:** Every component meets the per-component checklist from Section 7. Prepare for 1.0.
+**Goal:** Every component matches the Radix API surface exactly. Full test coverage. Complete documentation.
+
+**Prop-by-prop audit:**
+
+For every component, diff our props against Radix's TypeScript prop types (in `ref/radix-ui-primitives/packages/react/*/src/*.tsx`). Add any missing props. This includes:
+
+| Pattern | Missing everywhere | Action |
+|---------|--------------------|--------|
+| `forceMount` prop | Overlay content components | Add to all presence-gated content (CollapsibleContent, AccordionContent, DialogContent, etc.) — most already have this |
+| `onOpenAutoFocus` / `onCloseAutoFocus` | Popover, Menu content | Add focus lifecycle callbacks |
+| `onEscapeKeyDown` / `onPointerDownOutside` / `onFocusOutside` / `onInteractOutside` | All dismissable content | Wire all 4 dismiss callbacks consistently |
+| `asChild` | Verify on every sub-component | Audit each component; some may be missing it |
+| `dir` (direction) | Menu family, Select, Slider | Wire RTL/LTR from direction context |
+| `loop` | Roving focus groups | Wire to keyboard navigation |
+
+**Testing:**
 
 | Work Item | Details |
 |-----------|---------|
 | **Unit tests** | State logic, prop defaults, data-state computation for every component. `#[cfg(test)]` modules. |
-| **WASM integration tests** | `wasm-bindgen-test` for DOM rendering, event handling, ARIA attributes. At minimum: Dialog, Select, Menu, Tabs, Accordion. |
+| **WASM integration tests** | `wasm-bindgen-test` for DOM rendering, event handling, ARIA attributes. Priority: Dialog, Select, Dropdown Menu, Tabs, Accordion, Radio Group. |
 | **SSR tests** | `cargo test --features ssr` — verify every component renders valid HTML without `window`/`document` access. |
-| **Accessibility audit** | Manual screen reader testing (VoiceOver + NVDA) for all overlay and form components. Fix any issues found. |
-| **Keyboard interaction audit** | Verify every component matches the Radix keyboard interaction table exactly. Fix gaps. |
-| **mdBook documentation** | One page per component: overview, anatomy diagram, full API reference (all props + all sub-components), usage examples, keyboard table. |
+| **Accessibility audit** | Manual screen reader testing (VoiceOver + NVDA) for all overlay and form components. |
+| **Keyboard interaction audit** | Verify every component matches the Radix keyboard interaction table exactly. |
+
+**Documentation:**
+
+| Work Item | Details |
+|-----------|---------|
+| **mdBook page per component** | Overview, anatomy diagram, full API reference (all props + all sub-components), usage examples, keyboard table. |
 | **Showcase app** | Leptos SSR app with interactive demos for every component. Deploy to GitHub Pages. |
-| **API surface audit** | Diff every component's props against Radix React TypeScript types. Add any missing props. |
+| **Migration guide** | From `radix-leptos-*` or `cloud-shuttle/radix-leptos`. |
 
 **Ship:** `1.0.0-rc.1`
 
@@ -381,16 +430,17 @@ This is the make-or-break phase. Dialog and Popover are the most complex and mos
 
 ### Phase 10: 1.0 Release
 
-**Goal:** Stable release with full Radix parity.
+**Goal:** Stable release with full Radix 1:1 parity.
 
 | Work Item | Details |
 |-----------|---------|
-| Final API review | Lock public API. Review all `pub` exports. |
+| Final API review | Lock public API. Review all `pub` exports. Verify no accidental internal types are public. |
 | Version bump | All crates to `1.0.0`. |
-| crates.io publish | Publish all 31+ crates. |
+| crates.io publish | Publish all 31+ crates. Verify `leptix-*` names are available. |
 | Documentation site | Deploy mdBook to `leptix.dev` or GitHub Pages. |
 | Announcement | Blog post, r/rust, Leptos Discord, Hacker News. |
 | awesome-leptos PR | Submit listing. |
+| Radix version tracking | Document which Radix UI Primitives version we match (tag/commit). |
 
 **Ship:** `1.0.0` — Full Radix 1:1 parity.
 
