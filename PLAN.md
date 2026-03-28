@@ -285,7 +285,114 @@ This is the make-or-break phase. Dialog and Popover are the most complex and mos
 | OTP Field | Medium | Multi-input, paste handling |
 | Password Toggle | Low | Show/hide password |
 
-**Ship:** `1.0.0` — Full Radix parity (35 components).
+**Ship:** `0.4.0` — All component crates exist, basic API surfaces in place.
+
+---
+
+### Phase 5: Menu Completeness
+
+**Goal:** Full sub-component parity for the menu family — the largest gap from Radix 1:1.
+
+| Work Item | Details |
+|-----------|---------|
+| Shared menu base | Extract common menu logic from dropdown-menu into a shared `leptix-menu` module in core or a dedicated crate. CheckboxItem, RadioGroup, RadioItem, ItemIndicator, Group, Sub, SubTrigger, SubContent, Arrow. |
+| Dropdown Menu | Add CheckboxItem, RadioGroup/RadioItem, ItemIndicator, Group, Sub/SubTrigger/SubContent, Arrow. Wire typeahead search. |
+| Context Menu | Mirror all Dropdown Menu sub-components. Add position-at-cursor support. |
+| Menubar | Add Menu/Trigger/Content per-menu + shared item variants. Wire cross-menu keyboard navigation (arrow between menus opens adjacent). |
+
+**Validates:** Nested submenu open/close delay, typeahead search, checkbox/radio menu items, arrow positioning.
+
+**Ship:** `0.5.0`
+
+---
+
+### Phase 6: Select Completeness
+
+**Goal:** Full Radix Select parity — the second largest gap.
+
+| Work Item | Details |
+|-----------|---------|
+| SelectIcon | Decorative icon next to trigger |
+| SelectViewport | Scrollable container inside content |
+| SelectScrollUpButton / SelectScrollDownButton | Auto-scroll when items overflow viewport |
+| SelectItemText | Text portion of item (separate from indicator) |
+| SelectItemIndicator | Checkmark or custom indicator for selected item |
+| SelectGroup / SelectLabel | Grouped items with accessible group labels |
+| SelectArrow | Popper arrow pointing at trigger |
+| SelectSeparator | Already exists but verify API parity |
+| Floating UI positioning | Wire `floating-ui-leptos` into SelectContent for side/align/offset/collision props |
+| Typeahead | Keyboard character search to jump to matching items |
+
+**Ship:** `0.6.0`
+
+---
+
+### Phase 7: Behavioral Completeness
+
+**Goal:** Wire the real behaviors that are currently stubbed or missing across all existing components.
+
+| Area | Components Affected | Work |
+|------|-------------------|------|
+| **Floating UI integration** | Popover, Tooltip, Hover Card, Select, Menu family | Wire `floating-ui-leptos` `use_floating()` into content positioning. Add `side`, `side_offset`, `align`, `align_offset`, `avoid_collisions`, `collision_boundary`, `collision_padding` props. |
+| **Toast auto-dismiss** | Toast | Wire timeout timer. Pause on hover/focus. Swipe-to-dismiss. Proper viewport stacking. |
+| **Scroll Area mechanics** | Scroll Area | Wire thumb size calculation from scroll ratio. Drag-to-scroll. Auto-hide scrollbar. Scroll-type behavior (hover/scroll/auto/always). |
+| **Accordion Header** | Accordion | Add `AccordionHeader` wrapper component (semantic `<h3>` with correct data attributes). |
+| **Arrow components** | Hover Card, Tooltip, Popover, Menu family | Add `Arrow` sub-component using core `arrow` module + floating-ui arrow middleware. |
+| **Navigation Menu completeness** | Navigation Menu | Add `NavigationMenuSub` for nested menus. Add proper `NavigationMenuViewport` with enter/exit animation. Indicator component for active item. |
+| **Alert Dialog structure** | Alert Dialog | Add explicit `AlertDialogPortal`, `AlertDialogOverlay` as proper wrapper components (not just re-exports). |
+| **Dismiss layer stacking** | Dialog, Popover, Menu family | Implement stacked dismiss layer manager so nested overlays dismiss in correct order (innermost first). |
+| **Form validation** | Form | Wire native HTML constraint validation. Add `FormValidityState` render-prop component. Wire server error clearing. |
+
+**Ship:** `0.7.0`
+
+---
+
+### Phase 8: New Components (OTP + Password Toggle)
+
+**Goal:** Implement the two Radix preview components that don't exist yet.
+
+| Component | Complexity | Details |
+|-----------|-----------|---------|
+| OTP Field | Medium | Multi-input OTP entry. Paste handling across inputs. Auto-advance on keypress. Backspace navigation. `OTPField`, `OTPFieldInput`, `OTPFieldSlot`, `OTPFieldSeparator`. |
+| Password Toggle | Low | Password input with visibility toggle. `PasswordToggleField`, `PasswordToggleFieldInput`, `PasswordToggleFieldToggle`, `PasswordToggleFieldSlot`. |
+
+**Ship:** `0.8.0`
+
+---
+
+### Phase 9: Testing + Documentation + Polish
+
+**Goal:** Every component meets the per-component checklist from Section 7. Prepare for 1.0.
+
+| Work Item | Details |
+|-----------|---------|
+| **Unit tests** | State logic, prop defaults, data-state computation for every component. `#[cfg(test)]` modules. |
+| **WASM integration tests** | `wasm-bindgen-test` for DOM rendering, event handling, ARIA attributes. At minimum: Dialog, Select, Menu, Tabs, Accordion. |
+| **SSR tests** | `cargo test --features ssr` — verify every component renders valid HTML without `window`/`document` access. |
+| **Accessibility audit** | Manual screen reader testing (VoiceOver + NVDA) for all overlay and form components. Fix any issues found. |
+| **Keyboard interaction audit** | Verify every component matches the Radix keyboard interaction table exactly. Fix gaps. |
+| **mdBook documentation** | One page per component: overview, anatomy diagram, full API reference (all props + all sub-components), usage examples, keyboard table. |
+| **Showcase app** | Leptos SSR app with interactive demos for every component. Deploy to GitHub Pages. |
+| **API surface audit** | Diff every component's props against Radix React TypeScript types. Add any missing props. |
+
+**Ship:** `1.0.0-rc.1`
+
+---
+
+### Phase 10: 1.0 Release
+
+**Goal:** Stable release with full Radix parity.
+
+| Work Item | Details |
+|-----------|---------|
+| Final API review | Lock public API. Review all `pub` exports. |
+| Version bump | All crates to `1.0.0`. |
+| crates.io publish | Publish all 31+ crates. |
+| Documentation site | Deploy mdBook to `leptix.dev` or GitHub Pages. |
+| Announcement | Blog post, r/rust, Leptos Discord, Hacker News. |
+| awesome-leptos PR | Submit listing. |
+
+**Ship:** `1.0.0` — Full Radix 1:1 parity.
 
 ---
 
