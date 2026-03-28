@@ -1,0 +1,14 @@
+[package]
+name = "leptix-separator"
+description = "Leptix Separator component — visually or semantically separates content."
+
+authors.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+version.workspace = true
+
+[dependencies]
+leptos.workspace = true
+leptos-node-ref.workspace = true
+leptix-core.workspace = true

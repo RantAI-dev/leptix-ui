@@ -1,0 +1,9 @@
+[book]
+authors = ["Rantai Dev"]
+language = "en"
+multilingual = false
+src = "src"
+title = "Leptix"
+
+[output.html]
+git-repository-url = "https://github.com/rantai-dev/leptix"

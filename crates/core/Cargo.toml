@@ -1,0 +1,31 @@
+[package]
+name = "leptix-core"
+description = "Core utilities for Leptix UI components."
+
+authors.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+version.workspace = true
+
+[dependencies]
+leptos.workspace = true
+leptos-maybe-callback.workspace = true
+leptos-node-ref.workspace = true
+leptos-typed-fallback-show.workspace = true
+leptos_dom.workspace = true
+floating-ui-leptos.workspace = true
+send_wrapper.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+web-sys = { workspace = true, features = [
+    "Document",
+    "Event",
+    "EventListenerOptions",
+    "NodeList",
+    "ResizeObserver",
+    "ResizeObserverBoxOptions",
+    "ResizeObserverEntry",
+    "ResizeObserverOptions",
+    "ResizeObserverSize",
+] }

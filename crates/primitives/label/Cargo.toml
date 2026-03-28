@@ -1,0 +1,16 @@
+[package]
+name = "leptix-label"
+description = "Leptix Label component — renders an accessible label associated with controls."
+
+authors.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+version.workspace = true
+
+[dependencies]
+leptos.workspace = true
+leptos-maybe-callback.workspace = true
+leptos-node-ref.workspace = true
+leptix-core.workspace = true
+web-sys.workspace = true

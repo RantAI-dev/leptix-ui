@@ -1,0 +1,13 @@
+[package]
+name = "leptix-accessible-icon"
+description = "Leptix Accessible Icon component — makes icons accessible by adding a label."
+
+authors.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+version.workspace = true
+
+[dependencies]
+leptos.workspace = true
+leptix-core.workspace = true
