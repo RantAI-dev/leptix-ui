@@ -10,7 +10,8 @@ pub fn CheckboxPage() -> impl IntoView {
         </p>
 
         // ---- Live Demo ----
-        <div class="hero-container">
+        <div class="hero-container" data-component="checkbox">
+            <div class="hero-demo-card">
             <div style="display:flex;align-items:center;gap:8px">
                 <Checkbox attr:class="demo-checkbox" default_checked=CheckedState::True>
                     <CheckboxIndicator attr:class="demo-checkbox-indicator">
@@ -18,6 +19,7 @@ pub fn CheckboxPage() -> impl IntoView {
                     </CheckboxIndicator>
                 </Checkbox>
                 <label class="demo-label">"Accept terms and conditions"</label>
+            </div>
             </div>
         </div>
 

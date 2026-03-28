@@ -10,7 +10,8 @@ pub fn AccordionPage() -> impl IntoView {
         </p>
 
         // ---- Live Demo ----
-        <div class="hero-container">
+        <div class="hero-container" data-component="accordion">
+            <div class="hero-demo-card">
             <Accordion r#type=AccordionType::Single collapsible=true default_value=vec!["item-1".to_string()] attr:class="demo-accordion">
                 <AccordionItem value="item-1" attr:class="demo-accordion-item">
                     <AccordionTrigger attr:class="demo-accordion-trigger">
@@ -40,6 +41,7 @@ pub fn AccordionPage() -> impl IntoView {
                     </AccordionContent>
                 </AccordionItem>
             </Accordion>
+            </div>
         </div>
 
         // ---- Highlights ----

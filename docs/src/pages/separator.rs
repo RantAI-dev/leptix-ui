@@ -10,7 +10,8 @@ pub fn SeparatorPage() -> impl IntoView {
         </p>
 
         // ---- Live Demo ----
-        <div class="hero-container">
+        <div class="hero-container" data-component="separator">
+            <div class="hero-demo-card">
             <div style="width:300px">
                 <div style="font-size:15px;font-weight:600">"Leptix Primitives"</div>
                 <div style="font-size:14px;color:var(--text-secondary);margin-top:4px">"An accessible component library for Leptos."</div>
@@ -22,6 +23,7 @@ pub fn SeparatorPage() -> impl IntoView {
                     <Separator orientation=Orientation::Vertical attr:class="demo-separator" />
                     <span>"Source"</span>
                 </div>
+            </div>
             </div>
         </div>
 

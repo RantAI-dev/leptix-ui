@@ -10,12 +10,14 @@ pub fn SwitchPage() -> impl IntoView {
         </p>
 
         // ---- Live Demo ----
-        <div class="hero-container">
+        <div class="hero-container" data-component="switch">
+            <div class="hero-demo-card">
             <div style="display:flex;align-items:center;gap:12px">
                 <label class="demo-label" r#for="airplane-mode">"Airplane Mode"</label>
                 <Switch attr:class="demo-switch" default_checked=true>
                     <SwitchThumb attr:class="demo-switch-thumb" />
                 </Switch>
+            </div>
             </div>
         </div>
 

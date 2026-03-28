@@ -10,7 +10,8 @@ pub fn TabsPage() -> impl IntoView {
         </p>
 
         // ---- Live Demo ----
-        <div class="hero-container">
+        <div class="hero-container" data-component="tabs">
+            <div class="hero-demo-card">
             <Tabs default_value="account" attr:style="width:100%;max-width:400px">
                 <TabsList attr:class="demo-tabs-list">
                     <TabsTrigger value="account" attr:class="demo-tabs-trigger">"Account"</TabsTrigger>
@@ -27,6 +28,7 @@ pub fn TabsPage() -> impl IntoView {
                     <p style="margin:0;font-size:14px;color:var(--text-secondary)">"Manage your notification preferences and application settings."</p>
                 </TabsContent>
             </Tabs>
+            </div>
         </div>
 
         // ---- Highlights ----

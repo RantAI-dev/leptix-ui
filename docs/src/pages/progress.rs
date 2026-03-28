@@ -10,13 +10,15 @@ pub fn ProgressPage() -> impl IntoView {
         </p>
 
         // ---- Live Demo ----
-        <div class="hero-container">
+        <div class="hero-container" data-component="progress">
+            <div class="hero-demo-card">
             <Progress value=66.0 attr:class="demo-progress">
                 <ProgressIndicator
                     attr:class="demo-progress-indicator"
                     attr:style="width: 66%"
                 />
             </Progress>
+            </div>
         </div>
 
         // ---- Highlights ----

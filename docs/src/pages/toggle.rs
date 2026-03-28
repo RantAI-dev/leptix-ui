@@ -10,10 +10,12 @@ pub fn TogglePage() -> impl IntoView {
         </p>
 
         // ---- Live Demo ----
-        <div class="hero-container">
+        <div class="hero-container" data-component="toggle">
+            <div class="hero-demo-card">
             <Toggle attr:class="demo-toggle" default_pressed=false>
                 <span style="font-size:16px;font-weight:700">"B"</span>
             </Toggle>
+            </div>
         </div>
 
         // ---- Highlights ----

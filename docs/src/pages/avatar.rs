@@ -10,7 +10,8 @@ pub fn AvatarPage() -> impl IntoView {
         </p>
 
         // ---- Live Demo ----
-        <div class="hero-container">
+        <div class="hero-container" data-component="avatar">
+            <div class="hero-demo-card">
             <div style="display:flex;align-items:center;gap:16px">
                 <Avatar attr:class="demo-avatar">
                     <AvatarImage src="https://i.pravatar.cc/48?u=leptix" />
@@ -21,6 +22,7 @@ pub fn AvatarPage() -> impl IntoView {
                     <AvatarImage src="https://broken.invalid/avatar.png" />
                     <AvatarFallback attr:class="demo-avatar-fallback">"PD"</AvatarFallback>
                 </Avatar>
+            </div>
             </div>
         </div>
 

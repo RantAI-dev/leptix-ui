@@ -10,13 +10,15 @@ pub fn SliderPage() -> impl IntoView {
         </p>
 
         // ---- Live Demo ----
-        <div class="hero-container">
+        <div class="hero-container" data-component="slider">
+            <div class="hero-demo-card">
             <Slider default_value=vec![50.0] max=100.0 step=1.0 attr:class="demo-slider">
                 <SliderTrack attr:class="demo-slider-track">
                     <SliderRange attr:class="demo-slider-range" />
                 </SliderTrack>
                 <SliderThumb attr:class="demo-slider-thumb" />
             </Slider>
+            </div>
         </div>
 
         // ---- Highlights ----

@@ -11,7 +11,8 @@ pub fn AlertDialogPage() -> impl IntoView {
         </p>
 
         // ---- Live Demo ----
-        <div class="hero-container">
+        <div class="hero-container" data-component="alert-dialog">
+            <div class="hero-demo-card">
             <AlertDialog>
                 <AlertDialogTrigger attr:class="demo-btn demo-btn-accent">
                     "Delete Account"
@@ -33,6 +34,7 @@ pub fn AlertDialogPage() -> impl IntoView {
                     </AlertDialogContent>
                 </DialogPortal>
             </AlertDialog>
+            </div>
         </div>
 
         // ---- Highlights ----

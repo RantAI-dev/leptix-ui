@@ -10,12 +10,14 @@ pub fn LabelPage() -> impl IntoView {
         </p>
 
         // ---- Live Demo ----
-        <div class="hero-container">
+        <div class="hero-container" data-component="label">
+            <div class="hero-demo-card">
             <div style="display:flex;flex-direction:column;gap:8px">
                 <Label attr:class="demo-label" attr:r#for="demo-email">
                     "Email address"
                 </Label>
                 <input id="demo-email" class="demo-input" type="email" placeholder="you@example.com" />
+            </div>
             </div>
         </div>
 

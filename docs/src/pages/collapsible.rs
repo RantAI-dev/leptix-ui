@@ -10,7 +10,8 @@ pub fn CollapsiblePage() -> impl IntoView {
         </p>
 
         // ---- Live Demo ----
-        <div class="hero-container">
+        <div class="hero-container" data-component="collapsible">
+            <div class="hero-demo-card">
             <Collapsible attr:class="demo-collapsible">
                 <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
                     <span style="font-size:14px;font-weight:500">"Tagged items"</span>
@@ -32,6 +33,7 @@ pub fn CollapsiblePage() -> impl IntoView {
                     </div>
                 </CollapsibleContent>
             </Collapsible>
+            </div>
         </div>
 
         // ---- Highlights ----
