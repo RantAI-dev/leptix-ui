@@ -17,6 +17,12 @@ members = [
     "crates/primitives/tabs",
     "crates/primitives/accordion",
     "crates/primitives/slider",
+    "crates/primitives/dialog",
+    "crates/primitives/alert-dialog",
+    "crates/primitives/popover",
+    "crates/primitives/tooltip",
+    "crates/primitives/hover-card",
+    "crates/primitives/toolbar",
     # Disabled: need full infrastructure port
     # "crates/primitives/menu",
 ]
@@ -58,3 +64,9 @@ leptix-radio-group = { path = "./crates/primitives/radio-group", version = "0.1.
 leptix-tabs = { path = "./crates/primitives/tabs", version = "0.1.0-alpha.1" }
 leptix-accordion = { path = "./crates/primitives/accordion", version = "0.1.0-alpha.1" }
 leptix-slider = { path = "./crates/primitives/slider", version = "0.1.0-alpha.1" }
+leptix-dialog = { path = "./crates/primitives/dialog", version = "0.1.0-alpha.1" }
+leptix-alert-dialog = { path = "./crates/primitives/alert-dialog", version = "0.1.0-alpha.1" }
+leptix-popover = { path = "./crates/primitives/popover", version = "0.1.0-alpha.1" }
+leptix-tooltip = { path = "./crates/primitives/tooltip", version = "0.1.0-alpha.1" }
+leptix-hover-card = { path = "./crates/primitives/hover-card", version = "0.1.0-alpha.1" }
+leptix-toolbar = { path = "./crates/primitives/toolbar", version = "0.1.0-alpha.1" }

@@ -1,0 +1,15 @@
+[package]
+name = "leptix-dialog"
+description = "Leptix Dialog component — a window overlaid on the primary window, rendering content in a layer above the page."
+
+authors.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+version.workspace = true
+
+[dependencies]
+leptos.workspace = true
+leptos-node-ref.workspace = true
+leptix-core.workspace = true
+web-sys = { workspace = true, features = ["HtmlElement", "NodeList"] }

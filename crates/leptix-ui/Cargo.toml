@@ -14,6 +14,7 @@ default = [
     "progress", "toggle", "switch", "avatar",
     "checkbox", "collapsible", "toggle-group", "radio-group",
     "tabs", "accordion", "slider",
+    "dialog", "alert-dialog", "popover", "tooltip", "hover-card", "toolbar",
 ]
 label = ["dep:leptix-label"]
 separator = ["dep:leptix-separator"]
@@ -30,6 +31,12 @@ radio-group = ["dep:leptix-radio-group"]
 tabs = ["dep:leptix-tabs"]
 accordion = ["dep:leptix-accordion"]
 slider = ["dep:leptix-slider"]
+dialog = ["dep:leptix-dialog"]
+alert-dialog = ["dep:leptix-alert-dialog"]
+popover = ["dep:leptix-popover"]
+tooltip = ["dep:leptix-tooltip"]
+hover-card = ["dep:leptix-hover-card"]
+toolbar = ["dep:leptix-toolbar"]
 
 [dependencies]
 leptix-core.workspace = true
@@ -48,3 +55,9 @@ leptix-radio-group = { workspace = true, optional = true }
 leptix-tabs = { workspace = true, optional = true }
 leptix-accordion = { workspace = true, optional = true }
 leptix-slider = { workspace = true, optional = true }
+leptix-dialog = { workspace = true, optional = true }
+leptix-alert-dialog = { workspace = true, optional = true }
+leptix-popover = { workspace = true, optional = true }
+leptix-tooltip = { workspace = true, optional = true }
+leptix-hover-card = { workspace = true, optional = true }
+leptix-toolbar = { workspace = true, optional = true }

@@ -1,5 +1,18 @@
 # Changelog
 
+## 0.3.0 — Phase 3: Overlays & Floating
+
+- Implemented `dismissable_layer` core module (escape key, click/focus outside detection)
+- Implemented `focus_scope` core module (focus trapping, auto-focus, restore on unmount)
+- New overlay components:
+  - Dialog (modal with focus trap, escape dismiss, click-outside dismiss)
+  - Alert Dialog (non-dismissable modal requiring explicit action)
+  - Popover (non-modal floating content with dismissable layer)
+  - Tooltip (hover/focus triggered popup)
+  - Hover Card (rich preview content on hover)
+  - Toolbar (grouped controls with roving keyboard navigation)
+- 23 components total (24 counting Portal in core)
+
 ## 0.2.0 — Phase 2: Form Controls + Collapsible
 
 - Rewrote `presence` core module for Leptos 0.8 with CSS animation awareness

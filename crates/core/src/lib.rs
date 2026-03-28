@@ -6,7 +6,9 @@
 pub mod arrow;
 pub mod compose_refs;
 pub mod direction;
+pub mod dismissable_layer;
 pub mod focus_guards;
+pub mod focus_scope;
 pub mod id;
 pub mod number;
 pub mod popper;

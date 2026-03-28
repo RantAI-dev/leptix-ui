@@ -49,3 +49,21 @@ pub use leptix_accordion as accordion;
 
 #[cfg(feature = "slider")]
 pub use leptix_slider as slider;
+
+#[cfg(feature = "dialog")]
+pub use leptix_dialog as dialog;
+
+#[cfg(feature = "alert-dialog")]
+pub use leptix_alert_dialog as alert_dialog;
+
+#[cfg(feature = "popover")]
+pub use leptix_popover as popover;
+
+#[cfg(feature = "tooltip")]
+pub use leptix_tooltip as tooltip;
+
+#[cfg(feature = "hover-card")]
+pub use leptix_hover_card as hover_card;
+
+#[cfg(feature = "toolbar")]
+pub use leptix_toolbar as toolbar;
