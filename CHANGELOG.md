@@ -1,5 +1,18 @@
 # Changelog
 
+## 0.2.0 — Phase 2: Form Controls + Collapsible
+
+- Rewrote `presence` core module for Leptos 0.8 with CSS animation awareness
+- Ported Checkbox from old Leptos API (with presence, form reset handling)
+- New components written from scratch:
+  - Collapsible (open/close with presence-based animation support)
+  - Toggle Group (single/multiple selection, builds on Toggle)
+  - Radio Group (roving tabindex keyboard navigation, auto-select on focus)
+  - Tabs (horizontal/vertical, automatic/manual activation, roving focus)
+  - Accordion (single/multiple mode, builds on Collapsible, keyboard navigation)
+  - Slider (keyboard control, track click, multi-thumb support, RTL)
+- 17 components total
+
 ## 0.1.0 — Phase 1: Simple Primitives
 
 - Ported Progress, Toggle, Switch, Avatar from old Leptos API to Leptos 0.8

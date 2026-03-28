@@ -1,0 +1,16 @@
+[package]
+name = "leptix-accordion"
+description = "Leptix Accordion component — a vertically stacked set of interactive headings that reveal associated content."
+
+authors.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+version.workspace = true
+
+[dependencies]
+leptos.workspace = true
+leptos-node-ref.workspace = true
+leptix-core.workspace = true
+leptix-collapsible = { path = "../collapsible", version = "0.1.0-alpha.1" }
+web-sys = { workspace = true, features = ["HtmlElement", "NodeList"] }

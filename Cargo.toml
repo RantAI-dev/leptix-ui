@@ -10,8 +10,14 @@ members = [
     "crates/primitives/toggle",
     "crates/primitives/switch",
     "crates/primitives/avatar",
-    # Disabled: need broken core modules (presence, collection, roving-focus)
-    # "crates/primitives/checkbox",
+    "crates/primitives/checkbox",
+    "crates/primitives/collapsible",
+    "crates/primitives/toggle-group",
+    "crates/primitives/radio-group",
+    "crates/primitives/tabs",
+    "crates/primitives/accordion",
+    "crates/primitives/slider",
+    # Disabled: need full infrastructure port
     # "crates/primitives/menu",
 ]
 resolver = "2"
@@ -45,3 +51,10 @@ leptix-progress = { path = "./crates/primitives/progress", version = "0.1.0-alph
 leptix-toggle = { path = "./crates/primitives/toggle", version = "0.1.0-alpha.1" }
 leptix-switch = { path = "./crates/primitives/switch", version = "0.1.0-alpha.1" }
 leptix-avatar = { path = "./crates/primitives/avatar", version = "0.1.0-alpha.1" }
+leptix-checkbox = { path = "./crates/primitives/checkbox", version = "0.1.0-alpha.1" }
+leptix-collapsible = { path = "./crates/primitives/collapsible", version = "0.1.0-alpha.1" }
+leptix-toggle-group = { path = "./crates/primitives/toggle-group", version = "0.1.0-alpha.1" }
+leptix-radio-group = { path = "./crates/primitives/radio-group", version = "0.1.0-alpha.1" }
+leptix-tabs = { path = "./crates/primitives/tabs", version = "0.1.0-alpha.1" }
+leptix-accordion = { path = "./crates/primitives/accordion", version = "0.1.0-alpha.1" }
+leptix-slider = { path = "./crates/primitives/slider", version = "0.1.0-alpha.1" }

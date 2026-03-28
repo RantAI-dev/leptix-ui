@@ -11,6 +11,7 @@ pub mod id;
 pub mod number;
 pub mod popper;
 pub mod portal;
+pub mod presence;
 pub mod primitive;
 pub mod use_controllable_state;
 pub mod use_escape_keydown;

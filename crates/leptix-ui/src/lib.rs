@@ -28,3 +28,24 @@ pub use leptix_switch as switch;
 
 #[cfg(feature = "avatar")]
 pub use leptix_avatar as avatar;
+
+#[cfg(feature = "checkbox")]
+pub use leptix_checkbox as checkbox;
+
+#[cfg(feature = "collapsible")]
+pub use leptix_collapsible as collapsible;
+
+#[cfg(feature = "toggle-group")]
+pub use leptix_toggle_group as toggle_group;
+
+#[cfg(feature = "radio-group")]
+pub use leptix_radio_group as radio_group;
+
+#[cfg(feature = "tabs")]
+pub use leptix_tabs as tabs;
+
+#[cfg(feature = "accordion")]
+pub use leptix_accordion as accordion;
+
+#[cfg(feature = "slider")]
+pub use leptix_slider as slider;

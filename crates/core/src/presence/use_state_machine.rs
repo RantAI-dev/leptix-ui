@@ -1,15 +1,19 @@
+use std::collections::HashMap;
 use std::fmt::Debug;
-use std::{collections::HashMap, hash::Hash};
+use std::hash::Hash;
 
-use leptos::{create_signal, Callback, ReadSignal, SignalGetUntracked, SignalSet};
+use leptos::prelude::*;
 
 type Machine<S, E> = HashMap<S, HashMap<E, S>>;
 
-pub fn use_state_machine<S: Clone + Debug + Eq + Hash, E: Clone + Debug + Eq + Hash + 'static>(
+pub fn use_state_machine<
+    S: Clone + Debug + Eq + Hash + Send + Sync + 'static,
+    E: Clone + Debug + Eq + Hash + Send + Sync + 'static,
+>(
     initial_state: S,
     machine: Machine<S, E>,
 ) -> (ReadSignal<S>, Callback<E>) {
-    let (state, set_state) = create_signal(initial_state);
+    let (state, set_state) = signal(initial_state);
 
     (
         state,

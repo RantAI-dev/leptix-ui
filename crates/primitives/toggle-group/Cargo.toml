@@ -1,0 +1,15 @@
+[package]
+name = "leptix-toggle-group"
+description = "Leptix Toggle Group component — a set of two-state buttons that can be toggled on or off."
+
+authors.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+version.workspace = true
+
+[dependencies]
+leptos.workspace = true
+leptos-node-ref.workspace = true
+leptix-core.workspace = true
+leptix-toggle = { path = "../toggle", version = "0.1.0-alpha.1" }

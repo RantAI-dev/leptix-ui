@@ -12,6 +12,8 @@ version.workspace = true
 default = [
     "label", "separator", "accessible-icon", "aspect-ratio",
     "progress", "toggle", "switch", "avatar",
+    "checkbox", "collapsible", "toggle-group", "radio-group",
+    "tabs", "accordion", "slider",
 ]
 label = ["dep:leptix-label"]
 separator = ["dep:leptix-separator"]
@@ -21,6 +23,13 @@ progress = ["dep:leptix-progress"]
 toggle = ["dep:leptix-toggle"]
 switch = ["dep:leptix-switch"]
 avatar = ["dep:leptix-avatar"]
+checkbox = ["dep:leptix-checkbox"]
+collapsible = ["dep:leptix-collapsible"]
+toggle-group = ["dep:leptix-toggle-group"]
+radio-group = ["dep:leptix-radio-group"]
+tabs = ["dep:leptix-tabs"]
+accordion = ["dep:leptix-accordion"]
+slider = ["dep:leptix-slider"]
 
 [dependencies]
 leptix-core.workspace = true
@@ -32,3 +41,10 @@ leptix-progress = { workspace = true, optional = true }
 leptix-toggle = { workspace = true, optional = true }
 leptix-switch = { workspace = true, optional = true }
 leptix-avatar = { workspace = true, optional = true }
+leptix-checkbox = { workspace = true, optional = true }
+leptix-collapsible = { workspace = true, optional = true }
+leptix-toggle-group = { workspace = true, optional = true }
+leptix-radio-group = { workspace = true, optional = true }
+leptix-tabs = { workspace = true, optional = true }
+leptix-accordion = { workspace = true, optional = true }
+leptix-slider = { workspace = true, optional = true }

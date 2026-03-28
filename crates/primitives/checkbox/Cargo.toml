@@ -1,0 +1,16 @@
+[package]
+name = "leptix-checkbox"
+description = "Leptix Checkbox component — a control that allows toggling between checked, unchecked, and indeterminate states."
+
+authors.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+version.workspace = true
+
+[dependencies]
+leptos.workspace = true
+leptos-node-ref.workspace = true
+leptix-core.workspace = true
+send_wrapper.workspace = true
+web-sys = { workspace = true, features = ["Event", "EventInit"] }

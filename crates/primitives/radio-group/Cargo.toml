@@ -1,0 +1,15 @@
+[package]
+name = "leptix-radio-group"
+description = "Leptix Radio Group component — a set of checkable buttons where only one can be checked at a time."
+
+authors.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+version.workspace = true
+
+[dependencies]
+leptos.workspace = true
+leptos-node-ref.workspace = true
+leptix-core.workspace = true
+web-sys = { workspace = true, features = ["DomRect", "HtmlElement", "NodeList"] }

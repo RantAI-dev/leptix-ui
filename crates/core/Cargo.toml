@@ -19,13 +19,17 @@ send_wrapper.workspace = true
 serde.workspace = true
 serde_json.workspace = true
 web-sys = { workspace = true, features = [
+    "AnimationEvent",
+    "CssStyleDeclaration",
     "Document",
     "Event",
     "EventListenerOptions",
+    "EventTarget",
     "NodeList",
     "ResizeObserver",
     "ResizeObserverBoxOptions",
     "ResizeObserverEntry",
     "ResizeObserverOptions",
     "ResizeObserverSize",
+    "Window",
 ] }
