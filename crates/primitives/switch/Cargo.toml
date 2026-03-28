@@ -1,0 +1,15 @@
+[package]
+name = "leptix-switch"
+description = "Leptix Switch component — a control that allows toggling between checked and not checked."
+
+authors.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+version.workspace = true
+
+[dependencies]
+leptos.workspace = true
+leptos-node-ref.workspace = true
+leptix-core.workspace = true
+web-sys = { workspace = true, features = ["Event", "EventInit"] }
