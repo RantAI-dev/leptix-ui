@@ -1,6 +1,22 @@
 # Changelog
 
-## 1.0.0 — Phase 4: Menu Family + Full Parity
+## 1.0.0
+
+Leptix 1.0.0 — Radix UI Primitives for Leptos.
+
+**33 packages:** 31 component crates + `leptix-core` + `leptix-ui` facade.
+
+Components: Accordion, Alert Dialog, Aspect Ratio, Avatar, Checkbox, Collapsible, Context Menu, Dialog, Dropdown Menu, Form, Hover Card, Label, Menubar, Navigation Menu, OTP Field, Password Toggle, Popover, Progress, Radio Group, Scroll Area, Select, Separator, Slider, Switch, Tabs, Toast, Toggle, Toggle Group, Toolbar, Tooltip, Accessible Icon.
+
+Core modules: arrow, compose_refs, direction, dismissable_layer, focus_guards, focus_scope, id, number, popper, portal, presence, primitive, use_controllable_state, use_escape_keydown, use_previous, use_size, visually_hidden.
+
+24 unit tests. All components pass `cargo clippy -D warnings`, `cargo test`, and `wasm32-unknown-unknown` build.
+
+Targets Leptos 0.8, Rust nightly (edition 2024).
+
+---
+
+## 0.4.0 — Phase 4: Menu Family + Full Parity
 
 - Dropdown Menu with keyboard navigation, item focus, separator, label
 - Context Menu (right-click triggered)

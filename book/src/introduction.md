@@ -8,7 +8,7 @@ Leptix provides unstyled, accessible components that you can customize with your
 
 ```toml
 [dependencies]
-leptix-ui = "0.1.0-alpha.1"
+leptix-ui = "1.0.0"
 ```
 
 ## Quick Start

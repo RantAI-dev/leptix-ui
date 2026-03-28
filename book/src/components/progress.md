@@ -2,7 +2,7 @@
 
 ```toml
 [dependencies]
-leptix-progress = "0.1.0"
+leptix-progress = "1.0.0"
 ```
 
 ```rust

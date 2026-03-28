@@ -2,7 +2,7 @@
 
 ```toml
 [dependencies]
-leptix-form = "0.1.0"
+leptix-form = "1.0.0"
 ```
 
 ```rust

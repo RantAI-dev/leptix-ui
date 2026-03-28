@@ -2,7 +2,7 @@
 
 ```toml
 [dependencies]
-leptix-slider = "0.1.0"
+leptix-slider = "1.0.0"
 ```
 
 ```rust

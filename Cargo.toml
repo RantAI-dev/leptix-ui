@@ -41,7 +41,7 @@ authors = ["Rantai Dev <dev@rantai.dev>"]
 edition = "2024"
 license = "MIT"
 repository = "https://github.com/rantai-dev/leptix"
-version = "0.1.0-alpha.1"
+version = "1.0.0"
 
 [workspace.dependencies]
 leptos = "0.8"
@@ -56,35 +56,35 @@ serde = "1"
 serde_json = "1"
 web-sys = "0.3"
 
-leptix-core = { path = "./crates/core", version = "0.1.0-alpha.1" }
-leptix-label = { path = "./crates/primitives/label", version = "0.1.0-alpha.1" }
-leptix-separator = { path = "./crates/primitives/separator", version = "0.1.0-alpha.1" }
-leptix-accessible-icon = { path = "./crates/primitives/accessible-icon", version = "0.1.0-alpha.1" }
-leptix-aspect-ratio = { path = "./crates/primitives/aspect-ratio", version = "0.1.0-alpha.1" }
-leptix-progress = { path = "./crates/primitives/progress", version = "0.1.0-alpha.1" }
-leptix-toggle = { path = "./crates/primitives/toggle", version = "0.1.0-alpha.1" }
-leptix-switch = { path = "./crates/primitives/switch", version = "0.1.0-alpha.1" }
-leptix-avatar = { path = "./crates/primitives/avatar", version = "0.1.0-alpha.1" }
-leptix-checkbox = { path = "./crates/primitives/checkbox", version = "0.1.0-alpha.1" }
-leptix-collapsible = { path = "./crates/primitives/collapsible", version = "0.1.0-alpha.1" }
-leptix-toggle-group = { path = "./crates/primitives/toggle-group", version = "0.1.0-alpha.1" }
-leptix-radio-group = { path = "./crates/primitives/radio-group", version = "0.1.0-alpha.1" }
-leptix-tabs = { path = "./crates/primitives/tabs", version = "0.1.0-alpha.1" }
-leptix-accordion = { path = "./crates/primitives/accordion", version = "0.1.0-alpha.1" }
-leptix-slider = { path = "./crates/primitives/slider", version = "0.1.0-alpha.1" }
-leptix-dialog = { path = "./crates/primitives/dialog", version = "0.1.0-alpha.1" }
-leptix-alert-dialog = { path = "./crates/primitives/alert-dialog", version = "0.1.0-alpha.1" }
-leptix-popover = { path = "./crates/primitives/popover", version = "0.1.0-alpha.1" }
-leptix-tooltip = { path = "./crates/primitives/tooltip", version = "0.1.0-alpha.1" }
-leptix-hover-card = { path = "./crates/primitives/hover-card", version = "0.1.0-alpha.1" }
-leptix-toolbar = { path = "./crates/primitives/toolbar", version = "0.1.0-alpha.1" }
-leptix-dropdown-menu = { path = "./crates/primitives/dropdown-menu", version = "0.1.0-alpha.1" }
-leptix-context-menu = { path = "./crates/primitives/context-menu", version = "0.1.0-alpha.1" }
-leptix-menubar = { path = "./crates/primitives/menubar", version = "0.1.0-alpha.1" }
-leptix-select = { path = "./crates/primitives/select", version = "0.1.0-alpha.1" }
-leptix-navigation-menu = { path = "./crates/primitives/navigation-menu", version = "0.1.0-alpha.1" }
-leptix-toast = { path = "./crates/primitives/toast", version = "0.1.0-alpha.1" }
-leptix-scroll-area = { path = "./crates/primitives/scroll-area", version = "0.1.0-alpha.1" }
-leptix-form = { path = "./crates/primitives/form", version = "0.1.0-alpha.1" }
-leptix-otp-field = { path = "./crates/primitives/otp-field", version = "0.1.0-alpha.1" }
-leptix-password-toggle = { path = "./crates/primitives/password-toggle", version = "0.1.0-alpha.1" }
+leptix-core = { path = "./crates/core", version = "1.0.0" }
+leptix-label = { path = "./crates/primitives/label", version = "1.0.0" }
+leptix-separator = { path = "./crates/primitives/separator", version = "1.0.0" }
+leptix-accessible-icon = { path = "./crates/primitives/accessible-icon", version = "1.0.0" }
+leptix-aspect-ratio = { path = "./crates/primitives/aspect-ratio", version = "1.0.0" }
+leptix-progress = { path = "./crates/primitives/progress", version = "1.0.0" }
+leptix-toggle = { path = "./crates/primitives/toggle", version = "1.0.0" }
+leptix-switch = { path = "./crates/primitives/switch", version = "1.0.0" }
+leptix-avatar = { path = "./crates/primitives/avatar", version = "1.0.0" }
+leptix-checkbox = { path = "./crates/primitives/checkbox", version = "1.0.0" }
+leptix-collapsible = { path = "./crates/primitives/collapsible", version = "1.0.0" }
+leptix-toggle-group = { path = "./crates/primitives/toggle-group", version = "1.0.0" }
+leptix-radio-group = { path = "./crates/primitives/radio-group", version = "1.0.0" }
+leptix-tabs = { path = "./crates/primitives/tabs", version = "1.0.0" }
+leptix-accordion = { path = "./crates/primitives/accordion", version = "1.0.0" }
+leptix-slider = { path = "./crates/primitives/slider", version = "1.0.0" }
+leptix-dialog = { path = "./crates/primitives/dialog", version = "1.0.0" }
+leptix-alert-dialog = { path = "./crates/primitives/alert-dialog", version = "1.0.0" }
+leptix-popover = { path = "./crates/primitives/popover", version = "1.0.0" }
+leptix-tooltip = { path = "./crates/primitives/tooltip", version = "1.0.0" }
+leptix-hover-card = { path = "./crates/primitives/hover-card", version = "1.0.0" }
+leptix-toolbar = { path = "./crates/primitives/toolbar", version = "1.0.0" }
+leptix-dropdown-menu = { path = "./crates/primitives/dropdown-menu", version = "1.0.0" }
+leptix-context-menu = { path = "./crates/primitives/context-menu", version = "1.0.0" }
+leptix-menubar = { path = "./crates/primitives/menubar", version = "1.0.0" }
+leptix-select = { path = "./crates/primitives/select", version = "1.0.0" }
+leptix-navigation-menu = { path = "./crates/primitives/navigation-menu", version = "1.0.0" }
+leptix-toast = { path = "./crates/primitives/toast", version = "1.0.0" }
+leptix-scroll-area = { path = "./crates/primitives/scroll-area", version = "1.0.0" }
+leptix-form = { path = "./crates/primitives/form", version = "1.0.0" }
+leptix-otp-field = { path = "./crates/primitives/otp-field", version = "1.0.0" }
+leptix-password-toggle = { path = "./crates/primitives/password-toggle", version = "1.0.0" }

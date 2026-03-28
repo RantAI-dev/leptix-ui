@@ -2,7 +2,7 @@
 
 ```toml
 [dependencies]
-leptix-toggle = "0.1.0"
+leptix-toggle = "1.0.0"
 ```
 
 ```rust

@@ -2,7 +2,7 @@
 
 ```toml
 [dependencies]
-leptix-popover = "0.1.0"
+leptix-popover = "1.0.0"
 ```
 
 ```rust

@@ -2,7 +2,7 @@
 
 ```toml
 [dependencies]
-leptix-alert-dialog = "0.1.0"
+leptix-alert-dialog = "1.0.0"
 ```
 
 ```rust

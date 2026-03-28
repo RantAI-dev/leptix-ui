@@ -2,7 +2,7 @@
 
 ```toml
 [dependencies]
-leptix-collapsible = "0.1.0"
+leptix-collapsible = "1.0.0"
 ```
 
 ```rust

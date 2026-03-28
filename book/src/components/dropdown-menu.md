@@ -2,7 +2,7 @@
 
 ```toml
 [dependencies]
-leptix-dropdown-menu = "0.1.0"
+leptix-dropdown-menu = "1.0.0"
 ```
 
 ```rust

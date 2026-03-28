@@ -2,7 +2,7 @@
 
 ```toml
 [dependencies]
-leptix-toast = "0.1.0"
+leptix-toast = "1.0.0"
 ```
 
 ```rust

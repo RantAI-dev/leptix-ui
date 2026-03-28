@@ -2,7 +2,7 @@
 
 ```toml
 [dependencies]
-leptix-avatar = "0.1.0"
+leptix-avatar = "1.0.0"
 ```
 
 ```rust

@@ -2,7 +2,7 @@
 
 ```toml
 [dependencies]
-leptix-context-menu = "0.1.0"
+leptix-context-menu = "1.0.0"
 ```
 
 ```rust

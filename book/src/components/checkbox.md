@@ -2,7 +2,7 @@
 
 ```toml
 [dependencies]
-leptix-checkbox = "0.1.0"
+leptix-checkbox = "1.0.0"
 ```
 
 ```rust

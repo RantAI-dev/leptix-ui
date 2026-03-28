@@ -12,5 +12,5 @@ version.workspace = true
 leptos.workspace = true
 leptos-node-ref.workspace = true
 leptix-core.workspace = true
-leptix-dialog = { path = "../dialog", version = "0.1.0-alpha.1" }
+leptix-dialog = { path = "../dialog", version = "1.0.0" }
 web-sys.workspace = true

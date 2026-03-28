@@ -2,7 +2,7 @@
 
 ```toml
 [dependencies]
-leptix-scroll-area = "0.1.0"
+leptix-scroll-area = "1.0.0"
 ```
 
 ```rust

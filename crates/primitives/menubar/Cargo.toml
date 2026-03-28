@@ -12,5 +12,5 @@ version.workspace = true
 leptos.workspace = true
 leptos-node-ref.workspace = true
 leptix-core.workspace = true
-leptix-dropdown-menu = { path = "../dropdown-menu", version = "0.1.0-alpha.1" }
+leptix-dropdown-menu = { path = "../dropdown-menu", version = "1.0.0" }
 web-sys.workspace = true

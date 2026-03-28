@@ -2,7 +2,7 @@
 
 ```toml
 [dependencies]
-leptix-hover-card = "0.1.0"
+leptix-hover-card = "1.0.0"
 ```
 
 ```rust

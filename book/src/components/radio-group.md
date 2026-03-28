@@ -2,7 +2,7 @@
 
 ```toml
 [dependencies]
-leptix-radio-group = "0.1.0"
+leptix-radio-group = "1.0.0"
 ```
 
 ```rust

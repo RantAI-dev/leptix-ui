@@ -6,22 +6,22 @@ Add `leptix-ui` to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-leptix-ui = "0.1.0"
+leptix-ui = "1.0.0"
 ```
 
 This includes all components by default. To reduce compile times, select only what you need:
 
 ```toml
 [dependencies]
-leptix-ui = { version = "0.1.0", default-features = false, features = ["dialog", "tabs", "switch"] }
+leptix-ui = { version = "1.0.0", default-features = false, features = ["dialog", "tabs", "switch"] }
 ```
 
 Or use individual crates directly:
 
 ```toml
 [dependencies]
-leptix-dialog = "0.1.0"
-leptix-tabs = "0.1.0"
+leptix-dialog = "1.0.0"
+leptix-tabs = "1.0.0"
 ```
 
 ## Quick Example

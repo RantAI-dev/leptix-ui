@@ -12,4 +12,4 @@ version.workspace = true
 leptos.workspace = true
 leptos-node-ref.workspace = true
 leptix-core.workspace = true
-leptix-toggle = { path = "../toggle", version = "0.1.0-alpha.1" }
+leptix-toggle = { path = "../toggle", version = "1.0.0" }

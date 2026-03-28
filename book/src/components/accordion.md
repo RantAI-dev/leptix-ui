@@ -2,7 +2,7 @@
 
 ```toml
 [dependencies]
-leptix-accordion = "0.1.0"
+leptix-accordion = "1.0.0"
 ```
 
 ```rust

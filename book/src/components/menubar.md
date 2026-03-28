@@ -2,7 +2,7 @@
 
 ```toml
 [dependencies]
-leptix-menubar = "0.1.0"
+leptix-menubar = "1.0.0"
 ```
 
 ```rust

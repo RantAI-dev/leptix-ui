@@ -2,7 +2,7 @@
 
 ```toml
 [dependencies]
-leptix-tabs = "0.1.0"
+leptix-tabs = "1.0.0"
 ```
 
 ```rust

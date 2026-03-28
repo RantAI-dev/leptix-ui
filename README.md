@@ -8,15 +8,15 @@ Based on [RustForWeb/radix](https://github.com/RustForWeb/radix) (MIT) and [Radi
 
 ```toml
 [dependencies]
-leptix-ui = "0.1.0"
+leptix-ui = "1.0.0"
 ```
 
 Or pick individual crates:
 
 ```toml
 [dependencies]
-leptix-dialog = "0.1.0"
-leptix-tabs = "0.1.0"
+leptix-dialog = "1.0.0"
+leptix-tabs = "1.0.0"
 ```
 
 ## Components (31)

@@ -2,7 +2,7 @@
 
 ```toml
 [dependencies]
-leptix-password-toggle = "0.1.0"
+leptix-password-toggle = "1.0.0"
 ```
 
 ```rust

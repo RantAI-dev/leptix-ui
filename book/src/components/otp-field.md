@@ -2,7 +2,7 @@
 
 ```toml
 [dependencies]
-leptix-otp-field = "0.1.0"
+leptix-otp-field = "1.0.0"
 ```
 
 ```rust

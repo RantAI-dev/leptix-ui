@@ -2,7 +2,7 @@
 
 ```toml
 [dependencies]
-leptix-tooltip = "0.1.0"
+leptix-tooltip = "1.0.0"
 ```
 
 ```rust
