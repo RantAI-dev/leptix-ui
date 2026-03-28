@@ -15,7 +15,7 @@ fn App() -> impl IntoView {
         <Router>
             <header class="header">
                 <a href="/" class="header-logo">
-                    <img src="public/logo.svg" alt="" width="22" height="22" />
+                    <img src="public/logo/favicon-32x32.png" alt="" width="22" height="22" style="border-radius:4px" />
                     "Leptix"
                 </a>
                 <nav class="header-nav">
