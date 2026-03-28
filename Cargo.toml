@@ -33,6 +33,7 @@ members = [
     "crates/primitives/form",
     "crates/primitives/otp-field",
     "crates/primitives/password-toggle",
+    "examples/docs",
 ]
 resolver = "2"
 
