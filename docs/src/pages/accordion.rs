@@ -12,35 +12,37 @@ pub fn AccordionPage() -> impl IntoView {
         // ---- Live Demo ----
         <div class="hero-container" data-component="accordion">
             <div class="hero-demo-card">
-            <Accordion r#type=AccordionType::Single collapsible=true default_value=vec!["item-1".to_string()] attr:class="demo-accordion">
-                <AccordionItem value="item-1" attr:class="demo-accordion-item">
-                    <AccordionTrigger attr:class="demo-accordion-trigger">
-                        "Is it accessible?"
-                        <span class="demo-accordion-chevron">"▾"</span>
-                    </AccordionTrigger>
-                    <AccordionContent attr:class="demo-accordion-content">
-                        "Yes. It adheres to the WAI-ARIA design pattern."
-                    </AccordionContent>
-                </AccordionItem>
-                <AccordionItem value="item-2" attr:class="demo-accordion-item">
-                    <AccordionTrigger attr:class="demo-accordion-trigger">
-                        "Is it unstyled?"
-                        <span class="demo-accordion-chevron">"▾"</span>
-                    </AccordionTrigger>
-                    <AccordionContent attr:class="demo-accordion-content">
-                        "Yes. It ships with zero styles so you have full control over the look and feel."
-                    </AccordionContent>
-                </AccordionItem>
-                <AccordionItem value="item-3" attr:class="demo-accordion-item">
-                    <AccordionTrigger attr:class="demo-accordion-trigger">
-                        "Can it be animated?"
-                        <span class="demo-accordion-chevron">"▾"</span>
-                    </AccordionTrigger>
-                    <AccordionContent attr:class="demo-accordion-content">
-                        "Yes. You can animate the open and close transitions using CSS or a Leptos animation library."
-                    </AccordionContent>
-                </AccordionItem>
-            </Accordion>
+            <div class="demo-accordion">
+                <Accordion r#type=AccordionType::Single collapsible=true default_value=vec!["item-1".to_string()]>
+                    <AccordionItem value="item-1">
+                        <AccordionTrigger>
+                            "Is it accessible?"
+                            <span class="demo-accordion-chevron">"▾"</span>
+                        </AccordionTrigger>
+                        <AccordionContent>
+                            "Yes. It adheres to the WAI-ARIA design pattern."
+                        </AccordionContent>
+                    </AccordionItem>
+                    <AccordionItem value="item-2">
+                        <AccordionTrigger>
+                            "Is it unstyled?"
+                            <span class="demo-accordion-chevron">"▾"</span>
+                        </AccordionTrigger>
+                        <AccordionContent>
+                            "Yes. It ships with zero styles so you have full control over the look and feel."
+                        </AccordionContent>
+                    </AccordionItem>
+                    <AccordionItem value="item-3">
+                        <AccordionTrigger>
+                            "Can it be animated?"
+                            <span class="demo-accordion-chevron">"▾"</span>
+                        </AccordionTrigger>
+                        <AccordionContent>
+                            "Yes. You can animate the open and close transitions using CSS or a Leptos animation library."
+                        </AccordionContent>
+                    </AccordionItem>
+                </Accordion>
+            </div>
             </div>
         </div>
 

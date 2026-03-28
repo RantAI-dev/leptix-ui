@@ -846,7 +846,7 @@ kbd {
 .demo-tabs-content { padding: 16px 0; font-size: 14px; color: var(--text-secondary); line-height: 1.6; }
 .demo-tabs-content[hidden] { display: none; }
 
-/* Accordion */
+/* Accordion — target actual rendered DOM, not class props */
 .demo-accordion {
     width: 100%;
     max-width: 380px;
@@ -860,13 +860,20 @@ kbd {
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.06);
 }
 
-.demo-accordion-item {
+/* AccordionItem renders as a Collapsible <div> */
+.demo-accordion > div {
     border-bottom: 1px solid var(--border-subtle);
 }
 
-.demo-accordion-item:last-child { border-bottom: none; }
+.demo-accordion > div:last-child { border-bottom: none; }
 
-.demo-accordion-trigger {
+/* AccordionTrigger renders as <h3> > <button> */
+.demo-accordion h3 {
+    all: unset;
+    display: block;
+}
+
+.demo-accordion h3 > button {
     all: unset;
     display: flex;
     width: 100%;
@@ -882,9 +889,9 @@ kbd {
     box-sizing: border-box;
 }
 
-.demo-accordion-trigger:hover { background: var(--bg-hover); }
+.demo-accordion h3 > button:hover { background: var(--bg-hover); }
 
-.demo-accordion-chevron {
+.demo-accordion .demo-accordion-chevron {
     transition: transform 0.3s cubic-bezier(0.87, 0, 0.13, 1);
     color: var(--text-muted);
     font-size: 11px;
@@ -892,16 +899,18 @@ kbd {
     align-items: center;
 }
 
-.demo-accordion-trigger[data-state="open"] .demo-accordion-chevron { transform: rotate(180deg); }
+.demo-accordion h3 > button[data-state="open"] .demo-accordion-chevron,
+.demo-accordion h3[data-state="open"] .demo-accordion-chevron { transform: rotate(180deg); }
 
-.demo-accordion-content {
+/* AccordionContent renders as a CollapsibleContent <div> */
+.demo-accordion [role="region"] {
     padding: 0 20px 16px;
     color: var(--text-secondary);
     font-size: 14px;
     line-height: 1.65;
 }
 
-.demo-accordion-content[hidden] { display: none; }
+.demo-accordion [hidden] { display: none; }
 
 /* Progress */
 .demo-progress {
