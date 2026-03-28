@@ -170,3 +170,39 @@ pub fn PopoverClose(
         </Primitive>
     }
 }
+
+#[component]
+pub fn PopoverAnchor(
+    #[prop(into, optional)] as_child: MaybeProp<bool>,
+    #[prop(into, optional)] node_ref: AnyNodeRef,
+    children: TypedChildrenFn<impl IntoView + 'static>,
+) -> impl IntoView {
+    let children = StoredValue::new(children.into_inner());
+
+    view! {
+        <Primitive
+            element=html::div
+            as_child=as_child
+            node_ref=node_ref
+        >
+            {children.with_value(|children| children())}
+        </Primitive>
+    }
+}
+
+#[component]
+pub fn PopoverArrow(
+    #[prop(into, optional, default=10.0.into())] width: MaybeProp<f64>,
+    #[prop(into, optional, default=5.0.into())] height: MaybeProp<f64>,
+    #[prop(into, optional)] as_child: MaybeProp<bool>,
+    #[prop(into, optional)] node_ref: AnyNodeRef,
+    #[prop(optional)] children: Option<ChildrenFn>,
+) -> impl IntoView {
+    let children = StoredValue::new(children);
+
+    view! {
+        <leptix_core::arrow::Arrow width=width height=height as_child=as_child node_ref=node_ref>
+            {children.with_value(|children| children.as_ref().map(|children| children()))}
+        </leptix_core::arrow::Arrow>
+    }
+}

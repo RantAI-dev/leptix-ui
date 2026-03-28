@@ -145,6 +145,119 @@ pub fn ToolbarSeparator(
     }
 }
 
+#[derive(Clone, Debug)]
+#[allow(dead_code)]
+struct ToolbarToggleGroupContextValue {
+    value: Signal<Vec<String>>,
+    on_item_toggle: Callback<String>,
+    r#type: Signal<String>,
+}
+
+#[component]
+pub fn ToolbarToggleGroup(
+    #[prop(into)] r#type: MaybeProp<String>,
+    #[prop(into, optional)] value: MaybeProp<Vec<String>>,
+    #[prop(into, optional)] default_value: MaybeProp<Vec<String>>,
+    #[prop(into, optional)] on_value_change: Option<Callback<Vec<String>>>,
+    #[prop(into, optional)] disabled: MaybeProp<bool>,
+    #[prop(into, optional)] as_child: MaybeProp<bool>,
+    #[prop(into, optional)] node_ref: AnyNodeRef,
+    children: TypedChildrenFn<impl IntoView + 'static>,
+) -> impl IntoView {
+    let children = StoredValue::new(children.into_inner());
+    let context = expect_context::<ToolbarContextValue>();
+    let toggle_type = Signal::derive(move || r#type.get().unwrap_or("single".into()));
+    let _disabled = Signal::derive(move || disabled.get().unwrap_or(false));
+
+    let (value_state, set_value) = leptix_core::use_controllable_state::use_controllable_state(
+        leptix_core::use_controllable_state::UseControllableStateParams {
+            prop: value,
+            on_change: on_value_change.map(|cb| {
+                Callback::new(move |value: Option<Vec<String>>| {
+                    if let Some(value) = value {
+                        cb.run(value);
+                    }
+                })
+            }),
+            default_prop: default_value,
+        },
+    );
+    let value = Signal::derive(move || value_state.get().unwrap_or_default());
+
+    let toggle_ctx = ToolbarToggleGroupContextValue {
+        value,
+        on_item_toggle: Callback::new(move |item_value: String| {
+            let current = value.get();
+            let is_single = toggle_type.get() == "single";
+            let next = if is_single {
+                if current.contains(&item_value) {
+                    vec![]
+                } else {
+                    vec![item_value]
+                }
+            } else if current.contains(&item_value) {
+                current.into_iter().filter(|v| *v != item_value).collect()
+            } else {
+                let mut next = current;
+                next.push(item_value);
+                next
+            };
+            set_value.run(Some(next));
+        }),
+        r#type: toggle_type,
+    };
+
+    view! {
+        <Provider value=toggle_ctx>
+            <Primitive
+                element=html::div
+                as_child=as_child
+                node_ref=node_ref
+                attr:role="group"
+                attr:data-orientation=move || context.orientation.get()
+            >
+                {children.with_value(|children| children())}
+            </Primitive>
+        </Provider>
+    }
+}
+
+#[component]
+pub fn ToolbarToggleItem(
+    #[prop(into)] value: String,
+    #[prop(into, optional)] disabled: MaybeProp<bool>,
+    #[prop(into, optional)] as_child: MaybeProp<bool>,
+    #[prop(into, optional)] node_ref: AnyNodeRef,
+    children: TypedChildrenFn<impl IntoView + 'static>,
+) -> impl IntoView {
+    let children = StoredValue::new(children.into_inner());
+    let toggle_ctx = expect_context::<ToolbarToggleGroupContextValue>();
+    let item_value = value.clone();
+    let item_value2 = value.clone();
+    let is_pressed = Signal::derive(move || toggle_ctx.value.get().contains(&item_value));
+    let disabled = Signal::derive(move || disabled.get().unwrap_or(false));
+
+    view! {
+        <Primitive
+            element=html::button
+            as_child=as_child
+            node_ref=node_ref
+            attr:r#type="button"
+            attr:aria-pressed=move || is_pressed.get().to_string()
+            attr:data-state=move || if is_pressed.get() { "on" } else { "off" }
+            attr:data-disabled=move || disabled.get().then_some("")
+            attr:disabled=move || disabled.get()
+            on:click=move |_| {
+                if !disabled.get() {
+                    toggle_ctx.on_item_toggle.run(item_value2.clone());
+                }
+            }
+        >
+            {children.with_value(|children| children())}
+        </Primitive>
+    }
+}
+
 fn focus_toolbar_item(event: &KeyboardEvent, forward: bool, do_loop: bool) {
     let target = event.current_target();
     let Some(toolbar) = target.and_then(|t| {

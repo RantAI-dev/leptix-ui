@@ -217,6 +217,185 @@ pub fn SelectSeparator(
     view! { <VoidPrimitive element=html::div as_child=as_child node_ref=node_ref attr:aria-hidden="true">{""}</VoidPrimitive> }
 }
 
+// ---------------------------------------------------------------------------
+// Icon (decorative trigger icon)
+// ---------------------------------------------------------------------------
+
+#[component]
+pub fn SelectIcon(
+    #[prop(into, optional)] as_child: MaybeProp<bool>,
+    #[prop(into, optional)] node_ref: AnyNodeRef,
+    #[prop(optional)] children: Option<ChildrenFn>,
+) -> impl IntoView {
+    let children = StoredValue::new(children);
+    view! {
+        <Primitive element=html::span as_child=as_child node_ref=node_ref attr:aria-hidden="true">
+            {children.with_value(|c| c.as_ref().map(|c| c()).unwrap_or_else(|| "▼".into_any()))}
+        </Primitive>
+    }
+}
+
+// ---------------------------------------------------------------------------
+// Viewport (scrollable area inside content)
+// ---------------------------------------------------------------------------
+
+#[component]
+pub fn SelectViewport(
+    #[prop(into, optional)] as_child: MaybeProp<bool>,
+    #[prop(into, optional)] node_ref: AnyNodeRef,
+    children: TypedChildrenFn<impl IntoView + 'static>,
+) -> impl IntoView {
+    let children = StoredValue::new(children.into_inner());
+    view! {
+        <Primitive element=html::div as_child=as_child node_ref=node_ref
+            attr:role="presentation"
+            attr:style="overflow:hidden auto;max-height:var(--leptix-select-content-available-height)"
+        >
+            {children.with_value(|c| c())}
+        </Primitive>
+    }
+}
+
+// ---------------------------------------------------------------------------
+// Group / Label
+// ---------------------------------------------------------------------------
+
+#[component]
+pub fn SelectGroup(
+    #[prop(into, optional)] as_child: MaybeProp<bool>,
+    #[prop(into, optional)] node_ref: AnyNodeRef,
+    children: TypedChildrenFn<impl IntoView + 'static>,
+) -> impl IntoView {
+    let children = StoredValue::new(children.into_inner());
+    let id = use_id(None).get();
+    let label_id = format!("{}-label", id);
+
+    view! {
+        <Provider value=SelectGroupContextValue { label_id: label_id.clone() }>
+            <Primitive element=html::div as_child=as_child node_ref=node_ref
+                attr:role="group"
+                attr:aria-labelledby=label_id
+            >
+                {children.with_value(|c| c())}
+            </Primitive>
+        </Provider>
+    }
+}
+
+#[derive(Clone, Debug)]
+struct SelectGroupContextValue {
+    label_id: String,
+}
+
+#[component]
+pub fn SelectLabel(
+    #[prop(into, optional)] as_child: MaybeProp<bool>,
+    #[prop(into, optional)] node_ref: AnyNodeRef,
+    children: TypedChildrenFn<impl IntoView + 'static>,
+) -> impl IntoView {
+    let children = StoredValue::new(children.into_inner());
+    let group_ctx = expect_context::<SelectGroupContextValue>();
+    view! {
+        <Primitive element=html::div as_child=as_child node_ref=node_ref attr:id=group_ctx.label_id.clone()>
+            {children.with_value(|c| c())}
+        </Primitive>
+    }
+}
+
+// ---------------------------------------------------------------------------
+// ItemText / ItemIndicator
+// ---------------------------------------------------------------------------
+
+#[component]
+pub fn SelectItemText(
+    #[prop(into, optional)] as_child: MaybeProp<bool>,
+    #[prop(into, optional)] node_ref: AnyNodeRef,
+    children: TypedChildrenFn<impl IntoView + 'static>,
+) -> impl IntoView {
+    let children = StoredValue::new(children.into_inner());
+    view! {
+        <Primitive element=html::span as_child=as_child node_ref=node_ref>
+            {children.with_value(|c| c())}
+        </Primitive>
+    }
+}
+
+#[component]
+pub fn SelectItemIndicator(
+    #[prop(into, optional)] as_child: MaybeProp<bool>,
+    #[prop(into, optional)] node_ref: AnyNodeRef,
+    #[prop(optional)] children: Option<ChildrenFn>,
+) -> impl IntoView {
+    let children = StoredValue::new(children);
+    // The indicator is rendered inside a SelectItem. It shows only when selected.
+    // For now, consumers wrap it in their own <Show> or use CSS [data-state="checked"].
+    view! {
+        <Primitive element=html::span as_child=as_child node_ref=node_ref>
+            {children.with_value(|c| c.as_ref().map(|c| c()))}
+        </Primitive>
+    }
+}
+
+// ---------------------------------------------------------------------------
+// ScrollUpButton / ScrollDownButton
+// ---------------------------------------------------------------------------
+
+#[component]
+pub fn SelectScrollUpButton(
+    #[prop(into, optional)] as_child: MaybeProp<bool>,
+    #[prop(into, optional)] node_ref: AnyNodeRef,
+    #[prop(optional)] children: Option<ChildrenFn>,
+) -> impl IntoView {
+    let children = StoredValue::new(children);
+    view! {
+        <Primitive element=html::div as_child=as_child node_ref=node_ref
+            attr:aria-hidden="true"
+            attr:style="flex-shrink:0"
+        >
+            {children.with_value(|c| c.as_ref().map(|c| c()).unwrap_or_else(|| "▲".into_any()))}
+        </Primitive>
+    }
+}
+
+#[component]
+pub fn SelectScrollDownButton(
+    #[prop(into, optional)] as_child: MaybeProp<bool>,
+    #[prop(into, optional)] node_ref: AnyNodeRef,
+    #[prop(optional)] children: Option<ChildrenFn>,
+) -> impl IntoView {
+    let children = StoredValue::new(children);
+    view! {
+        <Primitive element=html::div as_child=as_child node_ref=node_ref
+            attr:aria-hidden="true"
+            attr:style="flex-shrink:0"
+        >
+            {children.with_value(|c| c.as_ref().map(|c| c()).unwrap_or_else(|| "▼".into_any()))}
+        </Primitive>
+    }
+}
+
+// ---------------------------------------------------------------------------
+// Arrow
+// ---------------------------------------------------------------------------
+
+#[component]
+pub fn SelectArrow(
+    #[prop(into, optional)] as_child: MaybeProp<bool>,
+    #[prop(into, optional)] node_ref: AnyNodeRef,
+    #[prop(optional)] children: Option<ChildrenFn>,
+) -> impl IntoView {
+    let children = StoredValue::new(children);
+    view! {
+        <leptix_core::arrow::Arrow as_child=as_child node_ref=node_ref>
+            {children.with_value(|c| c.as_ref().map(|c| c()))}
+        </leptix_core::arrow::Arrow>
+    }
+}
+
+// ---------------------------------------------------------------------------
+// Helpers
+// ---------------------------------------------------------------------------
+
 fn focus_select_item(event: &KeyboardEvent, forward: bool) {
     let Some(container) = event.current_target().and_then(|t| {
         use web_sys::wasm_bindgen::JsCast;

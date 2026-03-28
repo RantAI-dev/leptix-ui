@@ -108,6 +108,13 @@ pub fn MenubarTrigger(
 }
 
 #[component]
+pub fn MenubarPortal(children: TypedChildrenFn<impl IntoView + 'static>) -> impl IntoView {
+    let children = StoredValue::new(children.into_inner());
+    let ctx = expect_context::<MenubarMenuContextValue>();
+    view! { <Show when=move || ctx.open.get()>{children.with_value(|c| c())}</Show> }
+}
+
+#[component]
 pub fn MenubarContent(
     #[prop(into, optional)] as_child: MaybeProp<bool>,
     #[prop(into, optional)] node_ref: AnyNodeRef,
@@ -146,7 +153,12 @@ pub fn MenubarContent(
 }
 
 pub use leptix_dropdown_menu::{
-    DropdownMenuItem as MenubarItem, DropdownMenuSeparator as MenubarSeparator,
+    DropdownMenuArrow as MenubarArrow, DropdownMenuCheckboxItem as MenubarCheckboxItem,
+    DropdownMenuGroup as MenubarGroup, DropdownMenuItem as MenubarItem,
+    DropdownMenuItemIndicator as MenubarItemIndicator, DropdownMenuLabel as MenubarLabel,
+    DropdownMenuRadioGroup as MenubarRadioGroup, DropdownMenuRadioItem as MenubarRadioItem,
+    DropdownMenuSeparator as MenubarSeparator, DropdownMenuSub as MenubarSub,
+    DropdownMenuSubContent as MenubarSubContent, DropdownMenuSubTrigger as MenubarSubTrigger,
 };
 
 fn focus_menubar_trigger(event: &KeyboardEvent, forward: bool) {

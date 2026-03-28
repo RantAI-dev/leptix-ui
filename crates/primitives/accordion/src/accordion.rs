@@ -228,6 +228,27 @@ pub fn AccordionContent(
     }
 }
 
+#[component]
+pub fn AccordionHeader(
+    #[prop(into, optional)] as_child: MaybeProp<bool>,
+    #[prop(into, optional)] node_ref: AnyNodeRef,
+    children: TypedChildrenFn<impl IntoView + 'static>,
+) -> impl IntoView {
+    let children = StoredValue::new(children.into_inner());
+    let accordion_context = expect_context::<AccordionContextValue>();
+    let item_context = expect_context::<AccordionItemContextValue>();
+
+    view! {
+        <Primitive element=html::h3 as_child=as_child node_ref=node_ref
+            attr:data-orientation=move || accordion_context.orientation.get()
+            attr:data-state=move || if accordion_context.value.get().contains(&item_context.value) { "open" } else { "closed" }
+            attr:data-disabled=move || accordion_context.disabled.get().then_some("")
+        >
+            {children.with_value(|c| c())}
+        </Primitive>
+    }
+}
+
 fn focus_accordion_trigger(event: &KeyboardEvent, forward: bool, jump_to_end: bool) {
     let target = event.current_target();
     let Some(container) = target.and_then(|t| {

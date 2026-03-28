@@ -131,3 +131,40 @@ pub fn FormSubmit(
         </Primitive>
     }
 }
+
+#[derive(Clone, Debug)]
+pub struct FormValidityStateContext {
+    pub valid: Signal<bool>,
+    pub field_name: String,
+}
+
+#[component]
+pub fn FormValidityState(children: TypedChildrenFn<impl IntoView + 'static>) -> impl IntoView {
+    let children = StoredValue::new(children.into_inner());
+    let ctx = expect_context::<FormFieldContextValue>();
+    let control_id = format!("{}-control", ctx.id);
+
+    let valid = RwSignal::new(true);
+
+    Effect::new(move |_| {
+        if let Some(document) = web_sys::window().and_then(|w| w.document())
+            && let Some(el) = document.get_element_by_id(&control_id)
+        {
+            use web_sys::wasm_bindgen::JsCast;
+            if let Ok(input) = el.dyn_into::<web_sys::HtmlInputElement>() {
+                valid.set(input.check_validity());
+            }
+        }
+    });
+
+    let validity_ctx = FormValidityStateContext {
+        valid: valid.into(),
+        field_name: ctx.name.clone(),
+    };
+
+    view! {
+        <Provider value=validity_ctx>
+            {children.with_value(|c| c())}
+        </Provider>
+    }
+}

@@ -199,3 +199,63 @@ pub fn NavigationMenuViewport(
         </Show>
     }
 }
+
+#[component]
+pub fn NavigationMenuSub(
+    #[prop(into, optional)] value: MaybeProp<String>,
+    #[prop(into, optional)] default_value: MaybeProp<String>,
+    #[prop(into, optional)] on_value_change: Option<Callback<String>>,
+    #[prop(into, optional)] orientation: MaybeProp<String>,
+    #[prop(into, optional)] as_child: MaybeProp<bool>,
+    #[prop(into, optional)] node_ref: AnyNodeRef,
+    children: TypedChildrenFn<impl IntoView + 'static>,
+) -> impl IntoView {
+    let children = StoredValue::new(children.into_inner());
+    let parent_ctx = expect_context::<NavigationMenuContextValue>();
+    let orientation = Signal::derive(move || orientation.get().unwrap_or("horizontal".into()));
+    let _on_value_change = on_value_change;
+    let active = RwSignal::new(value.get().or(default_value.get()));
+    let base_id = use_id(None).get();
+
+    let ctx = NavigationMenuContextValue {
+        value: active,
+        direction: parent_ctx.direction,
+        orientation,
+        base_id,
+    };
+
+    view! {
+        <Provider value=ctx>
+            <Primitive element=html::div as_child=as_child node_ref=node_ref
+                attr:data-orientation=move || orientation.get()
+            >
+                {children.with_value(|c| c())}
+            </Primitive>
+        </Provider>
+    }
+}
+
+#[component]
+pub fn NavigationMenuIndicator(
+    #[prop(into, optional)] as_child: MaybeProp<bool>,
+    #[prop(into, optional)] node_ref: AnyNodeRef,
+    #[prop(optional)] children: Option<ChildrenFn>,
+) -> impl IntoView {
+    let children = StoredValue::new(children);
+    let ctx = expect_context::<NavigationMenuContextValue>();
+    let is_visible = Signal::derive(move || ctx.value.get().is_some());
+    let presence = use_presence(is_visible);
+
+    view! {
+        <Show when=move || presence.is_present.get()>
+            <Primitive element=html::div as_child=as_child
+                node_ref=leptix_core::compose_refs::use_composed_refs(vec![node_ref, presence.node_ref])
+                attr:data-state=move || if is_visible.get() { "visible" } else { "hidden" }
+                attr:data-orientation=move || ctx.orientation.get()
+                attr:aria-hidden="true"
+            >
+                {children.with_value(|c| c.as_ref().map(|c| c()))}
+            </Primitive>
+        </Show>
+    }
+}
