@@ -307,3 +307,34 @@ fn snap_to_step(value: f64, step: f64, min: f64) -> f64 {
     let steps = ((value - min) / step).round();
     min + steps * step
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn snap_to_step_basic() {
+        assert_eq!(snap_to_step(5.0, 1.0, 0.0), 5.0);
+        assert_eq!(snap_to_step(5.3, 1.0, 0.0), 5.0);
+        assert_eq!(snap_to_step(5.7, 1.0, 0.0), 6.0);
+    }
+
+    #[test]
+    fn snap_to_step_with_offset_min() {
+        assert_eq!(snap_to_step(7.0, 5.0, 2.0), 7.0);
+        assert_eq!(snap_to_step(8.0, 5.0, 2.0), 7.0);
+        assert_eq!(snap_to_step(10.0, 5.0, 2.0), 12.0);
+    }
+
+    #[test]
+    fn snap_to_step_fractional() {
+        let result = snap_to_step(0.15, 0.1, 0.0);
+        assert!((result - 0.2).abs() < f64::EPSILON || (result - 0.1).abs() < 0.01);
+    }
+
+    #[test]
+    fn snap_to_step_at_boundaries() {
+        assert_eq!(snap_to_step(0.0, 10.0, 0.0), 0.0);
+        assert_eq!(snap_to_step(100.0, 10.0, 0.0), 100.0);
+    }
+}

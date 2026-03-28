@@ -87,6 +87,23 @@ pub fn DirectionProvider(
     }
 }
 
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn direction_display() {
+        assert_eq!(Direction::Ltr.to_string(), "ltr");
+        assert_eq!(Direction::Rtl.to_string(), "rtl");
+    }
+
+    #[test]
+    fn direction_equality() {
+        assert_eq!(Direction::Ltr, Direction::Ltr);
+        assert_ne!(Direction::Ltr, Direction::Rtl);
+    }
+}
+
 pub fn use_direction(local_dir: MaybeProp<Direction>) -> Signal<Direction> {
     let global_dir = use_context::<DirectionContextValue>();
 

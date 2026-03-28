@@ -209,3 +209,42 @@ pub fn OneTimePasswordFieldHiddenInput(
         />
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn numeric_validation() {
+        let v = InputValidationType::Numeric;
+        assert!(v.is_valid('5'));
+        assert!(v.is_valid('0'));
+        assert!(!v.is_valid('a'));
+        assert!(!v.is_valid(' '));
+    }
+
+    #[test]
+    fn alphanumeric_validation() {
+        let v = InputValidationType::Alphanumeric;
+        assert!(v.is_valid('a'));
+        assert!(v.is_valid('Z'));
+        assert!(v.is_valid('5'));
+        assert!(!v.is_valid(' '));
+        assert!(!v.is_valid('-'));
+    }
+
+    #[test]
+    fn text_validation() {
+        let v = InputValidationType::Text;
+        assert!(v.is_valid('a'));
+        assert!(v.is_valid(' '));
+        assert!(v.is_valid('!'));
+    }
+
+    #[test]
+    fn validation_patterns() {
+        assert_eq!(InputValidationType::Numeric.pattern(), r"[0-9]");
+        assert_eq!(InputValidationType::Alphanumeric.pattern(), r"[a-zA-Z0-9]");
+        assert_eq!(InputValidationType::Text.pattern(), r".");
+    }
+}

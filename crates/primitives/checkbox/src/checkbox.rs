@@ -279,3 +279,53 @@ fn get_state(checked: CheckedState) -> String {
     })
     .into()
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn checked_state_display() {
+        assert_eq!(CheckedState::True.to_string(), "true");
+        assert_eq!(CheckedState::False.to_string(), "false");
+        assert_eq!(CheckedState::Indeterminate.to_string(), "indeterminate");
+    }
+
+    #[test]
+    fn get_state_values() {
+        assert_eq!(get_state(CheckedState::True), "checked");
+        assert_eq!(get_state(CheckedState::False), "unchecked");
+        assert_eq!(get_state(CheckedState::Indeterminate), "indeterminate");
+    }
+
+    #[test]
+    fn checked_state_toggle_logic() {
+        // False -> True
+        assert_eq!(
+            match CheckedState::False {
+                CheckedState::False => CheckedState::True,
+                CheckedState::True => CheckedState::False,
+                CheckedState::Indeterminate => CheckedState::True,
+            },
+            CheckedState::True
+        );
+        // True -> False
+        assert_eq!(
+            match CheckedState::True {
+                CheckedState::False => CheckedState::True,
+                CheckedState::True => CheckedState::False,
+                CheckedState::Indeterminate => CheckedState::True,
+            },
+            CheckedState::False
+        );
+        // Indeterminate -> True
+        assert_eq!(
+            match CheckedState::Indeterminate {
+                CheckedState::False => CheckedState::True,
+                CheckedState::True => CheckedState::False,
+                CheckedState::Indeterminate => CheckedState::True,
+            },
+            CheckedState::True
+        );
+    }
+}

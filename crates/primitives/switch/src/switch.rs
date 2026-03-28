@@ -182,3 +182,14 @@ fn get_state(checked: bool) -> String {
     })
     .into()
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn switch_state_values() {
+        assert_eq!(get_state(true), "checked");
+        assert_eq!(get_state(false), "unchecked");
+    }
+}

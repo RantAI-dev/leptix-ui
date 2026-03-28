@@ -118,3 +118,49 @@ fn get_progress_state(value: Option<f64>, max_value: f64) -> ProgressState {
         None => ProgressState::Indeterminate,
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn progress_state_indeterminate_when_none() {
+        assert_eq!(
+            get_progress_state(None, 100.0),
+            ProgressState::Indeterminate
+        );
+    }
+
+    #[test]
+    fn progress_state_complete_when_at_max() {
+        assert_eq!(
+            get_progress_state(Some(100.0), 100.0),
+            ProgressState::Complete
+        );
+    }
+
+    #[test]
+    fn progress_state_loading_when_partial() {
+        assert_eq!(
+            get_progress_state(Some(50.0), 100.0),
+            ProgressState::Loading
+        );
+        assert_eq!(get_progress_state(Some(0.0), 100.0), ProgressState::Loading);
+    }
+
+    #[test]
+    fn progress_state_display() {
+        assert_eq!(ProgressState::Indeterminate.to_string(), "indeterminate");
+        assert_eq!(ProgressState::Complete.to_string(), "complete");
+        assert_eq!(ProgressState::Loading.to_string(), "loading");
+    }
+
+    #[test]
+    fn default_value_label() {
+        // Formula: (value / max).round() * 100
+        assert_eq!(default_get_value_label(100.0, 100.0), "100%");
+        assert_eq!(default_get_value_label(0.0, 100.0), "0%");
+        assert_eq!(default_get_value_label(75.0, 100.0), "100%"); // (0.75).round() = 1.0
+        assert_eq!(default_get_value_label(25.0, 100.0), "0%"); // (0.25).round() = 0.0
+    }
+}
