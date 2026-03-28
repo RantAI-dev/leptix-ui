@@ -91,3 +91,9 @@ pub use leptix_scroll_area as scroll_area;
 
 #[cfg(feature = "form")]
 pub use leptix_form as form;
+
+#[cfg(feature = "otp-field")]
+pub use leptix_otp_field as otp_field;
+
+#[cfg(feature = "password-toggle")]
+pub use leptix_password_toggle as password_toggle;

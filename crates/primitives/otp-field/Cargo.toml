@@ -1,0 +1,15 @@
+[package]
+name = "leptix-otp-field"
+description = "Leptix One-Time Password Field — a multi-segment input for OTP verification."
+
+authors.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+version.workspace = true
+
+[dependencies]
+leptos.workspace = true
+leptos-node-ref.workspace = true
+leptix-core.workspace = true
+web-sys = { workspace = true, features = ["HtmlElement", "HtmlInputElement"] }

@@ -31,6 +31,8 @@ members = [
     "crates/primitives/toast",
     "crates/primitives/scroll-area",
     "crates/primitives/form",
+    "crates/primitives/otp-field",
+    "crates/primitives/password-toggle",
 ]
 resolver = "2"
 
@@ -84,3 +86,5 @@ leptix-navigation-menu = { path = "./crates/primitives/navigation-menu", version
 leptix-toast = { path = "./crates/primitives/toast", version = "0.1.0-alpha.1" }
 leptix-scroll-area = { path = "./crates/primitives/scroll-area", version = "0.1.0-alpha.1" }
 leptix-form = { path = "./crates/primitives/form", version = "0.1.0-alpha.1" }
+leptix-otp-field = { path = "./crates/primitives/otp-field", version = "0.1.0-alpha.1" }
+leptix-password-toggle = { path = "./crates/primitives/password-toggle", version = "0.1.0-alpha.1" }

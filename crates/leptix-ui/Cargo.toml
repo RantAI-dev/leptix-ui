@@ -17,6 +17,7 @@ default = [
     "dialog", "alert-dialog", "popover", "tooltip", "hover-card", "toolbar",
     "dropdown-menu", "context-menu", "menubar", "select",
     "navigation-menu", "toast", "scroll-area", "form",
+    "otp-field", "password-toggle",
 ]
 label = ["dep:leptix-label"]
 separator = ["dep:leptix-separator"]
@@ -47,6 +48,8 @@ navigation-menu = ["dep:leptix-navigation-menu"]
 toast = ["dep:leptix-toast"]
 scroll-area = ["dep:leptix-scroll-area"]
 form = ["dep:leptix-form"]
+otp-field = ["dep:leptix-otp-field"]
+password-toggle = ["dep:leptix-password-toggle"]
 
 [dependencies]
 leptix-core.workspace = true
@@ -79,3 +82,5 @@ leptix-navigation-menu = { workspace = true, optional = true }
 leptix-toast = { workspace = true, optional = true }
 leptix-scroll-area = { workspace = true, optional = true }
 leptix-form = { workspace = true, optional = true }
+leptix-otp-field = { workspace = true, optional = true }
+leptix-password-toggle = { workspace = true, optional = true }
