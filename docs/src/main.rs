@@ -41,6 +41,18 @@ fn App() -> impl IntoView {
     let mobile_open = RwSignal::new(false);
     provide_context(mobile_open);
 
+    view! {
+        <Router>
+            <AppInner />
+        </Router>
+    }
+}
+
+/// Inner shell — lives inside `<Router>` so `use_location()` works.
+#[component]
+fn AppInner() -> impl IntoView {
+    let mobile_open = expect_context::<RwSignal<bool>>();
+
     // Close mobile menu on route change
     let location = use_location();
     Effect::new(move |_| {
@@ -49,16 +61,15 @@ fn App() -> impl IntoView {
     });
 
     view! {
-        <Router>
-            <Header />
-            <div class="layout">
-                <div class="sidebar-overlay"
-                    class:open=move || mobile_open.get()
-                    on:click=move |_| mobile_open.set(false)
-                />
-                <Sidebar />
-                <div class="main-content">
-                    <div class="doc-page">
+        <Header />
+        <div class="layout">
+            <div class="sidebar-overlay"
+                class:open=move || mobile_open.get()
+                on:click=move |_| mobile_open.set(false)
+            />
+            <Sidebar />
+            <div class="main-content">
+                <div class="doc-page">
                         <Routes fallback=|| view! { <p>"Page not found"</p> }>
                             <Route path=path!("/") view=pages::home::HomePage />
                             <Route path=path!("/accordion") view=pages::accordion::AccordionPage />
@@ -81,7 +92,6 @@ fn App() -> impl IntoView {
                 <QuickNav />
             </div>
             <Footer />
-        </Router>
     }
 }
 
