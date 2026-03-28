@@ -16,16 +16,16 @@ pub fn AccordionPage() -> impl IntoView {
                 <AccordionItem value="item-1" attr:class="demo-accordion-item">
                     <AccordionTrigger attr:class="demo-accordion-trigger">
                         "Is it accessible?"
-                        <span class="demo-accordion-chevron">{"\u{25BC}"}</span>
+                        <span class="demo-accordion-chevron">"▾"</span>
                     </AccordionTrigger>
                     <AccordionContent attr:class="demo-accordion-content">
-                        "Yes. It adheres to the WAI-ARIA design pattern for accordions."
+                        "Yes. It adheres to the WAI-ARIA design pattern."
                     </AccordionContent>
                 </AccordionItem>
                 <AccordionItem value="item-2" attr:class="demo-accordion-item">
                     <AccordionTrigger attr:class="demo-accordion-trigger">
                         "Is it unstyled?"
-                        <span class="demo-accordion-chevron">{"\u{25BC}"}</span>
+                        <span class="demo-accordion-chevron">"▾"</span>
                     </AccordionTrigger>
                     <AccordionContent attr:class="demo-accordion-content">
                         "Yes. It ships with zero styles so you have full control over the look and feel."
@@ -34,7 +34,7 @@ pub fn AccordionPage() -> impl IntoView {
                 <AccordionItem value="item-3" attr:class="demo-accordion-item">
                     <AccordionTrigger attr:class="demo-accordion-trigger">
                         "Can it be animated?"
-                        <span class="demo-accordion-chevron">{"\u{25BC}"}</span>
+                        <span class="demo-accordion-chevron">"▾"</span>
                     </AccordionTrigger>
                     <AccordionContent attr:class="demo-accordion-content">
                         "Yes. You can animate the open and close transitions using CSS or a Leptos animation library."
