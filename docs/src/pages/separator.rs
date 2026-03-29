@@ -28,10 +28,12 @@ pub fn SeparatorPage() -> impl IntoView {
             </div>
         </div>
         <HeroCodeBlock
-            usage_code="use leptix_separator::*;\n\nview! {\n    <Separator class=\"SeparatorRoot\" />\n    <Separator orientation=Orientation::Vertical class=\"SeparatorRoot\" />\n}"
-            css_code=".SeparatorRoot {\n  background-color: var(--violet-6);\n}\n.SeparatorRoot[data-orientation=\"horizontal\"] {\n  height: 1px;\n  width: 100%;\n}\n.SeparatorRoot[data-orientation=\"vertical\"] {\n  height: 100%;\n  width: 1px;\n  min-height: 20px;\n}"
-            css_modules_code=".Root {\n  background-color: var(--violet-6);\n}\n.Root[data-orientation=\"horizontal\"] {\n  height: 1px;\n  width: 100%;\n}\n.Root[data-orientation=\"vertical\"] {\n  height: 100%;\n  width: 1px;\n  min-height: 20px;\n}"
-            tailwind_code="<Separator class=\"bg-violet-300\" />\n// horizontal: h-px w-full\n// vertical: w-px h-full min-h-[20px]"
+            css_usage="use leptix_separator::*;\n\nview! {\n    <Separator attr:class=\"SeparatorRoot\" />\n    <Separator attr:class=\"SeparatorRoot\" orientation=Orientation::Vertical />\n}"
+            css_styles=".SeparatorRoot {\n  background-color: var(--violet-6);\n}\n.SeparatorRoot[data-orientation=\"horizontal\"] {\n  height: 1px;\n  width: 100%;\n}\n.SeparatorRoot[data-orientation=\"vertical\"] {\n  height: 100%;\n  width: 1px;\n  min-height: 20px;\n}"
+            modules_usage="// import styles from \"./separator.module.css\";\nuse leptix_separator::*;\n\nview! {\n    <Separator attr:class=styles.root />\n    <Separator attr:class=styles.root orientation=Orientation::Vertical />\n}"
+            modules_styles=".root {\n  background-color: var(--violet-6);\n}\n.root[data-orientation=\"horizontal\"] {\n  height: 1px;\n  width: 100%;\n}\n.root[data-orientation=\"vertical\"] {\n  height: 100%;\n  width: 1px;\n  min-height: 20px;\n}"
+            tailwind_usage="use leptix_separator::*;\n\nview! {\n    <Separator attr:class=\"bg-violet-300 data-[orientation=horizontal]:h-px data-[orientation=horizontal]:w-full data-[orientation=vertical]:w-px data-[orientation=vertical]:h-full data-[orientation=vertical]:min-h-[20px]\" />\n}"
+            tailwind_config="import type { Config } from \"tailwindcss\";\n\nexport default {\n  theme: {\n    extend: {\n      colors: {\n        separator: \"var(--violet-6)\",\n      },\n      minHeight: {\n        separator: \"20px\",\n      },\n    },\n  },\n} satisfies Config;"
         />
 
         // ---- Highlights ----

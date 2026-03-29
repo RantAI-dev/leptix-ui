@@ -447,33 +447,38 @@ pub fn CodeBlock(
 
 #[component]
 pub fn HeroCodeBlock(
-    #[prop(into)] usage_code: String,
-    #[prop(into)] css_code: String,
-    #[prop(into)] css_modules_code: String,
-    #[prop(into)] tailwind_code: String,
+    #[prop(into)] css_usage: String,
+    #[prop(into)] css_styles: String,
+    #[prop(into)] modules_usage: String,
+    #[prop(into)] modules_styles: String,
+    #[prop(into)] tailwind_usage: String,
+    #[prop(into)] tailwind_config: String,
 ) -> impl IntoView {
     let (active_tab, set_active_tab) = signal("usage");
     let (css_mode, set_css_mode) = signal("css");
     let (copied, set_copied) = signal(false);
 
-    let usage = StoredValue::new(usage_code);
-    let css = StoredValue::new(css_code);
-    let css_mod = StoredValue::new(css_modules_code);
-    let tw = StoredValue::new(tailwind_code);
+    let css_u = StoredValue::new(css_usage);
+    let css_s = StoredValue::new(css_styles);
+    let mod_u = StoredValue::new(modules_usage);
+    let mod_s = StoredValue::new(modules_styles);
+    let tw_u = StoredValue::new(tailwind_usage);
+    let tw_c = StoredValue::new(tailwind_config);
 
     let styles_filename = move || match css_mode.get() {
         "css-modules" => "styles.module.css",
-        "tailwind" => "tailwind",
+        "tailwind" => "tailwind.config.ts",
         _ => "styles.css",
     };
 
-    let current_code = move || match active_tab.get() {
-        "usage" => usage.get_value(),
-        _ => match css_mode.get() {
-            "css-modules" => css_mod.get_value(),
-            "tailwind" => tw.get_value(),
-            _ => css.get_value(),
-        },
+    let current_code = move || match (active_tab.get(), css_mode.get()) {
+        ("usage", "css") => css_u.get_value(),
+        ("usage", "css-modules") => mod_u.get_value(),
+        ("usage", "tailwind") => tw_u.get_value(),
+        (_, "css") => css_s.get_value(),
+        (_, "css-modules") => mod_s.get_value(),
+        (_, "tailwind") => tw_c.get_value(),
+        _ => css_u.get_value(),
     };
 
     let on_copy = move |_| {

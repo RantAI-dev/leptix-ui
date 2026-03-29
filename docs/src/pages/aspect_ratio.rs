@@ -23,10 +23,12 @@ pub fn AspectRatioPage() -> impl IntoView {
             </div>
         </div>
         <HeroCodeBlock
-            usage_code="use leptix_ui::aspect_ratio::*;\n\nview! {\n    <AspectRatio ratio=Signal::derive(|| 16.0 / 9.0)>\n        <img src=\"landscape.jpg\" style=\"object-fit: cover; width: 100%; height: 100%;\" />\n    </AspectRatio>\n}"
-            css_code=".AspectRatioRoot {\n  width: 300px;\n}\n\n.AspectRatioRoot img {\n  object-fit: cover;\n  width: 100%;\n  height: 100%;\n  border-radius: 6px;\n}"
-            css_modules_code=".Root {\n  width: 300px;\n}\n\n.Root img {\n  object-fit: cover;\n  width: 100%;\n  height: 100%;\n  border-radius: 6px;\n}"
-            tailwind_code="view! {\n    <AspectRatio ratio=Signal::derive(|| 16.0 / 9.0) class=\"w-[300px]\">\n        <img src=\"landscape.jpg\" class=\"object-cover w-full h-full rounded-md\" />\n    </AspectRatio>\n}"
+            css_usage="use leptix_ui::aspect_ratio::*;\n\nview! {\n    <div class=\"AspectRatioRoot\">\n        <AspectRatio ratio=Signal::derive(|| 16.0 / 9.0)>\n            <img src=\"landscape.jpg\" />\n        </AspectRatio>\n    </div>\n}"
+            css_styles=".AspectRatioRoot {\n  width: 300px;\n}\n\n.AspectRatioRoot img {\n  object-fit: cover;\n  width: 100%;\n  height: 100%;\n  border-radius: 6px;\n}"
+            modules_usage="use leptix_ui::aspect_ratio::*;\n// use styles from module\n\nview! {\n    <div class=styles.root>\n        <AspectRatio ratio=Signal::derive(|| 16.0 / 9.0)>\n            <img src=\"landscape.jpg\" attr:class=styles.image />\n        </AspectRatio>\n    </div>\n}"
+            modules_styles=".root {\n  width: 300px;\n}\n\n.root img {\n  object-fit: cover;\n  width: 100%;\n  height: 100%;\n  border-radius: 6px;\n}"
+            tailwind_usage="use leptix_ui::aspect_ratio::*;\n\nview! {\n    <div class=\"w-[300px]\">\n        <AspectRatio ratio=Signal::derive(|| 16.0 / 9.0)>\n            <img src=\"landscape.jpg\" attr:class=\"object-cover w-full h-full rounded-md\" />\n        </AspectRatio>\n    </div>\n}"
+            tailwind_config="import type { Config } from \"tailwindcss\";\n\nexport default {\n  theme: {\n    extend: {},\n  },\n} satisfies Config;"
         />
 
         // ---- Highlights ----
