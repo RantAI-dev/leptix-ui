@@ -19,17 +19,38 @@ const PAGE_ORDER: &[(&str, &str)] = &[
     ("Introduction", "/"),
     ("Accordion", "/accordion"),
     ("Alert Dialog", "/alert-dialog"),
+    ("Aspect Ratio", "/aspect-ratio"),
     ("Avatar", "/avatar"),
     ("Checkbox", "/checkbox"),
     ("Collapsible", "/collapsible"),
+    ("Context Menu", "/context-menu"),
     ("Dialog", "/dialog"),
+    ("Dropdown Menu", "/dropdown-menu"),
+    ("Form", "/form"),
+    ("Hover Card", "/hover-card"),
     ("Label", "/label"),
+    ("Menubar", "/menubar"),
+    ("Navigation Menu", "/navigation-menu"),
+    ("OTP Field", "/otp-field"),
+    ("Password Toggle", "/password-toggle"),
+    ("Popover", "/popover"),
     ("Progress", "/progress"),
+    ("Radio Group", "/radio-group"),
+    ("Scroll Area", "/scroll-area"),
+    ("Select", "/select"),
     ("Separator", "/separator"),
     ("Slider", "/slider"),
     ("Switch", "/switch"),
     ("Tabs", "/tabs"),
+    ("Toast", "/toast"),
     ("Toggle", "/toggle"),
+    ("Toggle Group", "/toggle-group"),
+    ("Toolbar", "/toolbar"),
+    ("Tooltip", "/tooltip"),
+    ("Accessible Icon", "/accessible-icon"),
+    ("Direction Provider", "/direction-provider"),
+    ("Portal", "/portal"),
+    ("Visually Hidden", "/visually-hidden"),
 ];
 
 // ---------------------------------------------------------------------------
@@ -74,17 +95,38 @@ fn AppInner() -> impl IntoView {
                             <Route path=path!("/") view=pages::home::HomePage />
                             <Route path=path!("/accordion") view=pages::accordion::AccordionPage />
                             <Route path=path!("/alert-dialog") view=pages::alert_dialog::AlertDialogPage />
+                            <Route path=path!("/aspect-ratio") view=pages::aspect_ratio::AspectRatioPage />
                             <Route path=path!("/avatar") view=pages::avatar::AvatarPage />
                             <Route path=path!("/checkbox") view=pages::checkbox::CheckboxPage />
                             <Route path=path!("/collapsible") view=pages::collapsible::CollapsiblePage />
+                            <Route path=path!("/context-menu") view=pages::context_menu::ContextMenuPage />
                             <Route path=path!("/dialog") view=pages::dialog::DialogPage />
+                            <Route path=path!("/dropdown-menu") view=pages::dropdown_menu::DropdownMenuPage />
+                            <Route path=path!("/form") view=pages::form::FormPage />
+                            <Route path=path!("/hover-card") view=pages::hover_card::HoverCardPage />
                             <Route path=path!("/label") view=pages::label::LabelPage />
+                            <Route path=path!("/menubar") view=pages::menubar::MenubarPage />
+                            <Route path=path!("/navigation-menu") view=pages::navigation_menu::NavigationMenuPage />
+                            <Route path=path!("/otp-field") view=pages::otp_field::OtpFieldPage />
+                            <Route path=path!("/password-toggle") view=pages::password_toggle::PasswordTogglePage />
+                            <Route path=path!("/popover") view=pages::popover::PopoverPage />
                             <Route path=path!("/progress") view=pages::progress::ProgressPage />
+                            <Route path=path!("/radio-group") view=pages::radio_group::RadioGroupPage />
+                            <Route path=path!("/scroll-area") view=pages::scroll_area::ScrollAreaPage />
+                            <Route path=path!("/select") view=pages::select::SelectPage />
                             <Route path=path!("/separator") view=pages::separator::SeparatorPage />
                             <Route path=path!("/slider") view=pages::slider::SliderPage />
                             <Route path=path!("/switch") view=pages::switch::SwitchPage />
                             <Route path=path!("/tabs") view=pages::tabs::TabsPage />
+                            <Route path=path!("/toast") view=pages::toast::ToastPage />
                             <Route path=path!("/toggle") view=pages::toggle::TogglePage />
+                            <Route path=path!("/toggle-group") view=pages::toggle_group::ToggleGroupPage />
+                            <Route path=path!("/toolbar") view=pages::toolbar::ToolbarPage />
+                            <Route path=path!("/tooltip") view=pages::tooltip::TooltipPage />
+                            <Route path=path!("/accessible-icon") view=pages::accessible_icon::AccessibleIconPage />
+                            <Route path=path!("/direction-provider") view=pages::direction_provider::DirectionProviderPage />
+                            <Route path=path!("/portal") view=pages::portal::PortalPage />
+                            <Route path=path!("/visually-hidden") view=pages::visually_hidden::VisuallyHiddenPage />
                         </Routes>
                         <DocsPagination />
                     </div>
