@@ -12,28 +12,30 @@ pub fn AlertDialogPage() -> impl IntoView {
 
         // ---- Live Demo ----
         <div class="hero-container" data-component="alert-dialog">
-            <div class="hero-demo-card">
-            <AlertDialog>
-                <AlertDialogTrigger attr:class="demo-btn demo-btn-accent">
-                    "Delete Account"
-                </AlertDialogTrigger>
-                <DialogPortal>
-                    <AlertDialogOverlay attr:class="demo-dialog-overlay" />
-                    <AlertDialogContent attr:class="demo-dialog-content">
-                        <AlertDialogTitle attr:style="font-size:17px;font-weight:600;margin-bottom:4px">
-                            "Are you absolutely sure?"
-                        </AlertDialogTitle>
-                        <AlertDialogDescription attr:style="color:var(--text-secondary);margin-bottom:20px;font-size:14px">
-                            "This action cannot be undone. This will permanently delete your account and remove your data from our servers."
-                        </AlertDialogDescription>
-
-                        <div style="display:flex;justify-content:flex-end;gap:8px">
-                            <AlertDialogCancel attr:class="demo-btn">"Cancel"</AlertDialogCancel>
-                            <AlertDialogAction attr:class="demo-btn demo-btn-accent">"Yes, delete account"</AlertDialogAction>
-                        </div>
-                    </AlertDialogContent>
-                </DialogPortal>
-            </AlertDialog>
+            <div class="hero-demo-card" style="padding:24px 32px">
+                <p style="color:var(--text-secondary);font-size:14px;margin:0 0 12px;text-align:center">"Click the button to open the alert dialog"</p>
+                <div style="text-align:center">
+                    <AlertDialog>
+                        <AlertDialogTrigger attr:class="demo-btn demo-btn-accent">
+                            "Delete Account"
+                        </AlertDialogTrigger>
+                        <DialogPortal>
+                            <AlertDialogOverlay attr:class="demo-dialog-overlay" />
+                            <AlertDialogContent attr:class="demo-dialog-content">
+                                <AlertDialogTitle attr:style="font-size:17px;font-weight:600;margin-bottom:4px">
+                                    "Are you absolutely sure?"
+                                </AlertDialogTitle>
+                                <AlertDialogDescription attr:style="color:var(--text-secondary);margin-bottom:20px;font-size:14px">
+                                    "This action cannot be undone. This will permanently delete your account and remove your data from our servers."
+                                </AlertDialogDescription>
+                                <div style="display:flex;justify-content:flex-end;gap:8px">
+                                    <AlertDialogCancel attr:class="demo-btn">"Cancel"</AlertDialogCancel>
+                                    <AlertDialogAction attr:class="demo-btn demo-btn-accent">"Yes, delete account"</AlertDialogAction>
+                                </div>
+                            </AlertDialogContent>
+                        </DialogPortal>
+                    </AlertDialog>
+                </div>
             </div>
         </div>
 

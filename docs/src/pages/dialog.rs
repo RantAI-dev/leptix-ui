@@ -11,7 +11,9 @@ pub fn DialogPage() -> impl IntoView {
 
         // ---- Live Demo ----
         <div class="hero-container" data-component="dialog">
-            <div class="hero-demo-card">
+            <div class="hero-demo-card" style="padding:24px 32px">
+                <p style="color:var(--text-secondary);font-size:14px;margin:0 0 12px;text-align:center">"Click the button to open the dialog"</p>
+                <div style="text-align:center">
             <Dialog>
                 <DialogTrigger attr:class="demo-btn demo-btn-accent">
                     "Edit Profile"
@@ -45,6 +47,7 @@ pub fn DialogPage() -> impl IntoView {
                     </DialogContent>
                 </DialogPortal>
             </Dialog>
+                </div>
             </div>
         </div>
 
