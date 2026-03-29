@@ -120,15 +120,87 @@ pub fn ContextMenuContent(
     }
 }
 
-pub use leptix_dropdown_menu::{
-    DropdownMenuArrow as ContextMenuArrow, DropdownMenuCheckboxItem as ContextMenuCheckboxItem,
-    DropdownMenuGroup as ContextMenuGroup, DropdownMenuItem as ContextMenuItem,
-    DropdownMenuItemIndicator as ContextMenuItemIndicator, DropdownMenuLabel as ContextMenuLabel,
-    DropdownMenuRadioGroup as ContextMenuRadioGroup, DropdownMenuRadioItem as ContextMenuRadioItem,
-    DropdownMenuSeparator as ContextMenuSeparator, DropdownMenuSub as ContextMenuSub,
-    DropdownMenuSubContent as ContextMenuSubContent,
-    DropdownMenuSubTrigger as ContextMenuSubTrigger,
-};
+// Simple item components that use ContextMenuContextValue directly
+// (cannot re-export from dropdown-menu because it expects MenuContextValue)
+
+#[component]
+pub fn ContextMenuItem(
+    #[prop(into, optional)] disabled: MaybeProp<bool>,
+    #[prop(into, optional)] on_select: Option<Callback<()>>,
+    #[prop(into, optional)] as_child: MaybeProp<bool>,
+    #[prop(into, optional)] node_ref: AnyNodeRef,
+    children: TypedChildrenFn<impl IntoView + 'static>,
+) -> impl IntoView {
+    let children = StoredValue::new(children.into_inner());
+    let ctx = expect_context::<ContextMenuContextValue>();
+    let disabled = Signal::derive(move || disabled.get().unwrap_or(false));
+
+    view! {
+        <Primitive element=html::div as_child=as_child node_ref=node_ref
+            attr:role="menuitem"
+            attr:data-disabled=move || disabled.get().then_some("")
+            attr:tabindex="-1"
+            on:click=move |_| {
+                if !disabled.get() {
+                    if let Some(cb) = on_select { cb.run(()); }
+                    ctx.open.set(false);
+                }
+            }
+            on:keydown=move |event: KeyboardEvent| {
+                if matches!(event.key().as_str(), "Enter" | " ") && !disabled.get() {
+                    event.prevent_default();
+                    if let Some(cb) = on_select { cb.run(()); }
+                    ctx.open.set(false);
+                }
+            }
+        >
+            {children.with_value(|c| c())}
+        </Primitive>
+    }
+}
+
+#[component]
+pub fn ContextMenuSeparator(
+    #[prop(into, optional)] as_child: MaybeProp<bool>,
+    #[prop(into, optional)] node_ref: AnyNodeRef,
+) -> impl IntoView {
+    view! {
+        <Primitive element=html::div as_child=as_child node_ref=node_ref
+            attr:role="separator"
+            attr:aria-orientation="horizontal"
+        >
+            {""}
+        </Primitive>
+    }
+}
+
+#[component]
+pub fn ContextMenuLabel(
+    #[prop(into, optional)] as_child: MaybeProp<bool>,
+    #[prop(into, optional)] node_ref: AnyNodeRef,
+    children: TypedChildrenFn<impl IntoView + 'static>,
+) -> impl IntoView {
+    let children = StoredValue::new(children.into_inner());
+    view! {
+        <Primitive element=html::div as_child=as_child node_ref=node_ref>
+            {children.with_value(|c| c())}
+        </Primitive>
+    }
+}
+
+#[component]
+pub fn ContextMenuGroup(
+    #[prop(into, optional)] as_child: MaybeProp<bool>,
+    #[prop(into, optional)] node_ref: AnyNodeRef,
+    children: TypedChildrenFn<impl IntoView + 'static>,
+) -> impl IntoView {
+    let children = StoredValue::new(children.into_inner());
+    view! {
+        <Primitive element=html::div as_child=as_child node_ref=node_ref attr:role="group">
+            {children.with_value(|c| c())}
+        </Primitive>
+    }
+}
 
 fn focus_menu_item(event: &KeyboardEvent, forward: bool) {
     let Some(container) = event.current_target().and_then(|t| {

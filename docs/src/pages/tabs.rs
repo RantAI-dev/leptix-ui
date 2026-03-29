@@ -30,6 +30,12 @@ pub fn TabsPage() -> impl IntoView {
             </Tabs>
             </div>
         </div>
+        <div class="code-block">
+            <div class="code-block-header">
+                <span class="code-block-lang">"styles.css"</span>
+            </div>
+            <pre>{".TabsList {\n  display: flex;\n  border-bottom: 1px solid var(--mauve-6);\n  flex-shrink: 0;\n}\n\n.TabsTrigger {\n  all: unset;\n  font-family: inherit;\n  padding: 0 20px;\n  height: 45px;\n  flex: 1;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  font-size: 15px;\n  line-height: 1;\n  color: var(--mauve-11);\n  user-select: none;\n  cursor: pointer;\n}\n.TabsTrigger[data-state=\"active\"] {\n  color: var(--violet-11);\n  box-shadow: inset 0 -1px 0 0 currentColor, 0 1px 0 0 currentColor;\n}\n\n.TabsContent {\n  flex-grow: 1;\n  padding: 20px;\n  outline: none;\n}"}</pre>
+        </div>
 
         // ---- Highlights ----
         <div class="highlights">

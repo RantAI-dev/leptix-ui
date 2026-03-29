@@ -14,7 +14,9 @@ pub fn HoverCardPage() -> impl IntoView {
             <div class="hero-demo-card">
             <div class="demo-hover-card">
                 <HoverCard>
-                    <HoverCardTrigger>"@leptix"</HoverCardTrigger>
+                    <HoverCardTrigger attr:style="text-decoration:none;display:block;padding:16px 24px;border-radius:8px;border:1px solid var(--border);cursor:pointer;color:var(--accent-light);font-weight:500;font-size:15px">
+                        "Hover over @leptix"
+                    </HoverCardTrigger>
                     <HoverCardPortal>
                         <HoverCardContent>
                             <p>"Leptix is an open-source Rust UI component library for Leptos, inspired by Radix."</p>

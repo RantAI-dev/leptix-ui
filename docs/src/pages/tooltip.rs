@@ -27,6 +27,12 @@ pub fn TooltipPage() -> impl IntoView {
             </div>
             </div>
         </div>
+        <div class="code-block">
+            <div class="code-block-header">
+                <span class="code-block-lang">"styles.css"</span>
+            </div>
+            <pre>{".TooltipContent {\n  border-radius: 4px;\n  padding: 10px 15px;\n  font-size: 15px;\n  line-height: 1;\n  color: var(--violet-11);\n  background-color: white;\n  box-shadow: hsl(206 22% 7% / 35%) 0px 10px 38px -10px,\n    hsl(206 22% 7% / 20%) 0px 10px 20px -15px;\n  user-select: none;\n  animation: fadeIn 200ms ease;\n}\n\n@keyframes fadeIn {\n  from { opacity: 0; }\n  to { opacity: 1; }\n}"}</pre>
+        </div>
 
         // ---- Highlights ----
         <div class="highlights">

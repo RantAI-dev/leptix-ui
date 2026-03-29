@@ -32,6 +32,12 @@ pub fn RadioGroupPage() -> impl IntoView {
             </div>
             </div>
         </div>
+        <div class="code-block">
+            <div class="code-block-header">
+                <span class="code-block-lang">"styles.css"</span>
+            </div>
+            <pre>{".RadioGroupRoot {\n  display: flex;\n  flex-direction: column;\n  gap: 10px;\n}\n\n.RadioGroupItem {\n  all: unset;\n  background-color: white;\n  width: 25px;\n  height: 25px;\n  border-radius: 100%;\n  box-shadow: 0 2px 10px var(--black-a7);\n}\n.RadioGroupItem:hover {\n  background-color: var(--violet-3);\n}\n.RadioGroupItem:focus {\n  box-shadow: 0 0 0 2px black;\n}\n\n.RadioGroupIndicator {\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  width: 100%;\n  height: 100%;\n  position: relative;\n}\n.RadioGroupIndicator::after {\n  content: '';\n  display: block;\n  width: 11px;\n  height: 11px;\n  border-radius: 50%;\n  background-color: var(--violet-11);\n}"}</pre>
+        </div>
 
         // ---- Highlights ----
         <div class="highlights">

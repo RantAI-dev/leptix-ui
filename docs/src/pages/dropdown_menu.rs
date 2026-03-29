@@ -27,6 +27,12 @@ pub fn DropdownMenuPage() -> impl IntoView {
             </div>
             </div>
         </div>
+        <div class="code-block">
+            <div class="code-block-header">
+                <span class="code-block-lang">"styles.css"</span>
+            </div>
+            <pre>{".DropdownMenuContent {\n  min-width: 220px;\n  background-color: white;\n  border-radius: 6px;\n  padding: 5px;\n  box-shadow: 0px 10px 38px -10px rgba(22, 23, 24, 0.35),\n    0px 10px 20px -15px rgba(22, 23, 24, 0.2);\n  animation: scaleIn 200ms ease;\n}\n\n.DropdownMenuItem {\n  font-size: 13px;\n  line-height: 1;\n  color: var(--violet-11);\n  border-radius: 3px;\n  display: flex;\n  align-items: center;\n  height: 25px;\n  padding: 0 5px 0 25px;\n  position: relative;\n  user-select: none;\n  outline: none;\n}\n.DropdownMenuItem[data-highlighted] {\n  background-color: var(--violet-9);\n  color: var(--violet-1);\n}\n.DropdownMenuItem[data-disabled] {\n  color: var(--mauve-8);\n  pointer-events: none;\n}\n\n@keyframes scaleIn {\n  from { opacity: 0; transform: scale(0.96); }\n  to { opacity: 1; transform: scale(1); }\n}"}</pre>
+        </div>
 
         // ---- Highlights ----
         <div class="highlights">

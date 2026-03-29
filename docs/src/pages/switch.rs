@@ -20,6 +20,12 @@ pub fn SwitchPage() -> impl IntoView {
             </div>
             </div>
         </div>
+        <div class="code-block">
+            <div class="code-block-header">
+                <span class="code-block-lang">"styles.css"</span>
+            </div>
+            <pre>{".SwitchRoot {\n  width: 42px;\n  height: 25px;\n  background-color: var(--black-a9);\n  border-radius: 9999px;\n  position: relative;\n}\n.SwitchRoot[data-state=\"checked\"] {\n  background-color: black;\n}\n\n.SwitchThumb {\n  display: block;\n  width: 21px;\n  height: 21px;\n  background-color: white;\n  border-radius: 9999px;\n  transition: transform 100ms;\n  transform: translateX(2px);\n}\n.SwitchThumb[data-state=\"checked\"] {\n  transform: translateX(19px);\n}"}</pre>
+        </div>
 
         // ---- Highlights ----
         <div class="highlights">

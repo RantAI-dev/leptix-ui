@@ -17,6 +17,12 @@ pub fn TogglePage() -> impl IntoView {
             </Toggle>
             </div>
         </div>
+        <div class="code-block">
+            <div class="code-block-header">
+                <span class="code-block-lang">"styles.css"</span>
+            </div>
+            <pre>{".ToggleRoot {\n  all: unset;\n  background-color: white;\n  color: var(--mauve-11);\n  height: 35px;\n  width: 35px;\n  border-radius: 4px;\n  display: flex;\n  font-size: 15px;\n  line-height: 1;\n  align-items: center;\n  justify-content: center;\n  box-shadow: 0 2px 10px var(--black-a7);\n  cursor: pointer;\n}\n.ToggleRoot:hover {\n  background-color: var(--violet-3);\n}\n.ToggleRoot[data-state=\"on\"] {\n  background-color: var(--violet-6);\n  color: var(--violet-12);\n}"}</pre>
+        </div>
 
         // ---- Highlights ----
         <div class="highlights">

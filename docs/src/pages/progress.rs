@@ -20,6 +20,12 @@ pub fn ProgressPage() -> impl IntoView {
             </Progress>
             </div>
         </div>
+        <div class="code-block">
+            <div class="code-block-header">
+                <span class="code-block-lang">"styles.css"</span>
+            </div>
+            <pre>{".ProgressRoot {\n  position: relative;\n  overflow: hidden;\n  background: var(--black-a9);\n  border-radius: 99999px;\n  width: 300px;\n  height: 25px;\n  transform: translateZ(0);\n}\n\n.ProgressIndicator {\n  background-color: white;\n  width: 100%;\n  height: 100%;\n  transition: transform 660ms cubic-bezier(0.65, 0, 0.35, 1);\n}\n.ProgressRoot[data-state=\"indeterminate\"] .ProgressIndicator {\n  background-color: var(--mauve-8);\n}"}</pre>
+        </div>
 
         // ---- Highlights ----
         <div class="highlights">

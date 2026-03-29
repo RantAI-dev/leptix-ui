@@ -26,6 +26,12 @@ pub fn SeparatorPage() -> impl IntoView {
             </div>
             </div>
         </div>
+        <div class="code-block">
+            <div class="code-block-header">
+                <span class="code-block-lang">"styles.css"</span>
+            </div>
+            <pre>{".SeparatorRoot {\n  background-color: var(--violet-6);\n}\n.SeparatorRoot[data-orientation=\"horizontal\"] {\n  height: 1px;\n  width: 100%;\n}\n.SeparatorRoot[data-orientation=\"vertical\"] {\n  height: 100%;\n  width: 1px;\n  min-height: 20px;\n}"}</pre>
+        </div>
 
         // ---- Highlights ----
         <div class="highlights">

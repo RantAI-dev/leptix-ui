@@ -22,6 +22,12 @@ pub fn CheckboxPage() -> impl IntoView {
             </div>
             </div>
         </div>
+        <div class="code-block">
+            <div class="code-block-header">
+                <span class="code-block-lang">"styles.css"</span>
+            </div>
+            <pre>{".CheckboxRoot {\n  all: unset;\n  background-color: white;\n  width: 25px;\n  height: 25px;\n  border-radius: 4px;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  box-shadow: 0 2px 10px var(--black-a7);\n}\n.CheckboxRoot:hover {\n  background-color: var(--violet-3);\n}\n.CheckboxRoot[data-state=\"checked\"] {\n  background-color: var(--violet-9);\n  color: white;\n}\n\n.CheckboxIndicator {\n  color: var(--violet-11);\n  display: flex;\n  align-items: center;\n  justify-content: center;\n}\n.CheckboxRoot[data-state=\"checked\"] .CheckboxIndicator {\n  color: white;\n}"}</pre>
+        </div>
 
         // ---- Highlights ----
         <div class="highlights">

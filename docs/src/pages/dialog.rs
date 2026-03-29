@@ -50,6 +50,12 @@ pub fn DialogPage() -> impl IntoView {
                 </div>
             </div>
         </div>
+        <div class="code-block">
+            <div class="code-block-header">
+                <span class="code-block-lang">"styles.css"</span>
+            </div>
+            <pre>{".DialogOverlay {\n  background-color: var(--black-a9);\n  position: fixed;\n  inset: 0;\n  animation: overlayShow 150ms cubic-bezier(0.16, 1, 0.3, 1);\n}\n\n.DialogContent {\n  background-color: white;\n  border-radius: 6px;\n  box-shadow: hsl(206 22% 7% / 35%) 0px 10px 38px -10px,\n    hsl(206 22% 7% / 20%) 0px 10px 20px -15px;\n  position: fixed;\n  top: 50%;\n  left: 50%;\n  transform: translate(-50%, -50%);\n  width: 90vw;\n  max-width: 450px;\n  max-height: 85vh;\n  padding: 25px;\n  animation: contentShow 150ms cubic-bezier(0.16, 1, 0.3, 1);\n}\n\n@keyframes overlayShow {\n  from { opacity: 0; }\n  to { opacity: 1; }\n}\n@keyframes contentShow {\n  from { opacity: 0; transform: translate(-50%, -48%) scale(0.96); }\n  to { opacity: 1; transform: translate(-50%, -50%) scale(1); }\n}"}</pre>
+        </div>
 
         // ---- Highlights ----
         <div class="highlights">

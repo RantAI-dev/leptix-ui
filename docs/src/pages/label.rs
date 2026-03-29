@@ -20,6 +20,12 @@ pub fn LabelPage() -> impl IntoView {
             </div>
             </div>
         </div>
+        <div class="code-block">
+            <div class="code-block-header">
+                <span class="code-block-lang">"styles.css"</span>
+            </div>
+            <pre>{".Label {\n  color: white;\n  font-size: 15px;\n  line-height: 35px;\n  font-weight: 500;\n  user-select: none;\n}\n\n.Label[data-disabled] {\n  color: var(--mauve-8);\n  cursor: not-allowed;\n}"}</pre>
+        </div>
 
         // ---- Highlights ----
         <div class="highlights">

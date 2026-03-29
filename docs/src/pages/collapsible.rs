@@ -35,6 +35,12 @@ pub fn CollapsiblePage() -> impl IntoView {
             </Collapsible>
             </div>
         </div>
+        <div class="code-block">
+            <div class="code-block-header">
+                <span class="code-block-lang">"styles.css"</span>
+            </div>
+            <pre>{".CollapsibleRoot {\n  width: 300px;\n}\n\n.CollapsibleContent {\n  overflow: hidden;\n}\n.CollapsibleContent[data-state=\"open\"] {\n  animation: slideDown 300ms ease-out;\n}\n.CollapsibleContent[data-state=\"closed\"] {\n  animation: slideUp 300ms ease-out;\n}\n\n@keyframes slideDown {\n  from { height: 0; }\n  to { height: var(--leptix-collapsible-content-height); }\n}\n@keyframes slideUp {\n  from { height: var(--leptix-collapsible-content-height); }\n  to { height: 0; }\n}"}</pre>
+        </div>
 
         // ---- Highlights ----
         <div class="highlights">

@@ -45,6 +45,12 @@ pub fn AccordionPage() -> impl IntoView {
             </div>
             </div>
         </div>
+        <div class="code-block">
+            <div class="code-block-header">
+                <span class="code-block-lang">"styles.css"</span>
+            </div>
+            <pre>{".AccordionRoot {\n  border-radius: 6px;\n  width: 300px;\n  background-color: var(--mauve-6);\n  box-shadow: 0 2px 10px var(--black-a4);\n}\n\n.AccordionItem {\n  overflow: hidden;\n  margin-top: 1px;\n}\n.AccordionItem:first-child {\n  margin-top: 0;\n  border-top-left-radius: 4px;\n  border-top-right-radius: 4px;\n}\n.AccordionItem:last-child {\n  border-bottom-left-radius: 4px;\n  border-bottom-right-radius: 4px;\n}\n\n.AccordionTrigger {\n  font-family: inherit;\n  padding: 0 20px;\n  height: 45px;\n  flex: 1;\n  display: flex;\n  align-items: center;\n  justify-content: space-between;\n  font-size: 15px;\n  line-height: 1;\n  background-color: white;\n  cursor: pointer;\n}\n.AccordionTrigger[data-state=\"open\"] {\n  background-color: var(--mauve-2);\n}\n\n.AccordionContent {\n  overflow: hidden;\n  font-size: 15px;\n  color: var(--mauve-11);\n  background-color: var(--mauve-2);\n  padding: 15px 20px;\n}\n.AccordionContent[data-state=\"closed\"] {\n  display: none;\n}"}</pre>
+        </div>
 
         // ---- Highlights ----
         <div class="highlights">
