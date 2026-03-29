@@ -1,5 +1,8 @@
 use std::sync::Arc;
 
+use floating_ui_leptos::{Padding, Side};
+use leptix_core::popper::{Align, Popper, PopperAnchor, PopperArrow, PopperContent};
+use leptix_core::portal::Portal;
 use leptix_core::presence::use_presence;
 use leptix_core::primitive::Primitive;
 use leptix_core::visually_hidden::VisuallyHidden;
@@ -37,13 +40,21 @@ struct TooltipContextValue {
 }
 
 impl TooltipContextValue {
-    /// Clear any pending open timer.
+    #[allow(dead_code)]
     fn clear_open_timer(&self) {
         if let Some(id) = self.open_timer_id.get_untracked() {
             clear_timeout(id);
             self.open_timer_id.set(None);
         }
     }
+}
+
+#[derive(Clone, Debug)]
+struct TooltipProviderContextValue {
+    delay_duration: Signal<i32>,
+    skip_delay_duration: Signal<i32>,
+    /// Timestamp (ms) of the last tooltip close, used to skip delays for rapid hover.
+    last_close_time: RwSignal<f64>,
 }
 
 /// Global tooltip provider — manages delay behavior.
@@ -54,12 +65,17 @@ pub fn TooltipProvider(
     children: TypedChildrenFn<impl IntoView + 'static>,
 ) -> impl IntoView {
     let children = StoredValue::new(children.into_inner());
-    let _delay = Signal::derive(move || delay_duration.get().unwrap_or(700));
-    let _skip_delay = Signal::derive(move || skip_delay_duration.get().unwrap_or(300));
+    let provider_ctx = TooltipProviderContextValue {
+        delay_duration: Signal::derive(move || delay_duration.get().unwrap_or(700)),
+        skip_delay_duration: Signal::derive(move || skip_delay_duration.get().unwrap_or(300)),
+        last_close_time: RwSignal::new(0.0),
+    };
 
-    // In a full implementation, the provider would manage shared timer state.
-    // For now, each tooltip manages its own delay.
-    children.with_value(|children| children())
+    view! {
+        <Provider value=provider_ctx>
+            {children.with_value(|children| children())}
+        </Provider>
+    }
 }
 
 #[component]
@@ -67,11 +83,20 @@ pub fn Tooltip(
     #[prop(into, optional)] open: MaybeProp<bool>,
     #[prop(into, optional)] default_open: MaybeProp<bool>,
     #[prop(into, optional)] on_open_change: Option<Callback<bool>>,
-    #[prop(into, optional, default = 700.into())] delay_duration: MaybeProp<i32>,
+    #[prop(into, optional)] delay_duration: MaybeProp<i32>,
     children: TypedChildrenFn<impl IntoView + 'static>,
 ) -> impl IntoView {
     let children = StoredValue::new(children.into_inner());
-    let delay_duration = Signal::derive(move || delay_duration.get().unwrap_or(700));
+    let provider_ctx = use_context::<TooltipProviderContextValue>();
+    let provider_for_base_delay = provider_ctx.clone();
+    let delay_duration = Signal::derive(move || {
+        delay_duration.get().unwrap_or_else(|| {
+            provider_for_base_delay
+                .as_ref()
+                .map(|ctx| ctx.delay_duration.get())
+                .unwrap_or(700)
+        })
+    });
 
     let (open_state, set_open) = leptix_core::use_controllable_state::use_controllable_state(
         leptix_core::use_controllable_state::UseControllableStateParams {
@@ -90,13 +115,36 @@ pub fn Tooltip(
     let base_id = leptix_core::id::use_id(None).get();
     let open_timer_id: RwSignal<Option<i32>> = RwSignal::new(None);
 
+    // Compute effective delay: skip if within provider's skip_delay_duration of last close
+    let provider_for_delay = provider_ctx.clone();
+    let effective_delay = Signal::derive(move || {
+        if let Some(ref pctx) = provider_for_delay {
+            let skip_dur = pctx.skip_delay_duration.get() as f64;
+            let last_close = pctx.last_close_time.get();
+            let now = window().performance().map(|p| p.now()).unwrap_or(0.0);
+            if last_close > 0.0 && (now - last_close) < skip_dur {
+                return 0;
+            }
+        }
+        delay_duration.get()
+    });
+
+    let provider_for_close = provider_ctx.clone();
+    let on_close_cb = Callback::new(move |()| {
+        set_open.run(Some(false));
+        if let Some(ref pctx) = provider_for_close {
+            let now = window().performance().map(|p| p.now()).unwrap_or(0.0);
+            pctx.last_close_time.set(now);
+        }
+    });
+
     let context_value = TooltipContextValue {
         open,
         on_open: Callback::new(move |()| set_open.run(Some(true))),
-        on_close: Callback::new(move |()| set_open.run(Some(false))),
+        on_close: on_close_cb,
         trigger_ref: AnyNodeRef::new(),
         content_id: format!("{}-tooltip", base_id),
-        delay_duration,
+        delay_duration: effective_delay,
         open_timer_id,
     };
 
@@ -110,10 +158,32 @@ pub fn Tooltip(
         }
     });
 
+    let context_value = StoredValue::new(context_value);
+
     view! {
-        <Provider value=context_value>
-            {children.with_value(|children| children())}
-        </Provider>
+        <Popper>
+            <Provider value=context_value.get_value()>
+                {children.with_value(|children| children())}
+            </Provider>
+        </Popper>
+    }
+}
+
+fn parse_side(s: &str) -> Side {
+    match s {
+        "top" => Side::Top,
+        "right" => Side::Right,
+        "bottom" => Side::Bottom,
+        "left" => Side::Left,
+        _ => Side::Top,
+    }
+}
+
+fn parse_align(s: &str) -> Align {
+    match s {
+        "start" => Align::Start,
+        "end" => Align::End,
+        _ => Align::Center,
     }
 }
 
@@ -135,55 +205,71 @@ pub fn TooltipTrigger(
             on_open.run(());
         })));
 
-    let open_closure_for_enter = open_closure.clone();
-    let ctx_for_enter = context.clone();
-    let on_pointer_enter = move |_: leptos::ev::PointerEvent| {
-        ctx_for_enter.clear_open_timer();
-        let delay = ctx_for_enter.delay_duration.get_untracked();
-        if delay <= 0 {
-            ctx_for_enter.on_open.run(());
-        } else {
-            let id = set_timeout(&open_closure_for_enter, delay);
-            ctx_for_enter.open_timer_id.set(Some(id));
-        }
-    };
-
-    let ctx_for_leave = context.clone();
-    let on_pointer_leave = move |_: leptos::ev::PointerEvent| {
-        ctx_for_leave.clear_open_timer();
-        ctx_for_leave.on_close.run(());
-    };
-
-    let content_id = context.content_id.clone();
+    let ctx_open = context.open;
+    let ctx_on_open = context.on_open;
+    let ctx_on_close = context.on_close;
+    let ctx_delay = context.delay_duration;
+    let ctx_timer = context.open_timer_id;
+    let content_id = StoredValue::new(context.content_id.clone());
+    let open_closure = StoredValue::new(open_closure);
 
     view! {
-        <Primitive
-            element=html::button
-            as_child=as_child
-            node_ref=composed_refs
-            attr:aria-describedby=move || context.open.get().then(|| content_id.clone())
-            attr:data-state=move || if context.open.get() { "delayed-open" } else { "closed" }
-            on:pointerenter=on_pointer_enter
-            on:pointerleave=on_pointer_leave
-            on:focus=move |_| context.on_open.run(())
-            on:blur=move |_| {
-                context.clear_open_timer();
-                context.on_close.run(());
-            }
-        >
-            {children.with_value(|children| children())}
-        </Primitive>
+        <PopperAnchor>
+            <Primitive
+                element=html::button
+                as_child=as_child
+                node_ref=composed_refs
+                attr:aria-describedby=move || ctx_open.get().then(|| content_id.get_value())
+                attr:data-state=move || if ctx_open.get() { "delayed-open" } else { "closed" }
+                on:pointerenter=move |_: leptos::ev::PointerEvent| {
+                    if let Some(id) = ctx_timer.try_get_untracked().flatten() {
+                        clear_timeout(id);
+                        ctx_timer.set(None);
+                    }
+                    let delay = ctx_delay.get_untracked();
+                    if delay <= 0 {
+                        ctx_on_open.run(());
+                    } else {
+                        let oc = open_closure.get_value();
+                        let id = set_timeout(&oc, delay);
+                        ctx_timer.set(Some(id));
+                    }
+                }
+                on:pointerleave=move |_: leptos::ev::PointerEvent| {
+                    if let Some(id) = ctx_timer.try_get_untracked().flatten() {
+                        clear_timeout(id);
+                        ctx_timer.set(None);
+                    }
+                    ctx_on_close.run(());
+                }
+                on:focus=move |_| ctx_on_open.run(())
+                on:blur=move |_| {
+                    if let Some(id) = ctx_timer.try_get_untracked().flatten() {
+                        clear_timeout(id);
+                        ctx_timer.set(None);
+                    }
+                    ctx_on_close.run(());
+                }
+            >
+                {children.with_value(|children| children())}
+            </Primitive>
+        </PopperAnchor>
     }
 }
 
 #[component]
-pub fn TooltipPortal(children: TypedChildrenFn<impl IntoView + 'static>) -> impl IntoView {
+pub fn TooltipPortal(
+    #[prop(into, optional)] container: MaybeProp<SendWrapper<web_sys::Element>>,
+    children: TypedChildrenFn<impl IntoView + 'static>,
+) -> impl IntoView {
     let children = StoredValue::new(children.into_inner());
     let context = expect_context::<TooltipContextValue>();
 
     view! {
         <Show when=move || context.open.get()>
-            {children.with_value(|children| children())}
+            <Portal container=container>
+                {children.with_value(|children| children())}
+            </Portal>
         </Show>
     }
 }
@@ -208,20 +294,22 @@ pub fn TooltipContent(
     /// Padding from viewport edge when avoiding collisions (pixels).
     #[prop(into, optional)]
     collision_padding: MaybeProp<f64>,
+    #[prop(into, optional)] force_mount: MaybeProp<bool>,
     #[prop(into, optional)] as_child: MaybeProp<bool>,
     #[prop(into, optional)] node_ref: AnyNodeRef,
     children: TypedChildrenFn<impl IntoView + 'static>,
 ) -> impl IntoView {
     let children = StoredValue::new(children.into_inner());
     let context = expect_context::<TooltipContextValue>();
+    let force_mount = Signal::derive(move || force_mount.get().unwrap_or(false));
 
-    // Reserved for future floating-ui integration
-    let _side = Signal::derive(move || side.get().unwrap_or("top".into()));
-    let _side_offset = side_offset;
-    let _align = align;
-    let _align_offset = align_offset;
-    let _avoid_collisions = avoid_collisions;
-    let _collision_padding = collision_padding;
+    let popper_side = Signal::derive(move || parse_side(&side.get().unwrap_or("top".into())));
+    let popper_align = Signal::derive(move || parse_align(&align.get().unwrap_or("center".into())));
+    let popper_side_offset = Signal::derive(move || side_offset.get().unwrap_or(0.0));
+    let popper_align_offset = Signal::derive(move || align_offset.get().unwrap_or(0.0));
+    let popper_avoid_collisions = Signal::derive(move || avoid_collisions.get().unwrap_or(true));
+    let popper_collision_padding =
+        Signal::derive(move || Padding::All(collision_padding.get().unwrap_or(0.0)));
 
     let present = Signal::derive(move || context.open.get());
     let presence = use_presence(present);
@@ -229,19 +317,24 @@ pub fn TooltipContent(
     let composed_refs =
         leptix_core::compose_refs::use_composed_refs(vec![node_ref, presence.node_ref]);
 
-    let content_id = context.content_id.clone();
+    let content_id = StoredValue::new(context.content_id.clone());
     let ctx_open = context.open;
     let ctx_on_open = context.on_open;
     let ctx_on_close = context.on_close;
     let ctx_open_timer_id = context.open_timer_id;
 
     view! {
-        <Show when=move || presence.is_present.get()>
-            <Primitive
-                element=html::div
+        <Show when=move || force_mount.get() || presence.is_present.get()>
+            <PopperContent
+                side=popper_side
+                side_offset=popper_side_offset
+                align=popper_align
+                align_offset=popper_align_offset
+                avoid_collisions=popper_avoid_collisions
+                collision_padding=popper_collision_padding
                 as_child=as_child
                 node_ref=composed_refs
-                attr:id=content_id.clone()
+                attr:id=content_id.get_value()
                 attr:role="tooltip"
                 attr:data-state=move || if ctx_open.get() { "delayed-open" } else { "closed" }
                 attr:style="pointer-events:auto"
@@ -255,11 +348,10 @@ pub fn TooltipContent(
                 }
             >
                 {children.with_value(|children| children())}
-                // Screen reader announcement
                 <VisuallyHidden>
                     {children.with_value(|children| children())}
                 </VisuallyHidden>
-            </Primitive>
+            </PopperContent>
         </Show>
     }
 }
@@ -275,8 +367,8 @@ pub fn TooltipArrow(
     let children = StoredValue::new(children);
 
     view! {
-        <leptix_core::arrow::Arrow width=width height=height as_child=as_child node_ref=node_ref>
+        <PopperArrow width=width height=height as_child=as_child node_ref=node_ref>
             {children.with_value(|children| children.as_ref().map(|children| children()))}
-        </leptix_core::arrow::Arrow>
+        </PopperArrow>
     }
 }

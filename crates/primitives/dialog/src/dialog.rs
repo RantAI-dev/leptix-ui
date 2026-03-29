@@ -5,6 +5,7 @@ use leptix_core::presence::use_presence;
 use leptix_core::primitive::Primitive;
 use leptos::{context::Provider, html, prelude::*};
 use leptos_node_ref::AnyNodeRef;
+use web_sys::wasm_bindgen::JsCast;
 
 #[derive(Clone, Debug)]
 struct DialogContextValue {
@@ -117,8 +118,11 @@ pub fn DialogOverlay(
     let present = Signal::derive(move || context.open.get());
     let presence = use_presence(present);
 
+    // Overlay should only render for modal dialogs (Radix parity).
+    let is_modal = context.modal;
+
     view! {
-        <Show when=move || force_mount.get() || presence.is_present.get()>
+        <Show when=move || is_modal && (force_mount.get() || presence.is_present.get())>
             <Primitive
                 element=html::div
                 as_child=as_child
@@ -156,9 +160,10 @@ pub fn DialogContent(
     let present = Signal::derive(move || context.open.get());
     let presence = use_presence(present);
 
+    // Only trap focus when dialog is modal.
     let focus_scope_ref = use_focus_scope(
+        Signal::derive(move || context.modal && context.open.get()),
         Signal::derive(move || context.modal),
-        Signal::derive(|| true),
         on_open_auto_focus,
         on_close_auto_focus,
     );
@@ -181,6 +186,32 @@ pub fn DialogContent(
         dismissable_ref,
     ]);
 
+    // Body scroll lock: only when modal is true.
+    let is_modal = context.modal;
+    Effect::new(move |_| {
+        let is_open = context.open.get();
+        if is_modal && is_open {
+            if let Some(body) = web_sys::window()
+                .and_then(|w| w.document())
+                .and_then(|d| d.body())
+            {
+                let style = body.unchecked_ref::<web_sys::HtmlElement>().style();
+                let _ = style.set_property("overflow", "hidden");
+            }
+        } else if is_modal {
+            // Restore when modal dialog closes.
+            if let Some(body) = web_sys::window()
+                .and_then(|w| w.document())
+                .and_then(|d| d.body())
+            {
+                let style = body.unchecked_ref::<web_sys::HtmlElement>().style();
+                let _ = style.remove_property("overflow");
+            }
+        }
+    });
+
+    let aria_modal = if context.modal { Some("true") } else { None };
+
     view! {
         <Show when=move || force_mount.get() || presence.is_present.get()>
             <Primitive
@@ -189,6 +220,7 @@ pub fn DialogContent(
                 node_ref=composed_refs
                 attr:id=context.content_id.clone()
                 attr:role="dialog"
+                attr:aria-modal=aria_modal
                 attr:aria-describedby=context.description_id.clone()
                 attr:aria-labelledby=context.title_id.clone()
                 attr:data-state=move || if context.open.get() { "open" } else { "closed" }

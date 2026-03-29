@@ -1,6 +1,6 @@
 [package]
-name = "leptix-dropdown-menu"
-description = "Leptix Dropdown Menu component — a menu triggered by a button, extending the Menu primitive."
+name = "leptix-visually-hidden"
+description = "Leptix VisuallyHidden component — hides content visually while keeping it accessible to screen readers."
 
 authors.workspace = true
 edition.workspace = true
@@ -9,8 +9,6 @@ repository.workspace = true
 version.workspace = true
 
 [dependencies]
-floating-ui-leptos.workspace = true
 leptos.workspace = true
 leptos-node-ref.workspace = true
 leptix-core.workspace = true
-web-sys.workspace = true

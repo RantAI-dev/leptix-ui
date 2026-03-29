@@ -9,6 +9,7 @@ use leptos_node_ref::AnyNodeRef;
 struct MenubarContextValue {
     active_menu: RwSignal<Option<String>>,
     direction: Signal<Direction>,
+    do_loop: Signal<bool>,
 }
 
 #[component]
@@ -21,10 +22,11 @@ pub fn Menubar(
 ) -> impl IntoView {
     let children = StoredValue::new(children.into_inner());
     let direction = use_direction(dir);
-    let _do_loop = Signal::derive(move || r#loop.get().unwrap_or(true));
+    let do_loop = Signal::derive(move || r#loop.get().unwrap_or(true));
     let ctx = MenubarContextValue {
         active_menu: RwSignal::new(None),
         direction,
+        do_loop,
     };
 
     view! {
@@ -34,9 +36,10 @@ pub fn Menubar(
                 attr:dir=move || direction.get().to_string()
                 on:keydown=move |event: KeyboardEvent| {
                     let is_rtl = direction.get() == Direction::Rtl;
+                    let do_loop = do_loop.get();
                     match event.key().as_str() {
-                        "ArrowLeft" => { event.prevent_default(); focus_menubar_trigger(&event, is_rtl); }
-                        "ArrowRight" => { event.prevent_default(); focus_menubar_trigger(&event, !is_rtl); }
+                        "ArrowLeft" => { event.prevent_default(); focus_menubar_trigger(&event, is_rtl, do_loop); }
+                        "ArrowRight" => { event.prevent_default(); focus_menubar_trigger(&event, !is_rtl, do_loop); }
                         _ => {}
                     }
                 }
@@ -161,7 +164,7 @@ pub use leptix_dropdown_menu::{
     DropdownMenuSubContent as MenubarSubContent, DropdownMenuSubTrigger as MenubarSubTrigger,
 };
 
-fn focus_menubar_trigger(event: &KeyboardEvent, forward: bool) {
+fn focus_menubar_trigger(event: &KeyboardEvent, forward: bool, do_loop: bool) {
     let Some(bar) = event.current_target().and_then(|t| {
         use web_sys::wasm_bindgen::JsCast;
         t.dyn_into::<web_sys::Element>().ok()
@@ -177,6 +180,9 @@ fn focus_menubar_trigger(event: &KeyboardEvent, forward: bool) {
             nodes.push(n);
         }
     }
+    if nodes.is_empty() {
+        return;
+    }
     let active = web_sys::window()
         .and_then(|w| w.document())
         .and_then(|d| d.active_element());
@@ -189,14 +195,29 @@ fn focus_menubar_trigger(event: &KeyboardEvent, forward: bool) {
         })
         .unwrap_or(0);
     let next = if forward {
-        (idx + 1) % nodes.len()
+        let candidate = idx + 1;
+        if candidate < nodes.len() {
+            Some(candidate)
+        } else if do_loop {
+            Some(0)
+        } else {
+            None
+        }
     } else {
-        idx.checked_sub(1).unwrap_or(nodes.len() - 1)
+        if idx > 0 {
+            Some(idx - 1)
+        } else if do_loop {
+            Some(nodes.len() - 1)
+        } else {
+            None
+        }
     };
-    if let Some(n) = nodes.get(next) {
-        use web_sys::wasm_bindgen::JsCast;
-        if let Ok(el) = n.clone().dyn_into::<web_sys::HtmlElement>() {
-            let _ = el.focus();
+    if let Some(next) = next {
+        if let Some(n) = nodes.get(next) {
+            use web_sys::wasm_bindgen::JsCast;
+            if let Ok(el) = n.clone().dyn_into::<web_sys::HtmlElement>() {
+                let _ = el.focus();
+            }
         }
     }
 }

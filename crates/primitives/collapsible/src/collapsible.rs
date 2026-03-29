@@ -103,7 +103,7 @@ pub fn CollapsibleContent(
 ) -> impl IntoView {
     let children = StoredValue::new(children.into_inner());
     let context = expect_context::<CollapsibleContextValue>();
-    let _force_mount = Signal::derive(move || force_mount.get().unwrap_or(false));
+    let force_mount = Signal::derive(move || force_mount.get().unwrap_or(false));
 
     // Ref to the content element for measuring height
     let content_ref =
@@ -172,10 +172,10 @@ pub fn CollapsibleContent(
             attr:data-state=move || if context.open.get() { "open" } else { "closed" }
             attr:data-disabled=move || context.disabled.get().then_some("")
             attr:role="region"
-            attr:hidden=move || (!context.open.get()).then_some("")
+            attr:hidden=move || (!context.open.get() && !force_mount.get()).then_some("")
         >
             {move || {
-                if context.open.get() {
+                if context.open.get() || force_mount.get() {
                     Some(children.with_value(|children| children()))
                 } else {
                     None

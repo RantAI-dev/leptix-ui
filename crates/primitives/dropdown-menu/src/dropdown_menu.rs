@@ -1,11 +1,30 @@
+use floating_ui_leptos::{Padding, Side};
 use leptix_core::compose_refs::use_composed_refs;
 use leptix_core::dismissable_layer::use_dismissable_layer;
 use leptix_core::focus_scope::use_focus_scope;
 use leptix_core::id::use_id;
+use leptix_core::popper::{Align, Popper, PopperAnchor, PopperArrow, PopperContent};
 use leptix_core::presence::use_presence;
 use leptix_core::primitive::Primitive;
 use leptos::{context::Provider, ev::KeyboardEvent, html, prelude::*};
 use leptos_node_ref::AnyNodeRef;
+
+fn parse_side(s: &str) -> Side {
+    match s {
+        "top" => Side::Top,
+        "right" => Side::Right,
+        "left" => Side::Left,
+        _ => Side::Bottom,
+    }
+}
+
+fn parse_align(s: &str) -> Align {
+    match s {
+        "start" => Align::Start,
+        "end" => Align::End,
+        _ => Align::Center,
+    }
+}
 
 // ---------------------------------------------------------------------------
 // Context
@@ -17,6 +36,7 @@ struct MenuContextValue {
     on_open_change: Callback<bool>,
     trigger_ref: AnyNodeRef,
     content_id: String,
+    dir: Signal<leptix_core::direction::Direction>,
 }
 
 #[derive(Clone, Debug)]
@@ -51,7 +71,7 @@ pub fn DropdownMenu(
     children: TypedChildrenFn<impl IntoView + 'static>,
 ) -> impl IntoView {
     let children = StoredValue::new(children.into_inner());
-    let _dir = dir;
+    let dir = Signal::derive(move || dir.get().unwrap_or(leptix_core::direction::Direction::Ltr));
 
     let (open_state, set_open) = leptix_core::use_controllable_state::use_controllable_state(
         leptix_core::use_controllable_state::UseControllableStateParams {
@@ -74,12 +94,16 @@ pub fn DropdownMenu(
         on_open_change: Callback::new(move |v: bool| set_open.run(Some(v))),
         trigger_ref: AnyNodeRef::new(),
         content_id: format!("{}-content", base_id),
+        dir,
     };
 
+    let context = StoredValue::new(context);
     view! {
-        <Provider value=context>
-            {children.with_value(|c| c())}
-        </Provider>
+        <Popper>
+            <Provider value=context.get_value()>
+                {children.with_value(|c| c())}
+            </Provider>
+        </Popper>
     }
 }
 
@@ -96,24 +120,27 @@ pub fn DropdownMenuTrigger(
     let children = StoredValue::new(children.into_inner());
     let ctx = expect_context::<MenuContextValue>();
     let refs = use_composed_refs(vec![node_ref, ctx.trigger_ref]);
+    let content_id = StoredValue::new(ctx.content_id.clone());
 
     view! {
-        <Primitive element=html::button as_child=as_child node_ref=refs
-            attr:r#type="button"
-            attr:aria-haspopup="menu"
-            attr:aria-expanded=move || ctx.open.get().to_string()
-            attr:aria-controls=move || ctx.open.get().then(|| ctx.content_id.clone())
-            attr:data-state=move || if ctx.open.get() { "open" } else { "closed" }
-            on:click=move |_| ctx.on_open_change.run(!ctx.open.get())
-            on:keydown=move |event: KeyboardEvent| {
-                if matches!(event.key().as_str(), "ArrowDown" | "Enter" | " ") {
-                    event.prevent_default();
-                    ctx.on_open_change.run(true);
+        <PopperAnchor as_child=true>
+            <Primitive element=html::button as_child=as_child node_ref=refs
+                attr:r#type="button"
+                attr:aria-haspopup="menu"
+                attr:aria-expanded=move || ctx.open.get().to_string()
+                attr:aria-controls=move || ctx.open.get().then(|| content_id.get_value())
+                attr:data-state=move || if ctx.open.get() { "open" } else { "closed" }
+                on:click=move |_| ctx.on_open_change.run(!ctx.open.get())
+                on:keydown=move |event: KeyboardEvent| {
+                    if matches!(event.key().as_str(), "ArrowDown" | "Enter" | " ") {
+                        event.prevent_default();
+                        ctx.on_open_change.run(true);
+                    }
                 }
-            }
-        >
-            {children.with_value(|c| c())}
-        </Primitive>
+            >
+                {children.with_value(|c| c())}
+            </Primitive>
+        </PopperAnchor>
     }
 }
 
@@ -161,15 +188,17 @@ pub fn DropdownMenuContent(
 ) -> impl IntoView {
     let children = StoredValue::new(children.into_inner());
 
-    // Reserved for future floating-ui integration
-    let _side = side;
-    let _side_offset = side_offset;
-    let _align = align;
-    let _align_offset = align_offset;
-    let _avoid_collisions = avoid_collisions;
-    let _collision_padding = collision_padding;
+    let popper_side = Signal::derive(move || parse_side(&side.get().unwrap_or("bottom".into())));
+    let popper_side_offset = Signal::derive(move || side_offset.get().unwrap_or(0.0));
+    let popper_align = Signal::derive(move || parse_align(&align.get().unwrap_or("center".into())));
+    let popper_align_offset = Signal::derive(move || align_offset.get().unwrap_or(0.0));
+    let popper_avoid_collisions = Signal::derive(move || avoid_collisions.get().unwrap_or(true));
+    let popper_collision_padding =
+        Signal::derive(move || Padding::All(collision_padding.get().unwrap_or(0.0)));
+
     let ctx = expect_context::<MenuContextValue>();
-    let _do_loop = Signal::derive(move || r#loop.get().unwrap_or(false));
+    // loop defaults to true; focus_menu_item always wraps (matching Radix default)
+    let _do_loop = Signal::derive(move || r#loop.get().unwrap_or(true));
     let present = Signal::derive(move || ctx.open.get());
     let presence = use_presence(present);
 
@@ -184,24 +213,34 @@ pub fn DropdownMenuContent(
     );
     let refs = use_composed_refs(vec![node_ref, presence.node_ref, focus_ref, dismiss_ref]);
 
+    let content_id = StoredValue::new(ctx.content_id.clone());
     view! {
         <Show when=move || presence.is_present.get()>
-            <Primitive element=html::div as_child=as_child node_ref=refs
-                attr:id=ctx.content_id.clone()
-                attr:role="menu"
-                attr:aria-orientation="vertical"
-                attr:data-state=move || if ctx.open.get() { "open" } else { "closed" }
-                attr:tabindex="-1"
-                on:keydown=move |event: KeyboardEvent| {
-                    match event.key().as_str() {
-                        "ArrowDown" => { event.prevent_default(); focus_menu_item(&event, true); }
-                        "ArrowUp" => { event.prevent_default(); focus_menu_item(&event, false); }
-                        _ => {}
-                    }
-                }
+            <PopperContent
+                side=popper_side
+                side_offset=popper_side_offset
+                align=popper_align
+                align_offset=popper_align_offset
+                avoid_collisions=popper_avoid_collisions
+                collision_padding=popper_collision_padding
             >
-                {children.with_value(|c| c())}
-            </Primitive>
+                <Primitive element=html::div as_child=as_child node_ref=refs
+                    attr:id=content_id.get_value()
+                    attr:role="menu"
+                    attr:aria-orientation="vertical"
+                    attr:data-state=move || if ctx.open.get() { "open" } else { "closed" }
+                    attr:tabindex="-1"
+                    on:keydown=move |event: KeyboardEvent| {
+                        match event.key().as_str() {
+                            "ArrowDown" => { event.prevent_default(); focus_menu_item(&event, true); }
+                            "ArrowUp" => { event.prevent_default(); focus_menu_item(&event, false); }
+                            _ => {}
+                        }
+                    }
+                >
+                    {children.with_value(|c| c())}
+                </Primitive>
+            </PopperContent>
         </Show>
     }
 }
@@ -468,15 +507,17 @@ pub fn DropdownMenuSeparator(
 
 #[component]
 pub fn DropdownMenuArrow(
+    #[prop(into, optional)] width: MaybeProp<f64>,
+    #[prop(into, optional)] height: MaybeProp<f64>,
     #[prop(into, optional)] as_child: MaybeProp<bool>,
     #[prop(into, optional)] node_ref: AnyNodeRef,
     #[prop(optional)] children: Option<ChildrenFn>,
 ) -> impl IntoView {
     let children = StoredValue::new(children);
     view! {
-        <leptix_core::arrow::Arrow as_child=as_child node_ref=node_ref>
+        <PopperArrow width=width height=height as_child=as_child node_ref=node_ref>
             {children.with_value(|c| c.as_ref().map(|c| c()))}
-        </leptix_core::arrow::Arrow>
+        </PopperArrow>
     }
 }
 
@@ -527,6 +568,7 @@ pub fn DropdownMenuSubTrigger(
     children: TypedChildrenFn<impl IntoView + 'static>,
 ) -> impl IntoView {
     let children = StoredValue::new(children.into_inner());
+    let menu_ctx = expect_context::<MenuContextValue>();
     let sub_ctx = expect_context::<SubMenuContextValue>();
     let disabled = Signal::derive(move || disabled.get().unwrap_or(false));
     let refs = use_composed_refs(vec![node_ref, sub_ctx.trigger_ref]);
@@ -547,7 +589,8 @@ pub fn DropdownMenuSubTrigger(
                 if !disabled.get() { sub_ctx.open.set(true); }
             }
             on:keydown=move |event: KeyboardEvent| {
-                if event.key() == "ArrowRight" && !disabled.get() {
+                let open_key = if menu_ctx.dir.get() == leptix_core::direction::Direction::Rtl { "ArrowLeft" } else { "ArrowRight" };
+                if event.key() == open_key && !disabled.get() {
                     event.prevent_default();
                     sub_ctx.open.set(true);
                 }
@@ -566,6 +609,7 @@ pub fn DropdownMenuSubContent(
     children: TypedChildrenFn<impl IntoView + 'static>,
 ) -> impl IntoView {
     let children = StoredValue::new(children.into_inner());
+    let menu_ctx = expect_context::<MenuContextValue>();
     let sub_ctx = expect_context::<SubMenuContextValue>();
     let force_mount = Signal::derive(move || force_mount.get().unwrap_or(false));
     let present = Signal::derive(move || force_mount.get() || sub_ctx.open.get());
@@ -590,10 +634,11 @@ pub fn DropdownMenuSubContent(
                 attr:data-state=move || if sub_ctx.open.get() { "open" } else { "closed" }
                 attr:tabindex="-1"
                 on:keydown=move |event: KeyboardEvent| {
+                    let close_key = if menu_ctx.dir.get() == leptix_core::direction::Direction::Rtl { "ArrowRight" } else { "ArrowLeft" };
                     match event.key().as_str() {
                         "ArrowDown" => { event.prevent_default(); focus_menu_item(&event, true); }
                         "ArrowUp" => { event.prevent_default(); focus_menu_item(&event, false); }
-                        "ArrowLeft" => { event.prevent_default(); sub_ctx.open.set(false); }
+                        k if k == close_key => { event.prevent_default(); sub_ctx.open.set(false); }
                         "Escape" => { sub_ctx.open.set(false); }
                         _ => {}
                     }

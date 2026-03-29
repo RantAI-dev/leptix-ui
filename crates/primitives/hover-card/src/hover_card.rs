@@ -1,5 +1,8 @@
 use std::sync::Arc;
 
+use floating_ui_leptos::{Padding, Side};
+use leptix_core::popper::{Align, Popper, PopperAnchor, PopperArrow, PopperContent};
+use leptix_core::portal::Portal;
 use leptix_core::presence::use_presence;
 use leptix_core::primitive::Primitive;
 use leptos::{context::Provider, html, prelude::*};
@@ -22,6 +25,23 @@ fn set_timeout(callback: &Closure<dyn Fn()>, ms: i32) -> i32 {
 
 fn clear_timeout(id: i32) {
     window().clear_timeout_with_handle(id);
+}
+
+fn parse_side(s: &str) -> Side {
+    match s {
+        "top" => Side::Top,
+        "right" => Side::Right,
+        "left" => Side::Left,
+        _ => Side::Bottom,
+    }
+}
+
+fn parse_align(s: &str) -> Align {
+    match s {
+        "start" => Align::Start,
+        "end" => Align::End,
+        _ => Align::Center,
+    }
 }
 
 #[derive(Clone, Debug)]
@@ -104,9 +124,13 @@ pub fn HoverCard(
         }
     });
 
+    let ctx = StoredValue::new(context_value.clone());
+
     view! {
         <Provider value=context_value>
-            {children.with_value(|children| children())}
+            <Popper>
+                {move || ctx.with_value(|_| children.with_value(|children| children()))}
+            </Popper>
         </Provider>
     }
 }
@@ -162,30 +186,42 @@ pub fn HoverCardTrigger(
         }
     };
 
+    let on_pointer_enter = StoredValue::new(on_pointer_enter);
+    let on_pointer_leave = StoredValue::new(on_pointer_leave);
+
     view! {
-        <Primitive
-            element=html::a
-            as_child=as_child
-            node_ref=node_ref
-            attr:data-state=move || if context.open.get() { "open" } else { "closed" }
-            on:pointerenter=on_pointer_enter
-            on:pointerleave=on_pointer_leave
-            on:focus=move |_| context.on_open.run(())
-            on:blur=move |_| context.on_close.run(())
-        >
-            {children.with_value(|children| children())}
-        </Primitive>
+        <PopperAnchor>
+            {move || view! {
+                <Primitive
+                    element=html::a
+                    as_child=as_child
+                    node_ref=node_ref
+                    attr:data-state=move || if context.open.get() { "open" } else { "closed" }
+                    on:pointerenter=move |e: leptos::ev::PointerEvent| on_pointer_enter.with_value(|f| f(e))
+                    on:pointerleave=move |e: leptos::ev::PointerEvent| on_pointer_leave.with_value(|f| f(e))
+                    on:focus=move |_| context.on_open.run(())
+                    on:blur=move |_| context.on_close.run(())
+                >
+                    {children.with_value(|children| children())}
+                </Primitive>
+            }}
+        </PopperAnchor>
     }
 }
 
 #[component]
-pub fn HoverCardPortal(children: TypedChildrenFn<impl IntoView + 'static>) -> impl IntoView {
+pub fn HoverCardPortal(
+    #[prop(into, optional)] container: MaybeProp<SendWrapper<web_sys::Element>>,
+    children: TypedChildrenFn<impl IntoView + 'static>,
+) -> impl IntoView {
     let children = StoredValue::new(children.into_inner());
     let context = expect_context::<HoverCardContextValue>();
 
     view! {
         <Show when=move || context.open.get()>
-            {children.with_value(|children| children())}
+            <Portal container=container>
+                {children.with_value(|children| children())}
+            </Portal>
         </Show>
     }
 }
@@ -210,19 +246,22 @@ pub fn HoverCardContent(
     /// Padding from viewport edge when avoiding collisions (pixels).
     #[prop(into, optional)]
     collision_padding: MaybeProp<f64>,
+    #[prop(into, optional)] force_mount: MaybeProp<bool>,
     #[prop(into, optional)] as_child: MaybeProp<bool>,
     #[prop(into, optional)] node_ref: AnyNodeRef,
     children: TypedChildrenFn<impl IntoView + 'static>,
 ) -> impl IntoView {
     let children = StoredValue::new(children.into_inner());
+    let force_mount = Signal::derive(move || force_mount.get().unwrap_or(false));
 
-    // Reserved for future floating-ui integration
-    let _side = side;
-    let _side_offset = side_offset;
-    let _align = align;
-    let _align_offset = align_offset;
-    let _avoid_collisions = avoid_collisions;
-    let _collision_padding = collision_padding;
+    let popper_side = Signal::derive(move || parse_side(&side.get().unwrap_or("bottom".into())));
+    let popper_align = Signal::derive(move || parse_align(&align.get().unwrap_or("center".into())));
+    let popper_side_offset = Signal::derive(move || side_offset.get().unwrap_or(0.0));
+    let popper_align_offset = Signal::derive(move || align_offset.get().unwrap_or(0.0));
+    let popper_avoid_collisions = Signal::derive(move || avoid_collisions.get().unwrap_or(true));
+    let popper_collision_padding =
+        Signal::derive(move || Padding::All(collision_padding.get().unwrap_or(0.0)));
+
     let context = expect_context::<HoverCardContextValue>();
 
     let present = Signal::derive(move || context.open.get());
@@ -247,7 +286,7 @@ pub fn HoverCardContent(
     // Store closures so they can be accessed from Fn closures inside <Show>
     let open_closure_stored = StoredValue::new(open_closure);
     let close_closure_stored = StoredValue::new(close_closure);
-    let content_id = context.content_id.clone();
+    let content_id = StoredValue::new(context.content_id.clone());
     let open_delay = context.open_delay;
     let close_delay = context.close_delay;
     let open_timer_id = context.open_timer_id;
@@ -256,12 +295,17 @@ pub fn HoverCardContent(
     let ctx_on_close = context.on_close;
 
     view! {
-        <Show when=move || presence.is_present.get()>
-            <Primitive
-                element=html::div
-                as_child=as_child
+        <Show when=move || force_mount.get() || presence.is_present.get()>
+            <PopperContent
+                side=popper_side
+                side_offset=popper_side_offset
+                align=popper_align
+                align_offset=popper_align_offset
+                avoid_collisions=popper_avoid_collisions
+                collision_padding=popper_collision_padding
                 node_ref=composed_refs
-                attr:id=content_id.clone()
+                as_child=as_child
+                attr:id=content_id.with_value(|id| id.clone())
                 attr:data-state=move || if context.open.get() { "open" } else { "closed" }
                 on:pointerenter=move |_: leptos::ev::PointerEvent| {
                     // Clear close timer, start open timer
@@ -305,7 +349,7 @@ pub fn HoverCardContent(
                 }
             >
                 {children.with_value(|children| children())}
-            </Primitive>
+            </PopperContent>
         </Show>
     }
 }
@@ -321,8 +365,8 @@ pub fn HoverCardArrow(
     let children = StoredValue::new(children);
 
     view! {
-        <leptix_core::arrow::Arrow width=width height=height as_child=as_child node_ref=node_ref>
+        <PopperArrow width=width height=height as_child=as_child node_ref=node_ref>
             {children.with_value(|children| children.as_ref().map(|children| children()))}
-        </leptix_core::arrow::Arrow>
+        </PopperArrow>
     }
 }

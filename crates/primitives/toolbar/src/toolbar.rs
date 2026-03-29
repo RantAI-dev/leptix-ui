@@ -151,6 +151,7 @@ struct ToolbarToggleGroupContextValue {
     value: Signal<Vec<String>>,
     on_item_toggle: Callback<String>,
     r#type: Signal<String>,
+    disabled: Signal<bool>,
 }
 
 #[component]
@@ -167,7 +168,7 @@ pub fn ToolbarToggleGroup(
     let children = StoredValue::new(children.into_inner());
     let context = expect_context::<ToolbarContextValue>();
     let toggle_type = Signal::derive(move || r#type.get().unwrap_or("single".into()));
-    let _disabled = Signal::derive(move || disabled.get().unwrap_or(false));
+    let disabled = Signal::derive(move || disabled.get().unwrap_or(false));
 
     let (value_state, set_value) = leptix_core::use_controllable_state::use_controllable_state(
         leptix_core::use_controllable_state::UseControllableStateParams {
@@ -205,6 +206,7 @@ pub fn ToolbarToggleGroup(
             set_value.run(Some(next));
         }),
         r#type: toggle_type,
+        disabled,
     };
 
     view! {
@@ -215,6 +217,7 @@ pub fn ToolbarToggleGroup(
                 node_ref=node_ref
                 attr:role="group"
                 attr:data-orientation=move || context.orientation.get()
+                attr:data-disabled=move || disabled.get().then_some("")
             >
                 {children.with_value(|children| children())}
             </Primitive>
@@ -235,7 +238,8 @@ pub fn ToolbarToggleItem(
     let item_value = value.clone();
     let item_value2 = value.clone();
     let is_pressed = Signal::derive(move || toggle_ctx.value.get().contains(&item_value));
-    let disabled = Signal::derive(move || disabled.get().unwrap_or(false));
+    let disabled =
+        Signal::derive(move || toggle_ctx.disabled.get() || disabled.get().unwrap_or(false));
 
     view! {
         <Primitive

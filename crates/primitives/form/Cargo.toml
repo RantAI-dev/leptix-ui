@@ -12,4 +12,11 @@ version.workspace = true
 leptos.workspace = true
 leptos-node-ref.workspace = true
 leptix-core.workspace = true
-web-sys = { workspace = true, features = ["Event", "SubmitEvent"] }
+web-sys = { workspace = true, features = [
+    "Document",
+    "Event",
+    "HtmlInputElement",
+    "SubmitEvent",
+    "ValidityState",
+    "Window",
+] }

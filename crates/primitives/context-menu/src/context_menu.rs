@@ -11,6 +11,8 @@ use leptos_node_ref::AnyNodeRef;
 struct ContextMenuContextValue {
     open: RwSignal<bool>,
     content_id: String,
+    position_x: RwSignal<f64>,
+    position_y: RwSignal<f64>,
 }
 
 #[component]
@@ -31,6 +33,8 @@ pub fn ContextMenu(
     let ctx = ContextMenuContextValue {
         open,
         content_id: format!("{}-ctx", base_id),
+        position_x: RwSignal::new(0.0),
+        position_y: RwSignal::new(0.0),
     };
 
     view! {
@@ -61,6 +65,8 @@ pub fn ContextMenuTrigger(
             on:contextmenu=move |event: web_sys::MouseEvent| {
                 if !disabled.get() {
                     event.prevent_default();
+                    ctx.position_x.set(event.client_x() as f64);
+                    ctx.position_y.set(event.client_y() as f64);
                     ctx.open.set(true);
                 }
             }
@@ -109,6 +115,7 @@ pub fn ContextMenuContent(
                 attr:role="menu"
                 attr:data-state=move || if ctx.open.get() { "open" } else { "closed" }
                 attr:tabindex="-1"
+                attr:style=move || format!("position:fixed;left:{}px;top:{}px;", ctx.position_x.get(), ctx.position_y.get())
                 on:keydown=move |event: KeyboardEvent| {
                     if event.key() == "ArrowDown" { event.prevent_default(); focus_menu_item(&event, true); }
                     else if event.key() == "ArrowUp" { event.prevent_default(); focus_menu_item(&event, false); }

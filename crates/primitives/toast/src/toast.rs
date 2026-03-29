@@ -7,6 +7,8 @@ use leptos_node_ref::AnyNodeRef;
 use send_wrapper::SendWrapper;
 use web_sys::wasm_bindgen::{JsCast, closure::Closure};
 
+const SWIPE_THRESHOLD_PX: f64 = 100.0;
+
 fn window() -> web_sys::Window {
     web_sys::window().expect("should have a Window")
 }
@@ -30,6 +32,8 @@ struct ToastProviderContextValue {
     toasts: RwSignal<Vec<ToastEntry>>,
     add_toast: Callback<ToastEntry>,
     remove_toast: Callback<String>,
+    swipe_direction: Signal<String>,
+    default_duration: Signal<i32>,
 }
 
 #[allow(dead_code)]
@@ -46,8 +50,8 @@ pub fn ToastProvider(
     children: TypedChildrenFn<impl IntoView + 'static>,
 ) -> impl IntoView {
     let children = StoredValue::new(children.into_inner());
-    let _duration = Signal::derive(move || duration.get().unwrap_or(5000));
-    let _swipe = Signal::derive(move || swipe_direction.get().unwrap_or("right".into()));
+    let default_duration = Signal::derive(move || duration.get().unwrap_or(5000));
+    let swipe_dir = Signal::derive(move || swipe_direction.get().unwrap_or("right".into()));
     let toasts: RwSignal<Vec<ToastEntry>> = RwSignal::new(vec![]);
 
     let ctx = ToastProviderContextValue {
@@ -58,6 +62,8 @@ pub fn ToastProvider(
         remove_toast: Callback::new(move |id: String| {
             toasts.update(|t| t.retain(|e| e.id != id));
         }),
+        swipe_direction: swipe_dir,
+        default_duration,
     };
 
     view! { <Provider value=ctx>{children.with_value(|c| c())}</Provider> }
@@ -93,8 +99,25 @@ pub fn Toast(
     children: TypedChildrenFn<impl IntoView + 'static>,
 ) -> impl IntoView {
     let children = StoredValue::new(children.into_inner());
-    let duration = Signal::derive(move || duration.get().unwrap_or(5000));
+    let provider_ctx = use_context::<ToastProviderContextValue>();
+    let duration = Signal::derive(move || {
+        duration.get().unwrap_or_else(|| {
+            provider_ctx
+                .as_ref()
+                .map(|ctx| ctx.default_duration.get())
+                .unwrap_or(5000)
+        })
+    });
     let open_state = RwSignal::new(open.get().or(default_open.get()).unwrap_or(true));
+
+    // Get swipe direction from provider context (default "right")
+    let provider_ctx = use_context::<ToastProviderContextValue>();
+    let swipe_direction = Signal::derive(move || {
+        provider_ctx
+            .as_ref()
+            .map(|ctx| ctx.swipe_direction.get())
+            .unwrap_or_else(|| "right".to_string())
+    });
 
     Effect::new(move |_| {
         if let Some(o) = open.get() {
@@ -162,6 +185,14 @@ pub fn Toast(
     // Store the close closure in a StoredValue so it can be accessed from Fn closures
     let close_closure_stored = StoredValue::new(close_closure);
 
+    // --- Swipe state ---
+    let swipe_start_x = RwSignal::new(0.0f64);
+    let swipe_start_y = RwSignal::new(0.0f64);
+    let swipe_delta_x = RwSignal::new(0.0f64);
+    let swipe_delta_y = RwSignal::new(0.0f64);
+    let is_swiping = RwSignal::new(false);
+    let swipe_data_attr: RwSignal<Option<&'static str>> = RwSignal::new(None);
+
     view! {
         <Provider value=toast_ctx>
             <Show when=move || presence.is_present.get()>
@@ -170,22 +201,133 @@ pub fn Toast(
                     attr:aria-live="off"
                     attr:aria-atomic="true"
                     attr:data-state=move || if open_state.get() { "open" } else { "closed" }
+                    attr:data-swipe=move || swipe_data_attr.get().unwrap_or("")
                     attr:tabindex="0"
-                    on:pointerenter=move |_: leptos::ev::PointerEvent| {
-                        // Pause: clear auto-close timer
+                    style:transform=move || {
+                        if !is_swiping.get() {
+                            return String::new();
+                        }
+                        let dx = swipe_delta_x.get();
+                        let dy = swipe_delta_y.get();
+                        let dir = swipe_direction.get();
+                        match dir.as_str() {
+                            "right" => format!("translateX({}px)", dx.max(0.0)),
+                            "left" => format!("translateX({}px)", dx.min(0.0)),
+                            "up" => format!("translateY({}px)", dy.min(0.0)),
+                            "down" => format!("translateY({}px)", dy.max(0.0)),
+                            _ => String::new(),
+                        }
+                    }
+                    style:user-select=move || {
+                        if is_swiping.get() { "none" } else { "" }
+                    }
+                    style:touch-action=move || {
+                        match swipe_direction.get().as_str() {
+                            "right" | "left" => "pan-y",
+                            "up" | "down" => "pan-x",
+                            _ => "auto",
+                        }
+                    }
+                    on:pointerdown=move |event: leptos::ev::PointerEvent| {
+                        swipe_start_x.set(event.client_x() as f64);
+                        swipe_start_y.set(event.client_y() as f64);
+                        swipe_delta_x.set(0.0);
+                        swipe_delta_y.set(0.0);
+                        is_swiping.set(true);
+                        swipe_data_attr.set(Some("start"));
+                        // Capture pointer for reliable tracking
+                        if let Some(target) = event.target() {
+                            if let Ok(el) = target.dyn_into::<web_sys::Element>() {
+                                let _ = el.set_pointer_capture(event.pointer_id());
+                            }
+                        }
+                        // Pause auto-close timer during swipe
                         if let Some(id) = timer_id.get_untracked() {
                             clear_timeout(id);
                             timer_id.set(None);
                         }
                     }
-                    on:pointerleave=move |_: leptos::ev::PointerEvent| {
-                        // Resume: restart auto-close timer
+                    on:pointermove=move |event: leptos::ev::PointerEvent| {
+                        if !is_swiping.get_untracked() {
+                            return;
+                        }
+                        let dx = event.client_x() as f64 - swipe_start_x.get_untracked();
+                        let dy = event.client_y() as f64 - swipe_start_y.get_untracked();
+                        swipe_delta_x.set(dx);
+                        swipe_delta_y.set(dy);
+                        // Only set "move" if the swipe is in the configured direction
+                        let dir = swipe_direction.get_untracked();
+                        let is_valid = match dir.as_str() {
+                            "right" => dx > 0.0,
+                            "left" => dx < 0.0,
+                            "up" => dy < 0.0,
+                            "down" => dy > 0.0,
+                            _ => false,
+                        };
+                        if is_valid {
+                            swipe_data_attr.set(Some("move"));
+                        }
+                    }
+                    on:pointerup=move |event: leptos::ev::PointerEvent| {
+                        if !is_swiping.get_untracked() {
+                            return;
+                        }
+                        // Release pointer capture
+                        if let Some(target) = event.target() {
+                            if let Ok(el) = target.dyn_into::<web_sys::Element>() {
+                                let _ = el.release_pointer_capture(event.pointer_id());
+                            }
+                        }
+                        let dx = swipe_delta_x.get_untracked();
+                        let dy = swipe_delta_y.get_untracked();
+                        let dir = swipe_direction.get_untracked();
+                        let exceeded = match dir.as_str() {
+                            "right" => dx > SWIPE_THRESHOLD_PX,
+                            "left" => dx < -SWIPE_THRESHOLD_PX,
+                            "up" => dy < -SWIPE_THRESHOLD_PX,
+                            "down" => dy > SWIPE_THRESHOLD_PX,
+                            _ => false,
+                        };
+                        if exceeded {
+                            // Swipe completed — dismiss
+                            swipe_data_attr.set(Some("end"));
+                            on_close_cb.run(());
+                        } else {
+                            // Snap back
+                            swipe_data_attr.set(Some("cancel"));
+                        }
+                        // Reset swipe state
+                        is_swiping.set(false);
+                        swipe_delta_x.set(0.0);
+                        swipe_delta_y.set(0.0);
+                        // Resume auto-close timer if still open
                         let dur = duration.get_untracked();
                         if dur > 0 && open_state.get_untracked() {
                             close_closure_stored.with_value(|cls| {
                                 let id = set_timeout(cls, dur);
                                 timer_id.set(Some(id));
                             });
+                        }
+                    }
+                    on:pointerenter=move |_: leptos::ev::PointerEvent| {
+                        // Pause: clear auto-close timer (only if not swiping, since swipe already pauses)
+                        if !is_swiping.get_untracked() {
+                            if let Some(id) = timer_id.get_untracked() {
+                                clear_timeout(id);
+                                timer_id.set(None);
+                            }
+                        }
+                    }
+                    on:pointerleave=move |_: leptos::ev::PointerEvent| {
+                        // Resume: restart auto-close timer (only if not swiping)
+                        if !is_swiping.get_untracked() {
+                            let dur = duration.get_untracked();
+                            if dur > 0 && open_state.get_untracked() {
+                                close_closure_stored.with_value(|cls| {
+                                    let id = set_timeout(cls, dur);
+                                    timer_id.set(Some(id));
+                                });
+                            }
                         }
                     }
                 >

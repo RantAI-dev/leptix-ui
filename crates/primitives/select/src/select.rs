@@ -1,11 +1,16 @@
+use floating_ui_leptos::{Padding, Side};
 use leptix_core::compose_refs::use_composed_refs;
 use leptix_core::dismissable_layer::use_dismissable_layer;
 use leptix_core::focus_scope::use_focus_scope;
 use leptix_core::id::use_id;
+use leptix_core::popper::{Align, Popper, PopperAnchor, PopperArrow, PopperContent};
+use leptix_core::portal::Portal;
 use leptix_core::presence::use_presence;
 use leptix_core::primitive::{Primitive, VoidPrimitive};
 use leptos::{context::Provider, ev::KeyboardEvent, html, prelude::*};
 use leptos_node_ref::AnyNodeRef;
+use send_wrapper::SendWrapper;
+use web_sys::wasm_bindgen::JsCast;
 
 #[derive(Clone, Debug)]
 struct SelectContextValue {
@@ -83,9 +88,10 @@ pub fn Select(
     };
 
     view! {
-        <Provider value=ctx.clone()>
-            {children.with_value(|c| c())}
-            <Show when=move || ctx.name.get().is_some()>
+        <Popper>
+            <Provider value=ctx.clone()>
+                {children.with_value(|c| c())}
+                <Show when=move || ctx.name.get().is_some()>
                 <input
                     type="hidden"
                     name=move || ctx.name.get().unwrap_or_default()
@@ -94,7 +100,8 @@ pub fn Select(
                     form=move || ctx.form.get().unwrap_or_default()
                 />
             </Show>
-        </Provider>
+            </Provider>
+        </Popper>
     }
 }
 
@@ -107,27 +114,30 @@ pub fn SelectTrigger(
     let children = StoredValue::new(children.into_inner());
     let ctx = expect_context::<SelectContextValue>();
     let refs = use_composed_refs(vec![node_ref, ctx.trigger_ref]);
+    let content_id = StoredValue::new(ctx.content_id.clone());
 
     view! {
-        <Primitive element=html::button as_child=as_child node_ref=refs
-            attr:r#type="button"
-            attr:role="combobox"
-            attr:aria-expanded=move || ctx.open.get().to_string()
-            attr:aria-controls=move || ctx.open.get().then(|| ctx.content_id.clone())
-            attr:disabled=move || ctx.disabled.get().then_some("")
-            attr:data-state=move || if ctx.open.get() { "open" } else { "closed" }
-            attr:data-disabled=move || ctx.disabled.get().then_some("")
-            attr:data-placeholder=move || ctx.value.get().is_none().then_some("")
-            on:click=move |_| { if !ctx.disabled.get() { ctx.open.set(!ctx.open.get()); } }
-            on:keydown=move |event: KeyboardEvent| {
-                if matches!(event.key().as_str(), "ArrowDown" | "ArrowUp" | "Enter" | " ") && !ctx.disabled.get() {
-                    event.prevent_default();
-                    ctx.open.set(true);
+        <PopperAnchor>
+            <Primitive element=html::button as_child=as_child node_ref=refs
+                attr:r#type="button"
+                attr:role="combobox"
+                attr:aria-expanded=move || ctx.open.get().to_string()
+                attr:aria-controls=move || ctx.open.get().then(|| content_id.get_value())
+                attr:disabled=move || ctx.disabled.get().then_some("")
+                attr:data-state=move || if ctx.open.get() { "open" } else { "closed" }
+                attr:data-disabled=move || ctx.disabled.get().then_some("")
+                attr:data-placeholder=move || ctx.value.get().is_none().then_some("")
+                on:click=move |_| { if !ctx.disabled.get() { ctx.open.set(!ctx.open.get()); } }
+                on:keydown=move |event: KeyboardEvent| {
+                    if matches!(event.key().as_str(), "ArrowDown" | "ArrowUp" | "Enter" | " ") && !ctx.disabled.get() {
+                        event.prevent_default();
+                        ctx.open.set(true);
+                    }
                 }
-            }
-        >
-            {children.with_value(|c| c())}
-        </Primitive>
+            >
+                {children.with_value(|c| c())}
+            </Primitive>
+        </PopperAnchor>
     }
 }
 
@@ -148,10 +158,21 @@ pub fn SelectValue(
 }
 
 #[component]
-pub fn SelectPortal(children: TypedChildrenFn<impl IntoView + 'static>) -> impl IntoView {
+pub fn SelectPortal(
+    /// Target container element to portal into. Defaults to `document.body`.
+    #[prop(into, optional)]
+    container: MaybeProp<SendWrapper<web_sys::Element>>,
+    children: TypedChildrenFn<impl IntoView + 'static>,
+) -> impl IntoView {
     let children = StoredValue::new(children.into_inner());
     let ctx = expect_context::<SelectContextValue>();
-    view! { <Show when=move || ctx.open.get()>{children.with_value(|c| c())}</Show> }
+    view! {
+        <Show when=move || ctx.open.get()>
+            <Portal container=container>
+                {children.with_value(|c| c())}
+            </Portal>
+        </Show>
+    }
 }
 
 #[component]
@@ -180,13 +201,13 @@ pub fn SelectContent(
 ) -> impl IntoView {
     let children = StoredValue::new(children.into_inner());
 
-    // Reserved for future floating-ui integration
-    let _side = side;
-    let _side_offset = side_offset;
-    let _align = align;
-    let _align_offset = align_offset;
-    let _avoid_collisions = avoid_collisions;
-    let _collision_padding = collision_padding;
+    let popper_side = Signal::derive(move || parse_side(side.get().as_deref(), Side::Bottom));
+    let popper_side_offset = Signal::derive(move || side_offset.get().unwrap_or(0.0));
+    let popper_align = Signal::derive(move || parse_align(align.get().as_deref()));
+    let popper_align_offset = Signal::derive(move || align_offset.get().unwrap_or(0.0));
+    let popper_avoid_collisions = Signal::derive(move || avoid_collisions.get().unwrap_or(true));
+    let popper_collision_padding =
+        Signal::derive(move || Padding::All(collision_padding.get().unwrap_or(0.0)));
 
     let ctx = expect_context::<SelectContextValue>();
     let present = Signal::derive(move || ctx.open.get());
@@ -202,23 +223,69 @@ pub fn SelectContent(
     );
     let refs = use_composed_refs(vec![node_ref, presence.node_ref, focus_ref, dismiss_ref]);
 
+    // Typeahead state
+    let search_buffer = RwSignal::new(String::new());
+    let timer_handle = RwSignal::new(0i32);
+
+    on_cleanup(move || {
+        if let Some(w) = web_sys::window() {
+            w.clear_timeout_with_handle(timer_handle.get());
+        }
+    });
+
     view! {
         <Show when=move || presence.is_present.get()>
-            <Primitive element=html::div as_child=as_child node_ref=refs
+            <PopperContent
+                side=popper_side
+                side_offset=popper_side_offset
+                align=popper_align
+                align_offset=popper_align_offset
+                avoid_collisions=popper_avoid_collisions
+                collision_padding=popper_collision_padding
+                as_child=as_child
+                node_ref=refs
                 attr:id=ctx.content_id.clone()
                 attr:role="listbox"
                 attr:data-state=move || if ctx.open.get() { "open" } else { "closed" }
                 attr:tabindex="-1"
                 on:keydown=move |event: KeyboardEvent| {
                     match event.key().as_str() {
-                        "ArrowDown" => { event.prevent_default(); focus_select_item(&event, true); }
-                        "ArrowUp" => { event.prevent_default(); focus_select_item(&event, false); }
-                        _ => {}
+                        "ArrowDown" => { event.prevent_default(); focus_select_item(&event, FocusTarget::Next); }
+                        "ArrowUp" => { event.prevent_default(); focus_select_item(&event, FocusTarget::Previous); }
+                        "Home" => { event.prevent_default(); focus_select_item(&event, FocusTarget::First); }
+                        "End" => { event.prevent_default(); focus_select_item(&event, FocusTarget::Last); }
+                        key => {
+                            // Typeahead: single printable characters that aren't modifier keys
+                            let is_modifier = event.ctrl_key() || event.alt_key() || event.meta_key();
+                            if !is_modifier && key.chars().count() == 1 {
+                                event.prevent_default();
+                                let ch = key.to_lowercase();
+                                let new_search = search_buffer.get() + &ch;
+                                search_buffer.set(new_search.clone());
+
+                                // Clear previous timer and set a new one
+                                if let Some(w) = web_sys::window() {
+                                    w.clear_timeout_with_handle(timer_handle.get());
+                                    let cb = web_sys::wasm_bindgen::closure::Closure::once_into_js(move || {
+                                        search_buffer.set(String::new());
+                                    });
+                                    if let Ok(id) = w.set_timeout_with_callback_and_timeout_and_arguments_0(
+                                        cb.as_ref().unchecked_ref(),
+                                        1000,
+                                    ) {
+                                        timer_handle.set(id);
+                                    }
+                                }
+
+                                // Find matching item by text content
+                                typeahead_focus_item(&event, &new_search);
+                            }
+                        }
                     }
                 }
             >
                 {children.with_value(|c| c())}
-            </Primitive>
+            </PopperContent>
         </Show>
     }
 }
@@ -436,9 +503,9 @@ pub fn SelectArrow(
 ) -> impl IntoView {
     let children = StoredValue::new(children);
     view! {
-        <leptix_core::arrow::Arrow as_child=as_child node_ref=node_ref>
+        <PopperArrow as_child=as_child node_ref=node_ref>
             {children.with_value(|c| c.as_ref().map(|c| c()))}
-        </leptix_core::arrow::Arrow>
+        </PopperArrow>
     }
 }
 
@@ -446,15 +513,22 @@ pub fn SelectArrow(
 // Helpers
 // ---------------------------------------------------------------------------
 
-fn focus_select_item(event: &KeyboardEvent, forward: bool) {
-    let Some(container) = event.current_target().and_then(|t| {
-        use web_sys::wasm_bindgen::JsCast;
-        t.dyn_into::<web_sys::Element>().ok()
-    }) else {
-        return;
+enum FocusTarget {
+    Next,
+    Previous,
+    First,
+    Last,
+}
+
+fn collect_option_nodes(event: &KeyboardEvent) -> Vec<web_sys::Node> {
+    let Some(container) = event
+        .current_target()
+        .and_then(|t| t.dyn_into::<web_sys::Element>().ok())
+    else {
+        return vec![];
     };
     let Ok(items) = container.query_selector_all("[role='option']:not([data-disabled])") else {
-        return;
+        return vec![];
     };
     let mut nodes = vec![];
     for i in 0..items.length() {
@@ -462,6 +536,15 @@ fn focus_select_item(event: &KeyboardEvent, forward: bool) {
             nodes.push(n);
         }
     }
+    nodes
+}
+
+fn focus_select_item(event: &KeyboardEvent, target: FocusTarget) {
+    let nodes = collect_option_nodes(event);
+    if nodes.is_empty() {
+        return;
+    }
+
     let active = web_sys::window()
         .and_then(|w| w.document())
         .and_then(|d| d.active_element());
@@ -470,18 +553,82 @@ fn focus_select_item(event: &KeyboardEvent, forward: bool) {
             .iter()
             .position(|n| n == <web_sys::Element as AsRef<web_sys::Node>>::as_ref(a))
     });
-    let next = if forward {
-        idx.map(|i| i + 1).filter(|i| *i < nodes.len()).or(Some(0))
-    } else {
-        idx.and_then(|i| i.checked_sub(1))
-            .or(Some(nodes.len().saturating_sub(1)))
+
+    let next = match target {
+        FocusTarget::Next => idx.map(|i| i + 1).filter(|i| *i < nodes.len()).or(Some(0)),
+        FocusTarget::Previous => idx
+            .and_then(|i| i.checked_sub(1))
+            .or(Some(nodes.len().saturating_sub(1))),
+        FocusTarget::First => Some(0),
+        FocusTarget::Last => Some(nodes.len().saturating_sub(1)),
     };
+
     if let Some(i) = next
         && let Some(n) = nodes.get(i)
     {
-        use web_sys::wasm_bindgen::JsCast;
         if let Ok(el) = n.clone().dyn_into::<web_sys::HtmlElement>() {
             let _ = el.focus();
         }
+    }
+}
+
+fn typeahead_focus_item(event: &KeyboardEvent, search: &str) {
+    let nodes = collect_option_nodes(event);
+    if nodes.is_empty() || search.is_empty() {
+        return;
+    }
+
+    let search_lower = search.to_lowercase();
+
+    // Find the currently focused item index
+    let active = web_sys::window()
+        .and_then(|w| w.document())
+        .and_then(|d| d.active_element());
+    let current_idx = active.as_ref().and_then(|a| {
+        nodes
+            .iter()
+            .position(|n| n == <web_sys::Element as AsRef<web_sys::Node>>::as_ref(a))
+    });
+
+    // Search starting from the item after the current one (wrapping around),
+    // but if search is a single char, start after current; if multi-char, start from beginning
+    let start = if search_lower.chars().count() == 1 {
+        current_idx.map(|i| i + 1).unwrap_or(0)
+    } else {
+        0
+    };
+
+    let len = nodes.len();
+    for offset in 0..len {
+        let i = (start + offset) % len;
+        if let Some(n) = nodes.get(i) {
+            if let Ok(el) = n.clone().dyn_into::<web_sys::Element>() {
+                let text = el.text_content().unwrap_or_default().trim().to_lowercase();
+                if text.starts_with(&search_lower) {
+                    if let Ok(html_el) = el.dyn_into::<web_sys::HtmlElement>() {
+                        let _ = html_el.focus();
+                    }
+                    return;
+                }
+            }
+        }
+    }
+}
+
+fn parse_side(s: Option<&str>, default: Side) -> Side {
+    match s {
+        Some("top") => Side::Top,
+        Some("right") => Side::Right,
+        Some("bottom") => Side::Bottom,
+        Some("left") => Side::Left,
+        _ => default,
+    }
+}
+
+fn parse_align(s: Option<&str>) -> Align {
+    match s {
+        Some("start") => Align::Start,
+        Some("end") => Align::End,
+        _ => Align::Center,
     }
 }

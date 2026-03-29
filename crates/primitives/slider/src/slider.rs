@@ -15,6 +15,7 @@ struct SliderContextValue {
     disabled: Signal<bool>,
     orientation: Signal<String>,
     direction: Signal<Direction>,
+    inverted: Signal<bool>,
     on_value_change: Callback<Vec<f64>>,
     on_value_commit: Option<Callback<Vec<f64>>>,
     /// Index of the thumb currently being dragged.
@@ -45,7 +46,7 @@ pub fn Slider(
     let disabled = Signal::derive(move || disabled.get().unwrap_or(false));
     let orientation = Signal::derive(move || orientation.get().unwrap_or("horizontal".into()));
     let direction = use_direction(dir);
-    let _inverted = Signal::derive(move || inverted.get().unwrap_or(false));
+    let inverted = Signal::derive(move || inverted.get().unwrap_or(false));
 
     let (value, set_value) = use_controllable_state(UseControllableStateParams {
         prop: value,
@@ -68,6 +69,7 @@ pub fn Slider(
         disabled,
         orientation,
         direction,
+        inverted,
         on_value_change: Callback::new(move |val: Vec<f64>| {
             set_value.run(Some(val));
         }),
@@ -118,13 +120,16 @@ pub fn SliderTrack(
                     if let Ok(el) = target.dyn_into::<web_sys::HtmlElement>() {
                         let rect = el.get_bounding_client_rect();
                         let is_horizontal = context.orientation.get() == "horizontal";
+                        let is_inverted = context.inverted.get();
                         let percent = if is_horizontal {
                             let offset = event.client_x() as f64 - rect.left();
                             let ratio = offset / rect.width();
-                            if context.direction.get() == Direction::Rtl { 1.0 - ratio } else { ratio }
+                            let ratio = if context.direction.get() == Direction::Rtl { 1.0 - ratio } else { ratio };
+                            if is_inverted { 1.0 - ratio } else { ratio }
                         } else {
                             let offset = event.client_y() as f64 - rect.top();
-                            1.0 - (offset / rect.height())
+                            let ratio = 1.0 - (offset / rect.height());
+                            if is_inverted { 1.0 - ratio } else { ratio }
                         };
                         let new_value = context.min.get() + percent * (context.max.get() - context.min.get());
                         let new_value = snap_to_step(new_value, context.step.get(), context.min.get());
@@ -187,6 +192,7 @@ pub fn SliderRange(
     });
 
     let is_horizontal = Signal::derive(move || context.orientation.get() == "horizontal");
+    let is_inverted = Signal::derive(move || context.inverted.get());
 
     view! {
         <Primitive
@@ -196,10 +202,15 @@ pub fn SliderRange(
             attr:data-orientation=move || context.orientation.get()
             attr:data-disabled=move || context.disabled.get().then_some("")
             attr:style=move || {
-                if is_horizontal.get() {
-                    format!("position:absolute;left:{}%;right:{}%", offset_start.get(), offset_end.get())
+                let (start, end) = if is_inverted.get() {
+                    (offset_end.get(), offset_start.get())
                 } else {
-                    format!("position:absolute;bottom:{}%;top:{}%", offset_start.get(), offset_end.get())
+                    (offset_start.get(), offset_end.get())
+                };
+                if is_horizontal.get() {
+                    format!("position:absolute;left:{}%;right:{}%", start, end)
+                } else {
+                    format!("position:absolute;bottom:{}%;top:{}%", start, end)
                 }
             }
         >
@@ -233,7 +244,12 @@ pub fn SliderThumb(
         if range == 0.0 {
             return 0.0;
         }
-        ((thumb_value.get() - context.min.get()) / range) * 100.0
+        let pct = ((thumb_value.get() - context.min.get()) / range) * 100.0;
+        if context.inverted.get() {
+            100.0 - pct
+        } else {
+            pct
+        }
     });
 
     let is_horizontal = Signal::derive(move || context.orientation.get() == "horizontal");
@@ -269,14 +285,18 @@ pub fn SliderThumb(
                     let step = context.step.get();
                     let big_step = step * 10.0;
                     let is_rtl = context.direction.get() == Direction::Rtl;
+                    let is_inverted = context.inverted.get();
+
+                    // When inverted, arrow semantics flip (increase becomes decrease and vice versa).
+                    let invert = |v: f64| if is_inverted { -v } else { v };
 
                     let delta = match event.key().as_str() {
-                        "ArrowRight" => Some(if is_rtl { -step } else { step }),
-                        "ArrowLeft" => Some(if is_rtl { step } else { -step }),
-                        "ArrowUp" => Some(step),
-                        "ArrowDown" => Some(-step),
-                        "PageUp" => Some(big_step),
-                        "PageDown" => Some(-big_step),
+                        "ArrowRight" => Some(invert(if is_rtl { -step } else { step })),
+                        "ArrowLeft" => Some(invert(if is_rtl { step } else { -step })),
+                        "ArrowUp" => Some(invert(step)),
+                        "ArrowDown" => Some(invert(-step)),
+                        "PageUp" => Some(invert(big_step)),
+                        "PageDown" => Some(invert(-big_step)),
                         "Home" => Some(context.min.get() - thumb_value.get()),
                         "End" => Some(context.max.get() - thumb_value.get()),
                         _ => None,

@@ -33,6 +33,7 @@ members = [
     "crates/primitives/form",
     "crates/primitives/otp-field",
     "crates/primitives/password-toggle",
+    "crates/primitives/visually_hidden",
     "docs",
 ]
 resolver = "2"
@@ -89,6 +90,7 @@ leptix-scroll-area = { path = "./crates/primitives/scroll-area", version = "1.0.
 leptix-form = { path = "./crates/primitives/form", version = "1.0.0" }
 leptix-otp-field = { path = "./crates/primitives/otp-field", version = "1.0.0" }
 leptix-password-toggle = { path = "./crates/primitives/password-toggle", version = "1.0.0" }
+leptix-visually-hidden = { path = "./crates/primitives/visually_hidden", version = "1.0.0" }
 
 [profile.dev]
 debug = false

@@ -12,4 +12,14 @@ version.workspace = true
 leptos.workspace = true
 leptos-node-ref.workspace = true
 leptix-core.workspace = true
-web-sys = { workspace = true, features = ["HtmlElement", "ScrollIntoViewOptions"] }
+send_wrapper.workspace = true
+web-sys = { workspace = true, features = [
+    "Document",
+    "Element",
+    "HtmlElement",
+    "PointerEvent",
+    "ResizeObserver",
+    "ResizeObserverEntry",
+    "ScrollIntoViewOptions",
+    "Window",
+] }

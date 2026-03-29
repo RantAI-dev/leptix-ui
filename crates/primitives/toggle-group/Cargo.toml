@@ -13,3 +13,4 @@ leptos.workspace = true
 leptos-node-ref.workspace = true
 leptix-core.workspace = true
 leptix-toggle = { path = "../toggle", version = "1.0.0" }
+web-sys = { workspace = true, features = ["HtmlElement", "NodeList"] }

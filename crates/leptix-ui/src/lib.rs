@@ -97,3 +97,6 @@ pub use leptix_otp_field as otp_field;
 
 #[cfg(feature = "password-toggle")]
 pub use leptix_password_toggle as password_toggle;
+
+#[cfg(feature = "visually-hidden")]
+pub use leptix_visually_hidden as visually_hidden;

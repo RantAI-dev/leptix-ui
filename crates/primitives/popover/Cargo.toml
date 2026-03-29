@@ -9,7 +9,9 @@ repository.workspace = true
 version.workspace = true
 
 [dependencies]
+floating-ui-leptos.workspace = true
 leptos.workspace = true
 leptos-node-ref.workspace = true
 leptix-core.workspace = true
+send_wrapper.workspace = true
 web-sys = { workspace = true, features = ["HtmlElement", "NodeList"] }

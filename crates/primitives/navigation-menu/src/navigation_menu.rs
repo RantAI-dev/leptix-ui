@@ -28,9 +28,16 @@ pub fn NavigationMenu(
     let children = StoredValue::new(children.into_inner());
     let direction = use_direction(dir);
     let orientation = Signal::derive(move || orientation.get().unwrap_or("horizontal".into()));
-    let _on_value_change = on_value_change;
     let active = RwSignal::new(value.get().or(default_value.get()));
     let base_id = use_id(None).get();
+
+    if let Some(cb) = on_value_change {
+        Effect::new(move |_| {
+            if let Some(v) = active.get() {
+                cb.run(v);
+            }
+        });
+    }
 
     let ctx = NavigationMenuContextValue {
         value: active,
@@ -213,9 +220,16 @@ pub fn NavigationMenuSub(
     let children = StoredValue::new(children.into_inner());
     let parent_ctx = expect_context::<NavigationMenuContextValue>();
     let orientation = Signal::derive(move || orientation.get().unwrap_or("horizontal".into()));
-    let _on_value_change = on_value_change;
     let active = RwSignal::new(value.get().or(default_value.get()));
     let base_id = use_id(None).get();
+
+    if let Some(cb) = on_value_change {
+        Effect::new(move |_| {
+            if let Some(v) = active.get() {
+                cb.run(v);
+            }
+        });
+    }
 
     let ctx = NavigationMenuContextValue {
         value: active,
