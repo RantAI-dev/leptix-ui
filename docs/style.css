@@ -1041,11 +1041,24 @@ kbd {
 }
 
 /* AccordionContent — rendered as CollapsibleContent <div> with [role="region"] */
+/* AccordionContent wrapper — handles animation */
 .demo-accordion [role="region"] {
     overflow: hidden;
     font-size: 15px;
     color: #6f6d78;
     background-color: #faf9fb;
+}
+
+.demo-accordion [role="region"][data-state="open"] {
+    animation: leptixSlideDown 300ms cubic-bezier(0.87, 0, 0.13, 1);
+}
+
+.demo-accordion [role="region"][data-state="closed"] {
+    animation: leptixSlideUp 300ms cubic-bezier(0.87, 0, 0.13, 1);
+}
+
+/* Content text padding (inside the animated container) */
+.demo-accordion [role="region"] > * {
     padding: 15px 20px;
 }
 
@@ -1055,6 +1068,16 @@ kbd {
 }
 
 .demo-accordion [hidden] { display: none; }
+
+@keyframes leptixSlideDown {
+    from { height: 0; }
+    to { height: var(--radix-accordion-content-height, var(--leptix-collapsible-content-height, auto)); }
+}
+
+@keyframes leptixSlideUp {
+    from { height: var(--radix-accordion-content-height, var(--leptix-collapsible-content-height, auto)); }
+    to { height: 0; }
+}
 
 /* Progress */
 .demo-progress {

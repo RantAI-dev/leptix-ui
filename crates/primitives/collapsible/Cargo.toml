@@ -12,3 +12,4 @@ version.workspace = true
 leptos.workspace = true
 leptos-node-ref.workspace = true
 leptix-core.workspace = true
+web-sys = { workspace = true, features = ["CssStyleDeclaration", "DomRect", "HtmlElement"] }
