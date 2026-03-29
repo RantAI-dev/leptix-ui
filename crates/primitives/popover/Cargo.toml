@@ -7,6 +7,7 @@ edition.workspace = true
 license.workspace = true
 repository.workspace = true
 version.workspace = true
+readme = "README.md"
 
 [dependencies]
 floating-ui-leptos.workspace = true

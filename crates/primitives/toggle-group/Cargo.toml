@@ -7,10 +7,11 @@ edition.workspace = true
 license.workspace = true
 repository.workspace = true
 version.workspace = true
+readme = "README.md"
 
 [dependencies]
 leptos.workspace = true
 leptos-node-ref.workspace = true
 leptix-core.workspace = true
-leptix-toggle = { path = "../toggle", version = "1.0.0" }
+leptix-toggle = { path = "../toggle", version = "0.1.0" }
 web-sys = { workspace = true, features = ["HtmlElement", "NodeList"] }
