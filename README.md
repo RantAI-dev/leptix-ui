@@ -131,7 +131,7 @@ Each primitive crate is independently publishable. `leptix-core` provides the sh
 
 ## Links
 
-- [GitHub](https://github.com/rantai-dev/leptix)
+- [GitHub](https://github.com/RantAI-dev/leptix-ui)
 - [API Documentation (docs.rs)](https://docs.rs/leptix-ui)
 
 ## Credits

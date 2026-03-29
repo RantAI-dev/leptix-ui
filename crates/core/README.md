@@ -1,6 +1,6 @@
 # leptix-core
 
-Shared infrastructure for the [Leptix](https://github.com/rantai-dev/leptix) component library.
+Shared infrastructure for the [Leptix](https://github.com/RantAI-dev/leptix-ui) component library.
 
 [![Crates.io](https://img.shields.io/crates/v/leptix-core.svg)](https://crates.io/crates/leptix-core)
 [![docs.rs](https://img.shields.io/docsrs/leptix-core)](https://docs.rs/leptix-core)
@@ -34,7 +34,7 @@ leptix-core = "0.1"
 
 ## Full documentation
 
-See the [Leptix README](https://github.com/rantai-dev/leptix) for the complete component list, installation guide, and examples.
+See the [Leptix README](https://github.com/RantAI-dev/leptix-ui) for the complete component list, installation guide, and examples.
 
 ## License
 

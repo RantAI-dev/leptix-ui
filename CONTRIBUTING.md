@@ -4,7 +4,7 @@
 
 ```bash
 # Clone the repo
-git clone https://github.com/rantai-dev/leptix.git
+git clone https://github.com/RantAI-dev/leptix-ui.git
 cd leptix
 
 # Build

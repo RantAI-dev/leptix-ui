@@ -1,6 +1,6 @@
 # leptix-ui
 
-Umbrella crate for [Leptix](https://github.com/rantai-dev/leptix) -- 33 Radix-quality accessible UI primitives for Leptos.
+Umbrella crate for [Leptix](https://github.com/RantAI-dev/leptix-ui) -- 33 Radix-quality accessible UI primitives for Leptos.
 
 [![Crates.io](https://img.shields.io/crates/v/leptix-ui.svg)](https://crates.io/crates/leptix-ui)
 [![docs.rs](https://img.shields.io/docsrs/leptix-ui)](https://docs.rs/leptix-ui)
@@ -57,7 +57,7 @@ leptix-tabs = "0.1"
 
 ## Full documentation
 
-See the [Leptix README](https://github.com/rantai-dev/leptix) for the complete component list, features, and architecture overview.
+See the [Leptix README](https://github.com/RantAI-dev/leptix-ui) for the complete component list, features, and architecture overview.
 
 ## License
 

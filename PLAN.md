@@ -2,7 +2,7 @@
 
 **Accessible UI primitives for Leptos. Rust port of Radix UI.**
 
-Repo: `github.com/rantai-dev/leptix`
+Repo: `github.com/RantAI-dev/leptix-ui`
 License: MIT
 By: RantAI
 
@@ -44,7 +44,7 @@ Leptix is a pure-Rust port of [Radix UI Primitives](https://www.radix-ui.com/pri
 ### Post-fork checklist
 
 ```
-[ ] Fork RustForWeb/radix → rantai-dev/leptix
+[ ] Fork RustForWeb/radix → RantAI-dev/leptix-ui
 [ ] Delete packages/primitives/yew/, packages/primitives/dioxus/
 [ ] Delete Yew/Dioxus stories and book examples
 [ ] Rename all crate names: radix-leptos-* → leptix-*

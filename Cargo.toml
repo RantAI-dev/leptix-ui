@@ -42,12 +42,12 @@ resolver = "2"
 authors = ["Rantai Dev <dev@rantai.dev>"]
 edition = "2024"
 license = "MIT"
-repository = "https://github.com/rantai-dev/leptix"
+repository = "https://github.com/RantAI-dev/leptix-ui"
 version = "0.1.0"
 keywords = ["leptos", "ui", "components", "radix", "wasm"]
 categories = ["gui", "wasm", "web-programming"]
 readme = "README.md"
-homepage = "https://github.com/rantai-dev/leptix"
+homepage = "https://github.com/RantAI-dev/leptix-ui"
 
 [workspace.dependencies]
 leptos = "0.8"
