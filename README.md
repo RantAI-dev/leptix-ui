@@ -1,8 +1,6 @@
 <p align="center">
-  <img src="logo.png" alt="Leptix" width="120" />
+  <img src="logo.png" alt="Leptix" width="420" />
 </p>
-
-<h1 align="center">Leptix</h1>
 
 <p align="center">
   <strong>Radix-quality accessible UI primitives for <a href="https://leptos.dev/">Leptos</a></strong>
