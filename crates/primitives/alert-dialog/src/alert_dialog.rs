@@ -1,7 +1,9 @@
 use leptos::{context::Provider, prelude::*};
 use leptos_node_ref::AnyNodeRef;
 
-pub use leptix_dialog::{Dialog, DialogDescription, DialogOverlay, DialogPortal, DialogTitle};
+// Re-export all Dialog parts with AlertDialog names for complete API
+pub use leptix_dialog::Dialog;
+pub use leptix_dialog::DialogPortal as AlertDialogPortal;
 
 #[derive(Clone, Debug)]
 struct AlertDialogContextValue {

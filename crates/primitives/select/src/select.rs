@@ -15,6 +15,9 @@ struct SelectContextValue {
     trigger_ref: AnyNodeRef,
     content_id: String,
     disabled: Signal<bool>,
+    name: Signal<Option<String>>,
+    required: Signal<bool>,
+    form: Signal<Option<String>>,
 }
 
 #[component]
@@ -26,10 +29,14 @@ pub fn Select(
     #[prop(into, optional)] on_open_change: Option<Callback<bool>>,
     #[prop(into, optional)] disabled: MaybeProp<bool>,
     #[prop(into, optional)] name: MaybeProp<String>,
+    #[prop(into, optional)] required: MaybeProp<bool>,
+    #[prop(into, optional)] form: MaybeProp<String>,
     children: TypedChildrenFn<impl IntoView + 'static>,
 ) -> impl IntoView {
     let children = StoredValue::new(children.into_inner());
-    let _name = name;
+    let name = Signal::derive(move || name.get());
+    let required = Signal::derive(move || required.get().unwrap_or(false));
+    let form = Signal::derive(move || form.get());
     let disabled = Signal::derive(move || disabled.get().unwrap_or(false));
     let open_state = RwSignal::new(open.get().or(Some(false)).unwrap_or(false));
 
@@ -70,9 +77,25 @@ pub fn Select(
         trigger_ref: AnyNodeRef::new(),
         content_id: format!("{}-content", base_id),
         disabled,
+        name,
+        required,
+        form,
     };
 
-    view! { <Provider value=ctx>{children.with_value(|c| c())}</Provider> }
+    view! {
+        <Provider value=ctx.clone()>
+            {children.with_value(|c| c())}
+            <Show when=move || ctx.name.get().is_some()>
+                <input
+                    type="hidden"
+                    name=move || ctx.name.get().unwrap_or_default()
+                    value=move || ctx.value.get().unwrap_or_default()
+                    required=move || ctx.required.get()
+                    form=move || ctx.form.get().unwrap_or_default()
+                />
+            </Show>
+        </Provider>
+    }
 }
 
 #[component]
@@ -133,11 +156,38 @@ pub fn SelectPortal(children: TypedChildrenFn<impl IntoView + 'static>) -> impl 
 
 #[component]
 pub fn SelectContent(
+    /// Which side to position on: "top" | "right" | "bottom" | "left"
+    #[prop(into, optional)]
+    side: MaybeProp<String>,
+    /// Offset from the trigger (pixels).
+    #[prop(into, optional)]
+    side_offset: MaybeProp<f64>,
+    /// Alignment along the side: "start" | "center" | "end"
+    #[prop(into, optional)]
+    align: MaybeProp<String>,
+    /// Offset along the alignment axis (pixels).
+    #[prop(into, optional)]
+    align_offset: MaybeProp<f64>,
+    /// Whether to flip/shift to avoid viewport collisions.
+    #[prop(into, optional)]
+    avoid_collisions: MaybeProp<bool>,
+    /// Padding from viewport edge when avoiding collisions (pixels).
+    #[prop(into, optional)]
+    collision_padding: MaybeProp<f64>,
     #[prop(into, optional)] as_child: MaybeProp<bool>,
     #[prop(into, optional)] node_ref: AnyNodeRef,
     children: TypedChildrenFn<impl IntoView + 'static>,
 ) -> impl IntoView {
     let children = StoredValue::new(children.into_inner());
+
+    // Reserved for future floating-ui integration
+    let _side = side;
+    let _side_offset = side_offset;
+    let _align = align;
+    let _align_offset = align_offset;
+    let _avoid_collisions = avoid_collisions;
+    let _collision_padding = collision_padding;
+
     let ctx = expect_context::<SelectContextValue>();
     let present = Signal::derive(move || ctx.open.get());
     let presence = use_presence(present);

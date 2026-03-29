@@ -106,17 +106,19 @@ pub fn DialogPortal(children: TypedChildrenFn<impl IntoView + 'static>) -> impl 
 /// Full-screen overlay behind the dialog.
 #[component]
 pub fn DialogOverlay(
+    #[prop(into, optional)] force_mount: MaybeProp<bool>,
     #[prop(into, optional)] as_child: MaybeProp<bool>,
     #[prop(into, optional)] node_ref: AnyNodeRef,
     #[prop(optional)] children: Option<ChildrenFn>,
 ) -> impl IntoView {
     let children = StoredValue::new(children);
     let context = expect_context::<DialogContextValue>();
+    let force_mount = Signal::derive(move || force_mount.get().unwrap_or(false));
     let present = Signal::derive(move || context.open.get());
     let presence = use_presence(present);
 
     view! {
-        <Show when=move || presence.is_present.get()>
+        <Show when=move || force_mount.get() || presence.is_present.get()>
             <Primitive
                 element=html::div
                 as_child=as_child
@@ -142,12 +144,14 @@ pub fn DialogContent(
     #[prop(into, optional)] on_escape_key_down: Option<Callback<web_sys::KeyboardEvent>>,
     #[prop(into, optional)] on_pointer_down_outside: Option<Callback<web_sys::PointerEvent>>,
     #[prop(into, optional)] on_interact_outside: Option<Callback<web_sys::Event>>,
+    #[prop(into, optional)] force_mount: MaybeProp<bool>,
     #[prop(into, optional)] as_child: MaybeProp<bool>,
     #[prop(into, optional)] node_ref: AnyNodeRef,
     children: TypedChildrenFn<impl IntoView + 'static>,
 ) -> impl IntoView {
     let children = StoredValue::new(children.into_inner());
     let context = expect_context::<DialogContextValue>();
+    let force_mount = Signal::derive(move || force_mount.get().unwrap_or(false));
 
     let present = Signal::derive(move || context.open.get());
     let presence = use_presence(present);
@@ -178,7 +182,7 @@ pub fn DialogContent(
     ]);
 
     view! {
-        <Show when=move || presence.is_present.get()>
+        <Show when=move || force_mount.get() || presence.is_present.get()>
             <Primitive
                 element=html::div
                 as_child=as_child

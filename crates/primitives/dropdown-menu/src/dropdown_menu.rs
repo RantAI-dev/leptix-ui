@@ -137,11 +137,37 @@ pub fn DropdownMenuContent(
     #[prop(into, optional)] on_escape_key_down: Option<Callback<web_sys::KeyboardEvent>>,
     #[prop(into, optional)] on_pointer_down_outside: Option<Callback<web_sys::PointerEvent>>,
     #[prop(into, optional)] r#loop: MaybeProp<bool>,
+    /// Which side to position on: "top" | "right" | "bottom" | "left"
+    #[prop(into, optional)]
+    side: MaybeProp<String>,
+    /// Offset from the trigger (pixels).
+    #[prop(into, optional)]
+    side_offset: MaybeProp<f64>,
+    /// Alignment along the side: "start" | "center" | "end"
+    #[prop(into, optional)]
+    align: MaybeProp<String>,
+    /// Offset along the alignment axis (pixels).
+    #[prop(into, optional)]
+    align_offset: MaybeProp<f64>,
+    /// Whether to flip/shift to avoid viewport collisions.
+    #[prop(into, optional)]
+    avoid_collisions: MaybeProp<bool>,
+    /// Padding from viewport edge when avoiding collisions (pixels).
+    #[prop(into, optional)]
+    collision_padding: MaybeProp<f64>,
     #[prop(into, optional)] as_child: MaybeProp<bool>,
     #[prop(into, optional)] node_ref: AnyNodeRef,
     children: TypedChildrenFn<impl IntoView + 'static>,
 ) -> impl IntoView {
     let children = StoredValue::new(children.into_inner());
+
+    // Reserved for future floating-ui integration
+    let _side = side;
+    let _side_offset = side_offset;
+    let _align = align;
+    let _align_offset = align_offset;
+    let _avoid_collisions = avoid_collisions;
+    let _collision_padding = collision_padding;
     let ctx = expect_context::<MenuContextValue>();
     let _do_loop = Signal::derive(move || r#loop.get().unwrap_or(false));
     let present = Signal::derive(move || ctx.open.get());
