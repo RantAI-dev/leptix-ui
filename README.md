@@ -1,30 +1,32 @@
-# Leptix
+<p align="center">
+  <img src="logo.png" alt="Leptix" width="120" />
+</p>
 
-**Radix-quality accessible UI primitives for [Leptos](https://leptos.dev/)**
+<h1 align="center">Leptix</h1>
 
-[![Crates.io](https://img.shields.io/crates/v/leptix-ui.svg)](https://crates.io/crates/leptix-ui)
-[![docs.rs](https://img.shields.io/docsrs/leptix-ui)](https://docs.rs/leptix-ui)
-[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
-[![Leptos](https://img.shields.io/badge/leptos-0.8-orange.svg)](https://leptos.dev/)
+<p align="center">
+  <strong>Radix-quality accessible UI primitives for <a href="https://leptos.dev/">Leptos</a></strong>
+</p>
 
-Leptix is a complete set of 33 unstyled, accessible UI primitives for Leptos, built to match the Radix UI API surface. Ship accessible components without fighting your design system.
+<p align="center">
+  <a href="https://crates.io/crates/leptix-ui"><img src="https://img.shields.io/crates/v/leptix-ui.svg?style=flat-square&color=4a90d9" alt="crates.io" /></a>
+  <a href="https://docs.rs/leptix-ui"><img src="https://img.shields.io/docsrs/leptix-ui?style=flat-square&color=66c2a5" alt="docs.rs" /></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square" alt="License" /></a>
+  <a href="https://leptos.dev/"><img src="https://img.shields.io/badge/leptos-0.8-F74C00.svg?style=flat-square" alt="Leptos" /></a>
+</p>
 
-## Features
+<p align="center">
+  Ship accessible, unstyled components without fighting your design system.<br/>
+  33 primitives. Full keyboard navigation. WAI-ARIA compliant. Zero opinions on styling.
+</p>
 
-- **1:1 Radix UI API parity** -- component names, props, and behaviors match Radix Primitives
-- **33 accessible, unstyled primitives** -- from simple Label to complex Select and Navigation Menu
-- **Floating UI positioning** -- Popover, Tooltip, HoverCard, Select, and DropdownMenu use collision-aware placement
-- **Full keyboard navigation** -- arrow keys, Home/End, typeahead search in menus and selects
-- **Focus management** -- focus trapping in dialogs, roving tabindex in groups, focus return on close
-- **Portal rendering** -- overlays render into `document.body` to escape stacking contexts
-- **WAI-ARIA compliant** -- correct roles, states, and properties out of the box
-- **Controlled and uncontrolled modes** -- use signals for full control or let components manage their own state
-- **RTL support** -- directional keyboard navigation adapts to writing direction
-- **CSS animation support** -- `data-state` attributes (`open`/`closed`) for entry/exit animations
-- **SSR-safe** -- all `web_sys` calls are guarded behind browser checks
-- **Tree-shakeable** -- use the `leptix-ui` umbrella crate with feature flags, or depend on individual crates
+---
 
-## Quick Start
+## Why Leptix?
+
+Building accessible UI in Rust/WASM is hard. You need focus trapping, keyboard navigation, screen reader support, portal rendering, and collision-aware positioning -- all while keeping components unstyled so they fit any design system.
+
+Leptix gives you all of that out of the box, with an API that mirrors [Radix UI](https://www.radix-ui.com/primitives) -- the gold standard for accessible React primitives.
 
 ```rust
 use leptix_ui::dialog::*;
@@ -47,23 +49,68 @@ fn App() -> impl IntoView {
 }
 ```
 
+## Features
+
+<table>
+<tr>
+<td width="50%">
+
+**Accessible by default**
+- WAI-ARIA roles, states, and properties
+- Focus trapping in dialogs
+- Roving tabindex in groups
+- Screen reader announcements
+
+</td>
+<td width="50%">
+
+**Keyboard-first**
+- Arrow key navigation in menus, selects, tabs
+- Home/End to jump to first/last item
+- Typeahead search in menus and selects
+- Escape to dismiss overlays
+
+</td>
+</tr>
+<tr>
+<td>
+
+**Smart positioning**
+- Floating UI collision-aware placement
+- Auto-flip when near viewport edges
+- Portal rendering into `document.body`
+- Cursor-positioned context menus
+
+</td>
+<td>
+
+**Developer experience**
+- Controlled and uncontrolled modes
+- `data-state` attributes for CSS animations
+- RTL/LTR directional support
+- SSR-safe (guarded `web_sys` calls)
+
+</td>
+</tr>
+</table>
+
 ## Installation
 
-### Umbrella crate (all 33 primitives)
+**Umbrella crate** -- all 33 primitives:
 
 ```toml
 [dependencies]
 leptix-ui = "0.1"
 ```
 
-All primitives are enabled by default. To slim down compile times, disable defaults and pick what you need:
+**Cherry-pick** what you need:
 
 ```toml
 [dependencies]
 leptix-ui = { version = "0.1", default-features = false, features = ["dialog", "tabs", "tooltip"] }
 ```
 
-### Individual crates
+**Individual crates** -- minimal dependency footprint:
 
 ```toml
 [dependencies]
@@ -72,76 +119,96 @@ leptix-tabs = "0.1"
 leptix-tooltip = "0.1"
 ```
 
-## Components (33)
+## Components
 
-| Component | Crate | Key Feature |
-|-----------|-------|-------------|
-| Accordion | `leptix-accordion` | Single/multiple expand, keyboard nav |
-| Alert Dialog | `leptix-alert-dialog` | Non-dismissable modal with required action |
-| Aspect Ratio | `leptix-aspect-ratio` | CSS ratio container |
-| Avatar | `leptix-avatar` | Image loading states + fallback |
-| Checkbox | `leptix-checkbox` | Indeterminate state, form integration |
-| Collapsible | `leptix-collapsible` | Expand/collapse with CSS animation |
-| Context Menu | `leptix-context-menu` | Right-click menu with submenus |
-| Dialog | `leptix-dialog` | Modal with focus trap and portal |
-| Dropdown Menu | `leptix-dropdown-menu` | Menu with submenus, checkbox/radio items |
-| Form | `leptix-form` | Validation and accessible error messages |
-| Hover Card | `leptix-hover-card` | Rich hover preview with Floating UI |
-| Label | `leptix-label` | Accessible form label |
-| Menubar | `leptix-menubar` | Horizontal menu bar with keyboard nav |
-| Navigation Menu | `leptix-navigation-menu` | Top-level nav with sub-menus and viewport |
-| OTP Field | `leptix-otp-field` | Multi-segment one-time password input |
-| Password Toggle | `leptix-password-toggle` | Show/hide password visibility |
-| Popover | `leptix-popover` | Floating content panel with Floating UI |
-| Progress | `leptix-progress` | Determinate/indeterminate progress bar |
-| Radio Group | `leptix-radio-group` | Single selection with roving focus |
-| Scroll Area | `leptix-scroll-area` | Custom scrollbars with native scrolling |
-| Select | `leptix-select` | Dropdown select with groups and typeahead |
-| Separator | `leptix-separator` | Visual and semantic separator |
-| Slider | `leptix-slider` | Range input with multi-thumb support |
-| Switch | `leptix-switch` | Toggle switch, form-friendly |
-| Tabs | `leptix-tabs` | Tab panels with keyboard nav |
-| Toast | `leptix-toast` | Notification queue with auto-dismiss |
-| Toggle | `leptix-toggle` | Two-state button |
-| Toggle Group | `leptix-toggle-group` | Single/multiple selection toggle set |
-| Toolbar | `leptix-toolbar` | Grouped controls with roving focus |
-| Tooltip | `leptix-tooltip` | Hover/focus popup with Floating UI |
-| Visually Hidden | `leptix-visually-hidden` | Screen reader only content |
-| Accessible Icon | `leptix-accessible-icon` | Icon with screen reader label |
+| | Component | Crate | Highlights |
+|---|-----------|-------|------------|
+| **Layout** | | | |
+| | Aspect Ratio | `leptix-aspect-ratio` | CSS ratio container |
+| | Separator | `leptix-separator` | Visual + semantic divider |
+| | Scroll Area | `leptix-scroll-area` | Custom scrollbars, drag-to-scroll |
+| | Visually Hidden | `leptix-visually-hidden` | Screen reader only content |
+| **Forms** | | | |
+| | Checkbox | `leptix-checkbox` | Indeterminate state, form integration |
+| | Label | `leptix-label` | Accessible form labels |
+| | Radio Group | `leptix-radio-group` | Single selection, roving focus |
+| | Select | `leptix-select` | Dropdown with groups + typeahead |
+| | Slider | `leptix-slider` | Range input, multi-thumb, invertible |
+| | Switch | `leptix-switch` | Toggle switch, form control |
+| | Toggle | `leptix-toggle` | Two-state button |
+| | Toggle Group | `leptix-toggle-group` | Single/multiple selection set |
+| | Form | `leptix-form` | Validation + accessible errors |
+| | OTP Field | `leptix-otp-field` | Multi-segment OTP input |
+| | Password Toggle | `leptix-password-toggle` | Show/hide password |
+| **Overlays** | | | |
+| | Dialog | `leptix-dialog` | Modal with focus trap + portal |
+| | Alert Dialog | `leptix-alert-dialog` | Non-dismissable confirmation |
+| | Popover | `leptix-popover` | Floating panel, collision-aware |
+| | Tooltip | `leptix-tooltip` | Hover/focus popup, delay groups |
+| | Hover Card | `leptix-hover-card` | Rich hover preview |
+| | Toast | `leptix-toast` | Notifications, swipe-to-dismiss |
+| **Navigation** | | | |
+| | Tabs | `leptix-tabs` | Tab panels, auto/manual activation |
+| | Accordion | `leptix-accordion` | Collapsible sections |
+| | Collapsible | `leptix-collapsible` | Expand/collapse with animation |
+| | Navigation Menu | `leptix-navigation-menu` | Site nav with viewports |
+| **Menus** | | | |
+| | Dropdown Menu | `leptix-dropdown-menu` | Submenus, checkbox/radio items |
+| | Context Menu | `leptix-context-menu` | Right-click, cursor-positioned |
+| | Menubar | `leptix-menubar` | Horizontal menu bar |
+| **Misc** | | | |
+| | Avatar | `leptix-avatar` | Image loading + fallback |
+| | Progress | `leptix-progress` | Determinate/indeterminate bar |
+| | Toolbar | `leptix-toolbar` | Grouped controls |
+| | Accessible Icon | `leptix-accessible-icon` | Icon + screen reader label |
 
-Plus **`leptix-core`** (shared infrastructure: Popper, Portal, Presence, FocusScope, DismissableLayer, and more).
-
-## Requirements
-
-- **Leptos** 0.8+
-- **Rust nightly** (edition 2024)
-- **Target:** `wasm32-unknown-unknown`
+Plus **`leptix-core`** -- the shared engine powering all primitives (Popper, Portal, Presence, FocusScope, DismissableLayer, and more).
 
 ## Architecture
 
 ```
-leptix-ui (umbrella, re-exports all primitives)
+leptix-ui                            Umbrella crate (re-exports everything)
   |
-  +-- leptix-dialog, leptix-tabs, leptix-tooltip, ... (33 primitive crates)
+  +-- leptix-dialog                  33 primitive crates
+  +-- leptix-tabs                    (independently publishable)
+  +-- leptix-tooltip
+  +-- leptix-select
+  +-- ...
         |
-        +-- leptix-core (Popper, Portal, Presence, FocusScope, DismissableLayer, ...)
+        +-- leptix-core              Shared infrastructure
+              |
+              +-- floating-ui-leptos  Collision-aware positioning
+              +-- web-sys             DOM access
+              +-- leptos              Reactive framework
 ```
 
-Each primitive crate is independently publishable. `leptix-core` provides the shared building blocks: floating positioning, focus management, dismiss-on-outside-click, portal rendering, and CSS animation presence detection.
+## Requirements
 
-## Links
+| | Version |
+|---|---------|
+| **Rust** | Nightly (edition 2024) |
+| **Leptos** | 0.8+ |
+| **Target** | `wasm32-unknown-unknown` |
 
-- [GitHub](https://github.com/RantAI-dev/leptix-ui)
-- [API Documentation (docs.rs)](https://docs.rs/leptix-ui)
+## Built by RantAI
+
+<p>
+  Leptix is developed and maintained by <a href="https://github.com/RantAI-dev"><strong>RantAI</strong></a> -- building intelligent developer tools and open-source infrastructure for the Rust ecosystem.
+</p>
 
 ## Credits
 
-Built on the shoulders of:
+Standing on the shoulders of giants:
 
-- [Radix UI Primitives](https://www.radix-ui.com/primitives) -- the reference API and behavior specification
-- [RustForWeb/radix](https://github.com/RustForWeb/radix) -- the original Rust/Leptos port (MIT)
-- [Floating UI](https://floating-ui.com/) -- collision-aware positioning via [`floating-ui-leptos`](https://crates.io/crates/floating-ui-leptos)
+- **[Radix UI Primitives](https://www.radix-ui.com/primitives)** -- the reference API and behavior specification
+- **[RustForWeb/radix](https://github.com/RustForWeb/radix)** -- the original Rust/Leptos port (MIT)
+- **[Floating UI](https://floating-ui.com/)** -- collision-aware positioning engine
+- **[Leptos](https://leptos.dev/)** -- the reactive Rust web framework
+
+## Contributing
+
+Contributions are welcome! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 
 ## License
 
-MIT
+[MIT](LICENSE) &copy; [RantAI](https://github.com/RantAI-dev)
