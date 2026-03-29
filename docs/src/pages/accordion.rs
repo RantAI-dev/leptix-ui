@@ -1,3 +1,4 @@
+use crate::HeroCodeBlock;
 use leptix_ui::accordion::*;
 use leptos::prelude::*;
 
@@ -45,12 +46,12 @@ pub fn AccordionPage() -> impl IntoView {
             </div>
             </div>
         </div>
-        <div class="code-block">
-            <div class="code-block-header">
-                <span class="code-block-lang">"styles.css"</span>
-            </div>
-            <pre>{".AccordionRoot {\n  border-radius: 6px;\n  width: 300px;\n  background-color: var(--mauve-6);\n  box-shadow: 0 2px 10px var(--black-a4);\n}\n\n.AccordionItem {\n  overflow: hidden;\n  margin-top: 1px;\n}\n.AccordionItem:first-child {\n  margin-top: 0;\n  border-top-left-radius: 4px;\n  border-top-right-radius: 4px;\n}\n.AccordionItem:last-child {\n  border-bottom-left-radius: 4px;\n  border-bottom-right-radius: 4px;\n}\n\n.AccordionTrigger {\n  font-family: inherit;\n  padding: 0 20px;\n  height: 45px;\n  flex: 1;\n  display: flex;\n  align-items: center;\n  justify-content: space-between;\n  font-size: 15px;\n  line-height: 1;\n  background-color: white;\n  cursor: pointer;\n}\n.AccordionTrigger[data-state=\"open\"] {\n  background-color: var(--mauve-2);\n}\n\n.AccordionContent {\n  overflow: hidden;\n  font-size: 15px;\n  color: var(--mauve-11);\n  background-color: var(--mauve-2);\n  padding: 15px 20px;\n}\n.AccordionContent[data-state=\"closed\"] {\n  display: none;\n}"}</pre>
-        </div>
+        <HeroCodeBlock
+            usage_code="use leptix_ui::accordion::*;\n\nview! {\n    <Accordion r#type=AccordionType::Single collapsible=true default_value=vec![\"item-1\".to_string()]>\n        <AccordionItem value=\"item-1\">\n            <AccordionTrigger>\"Is it accessible?\"</AccordionTrigger>\n            <AccordionContent>\"Yes. It adheres to the WAI-ARIA design pattern.\"</AccordionContent>\n        </AccordionItem>\n    </Accordion>\n}"
+            css_code=".AccordionRoot {\n  border-radius: 6px;\n  width: 300px;\n  background-color: var(--mauve-6);\n  box-shadow: 0 2px 10px var(--black-a4);\n}\n\n.AccordionItem {\n  overflow: hidden;\n  margin-top: 1px;\n}\n.AccordionItem:first-child {\n  margin-top: 0;\n  border-top-left-radius: 4px;\n  border-top-right-radius: 4px;\n}\n.AccordionItem:last-child {\n  border-bottom-left-radius: 4px;\n  border-bottom-right-radius: 4px;\n}\n\n.AccordionTrigger {\n  font-family: inherit;\n  padding: 0 20px;\n  height: 45px;\n  flex: 1;\n  display: flex;\n  align-items: center;\n  justify-content: space-between;\n  font-size: 15px;\n  line-height: 1;\n  background-color: white;\n  cursor: pointer;\n}\n.AccordionTrigger[data-state=\"open\"] {\n  background-color: var(--mauve-2);\n}\n\n.AccordionContent {\n  overflow: hidden;\n  font-size: 15px;\n  color: var(--mauve-11);\n  background-color: var(--mauve-2);\n  padding: 15px 20px;\n}\n.AccordionContent[data-state=\"closed\"] {\n  display: none;\n}"
+            css_modules_code=".Root {\n  border-radius: 6px;\n  width: 300px;\n  background-color: var(--mauve-6);\n  box-shadow: 0 2px 10px var(--black-a4);\n}\n\n.Item {\n  overflow: hidden;\n  margin-top: 1px;\n}\n.Item:first-child {\n  margin-top: 0;\n  border-top-left-radius: 4px;\n  border-top-right-radius: 4px;\n}\n.Item:last-child {\n  border-bottom-left-radius: 4px;\n  border-bottom-right-radius: 4px;\n}\n\n.Trigger {\n  font-family: inherit;\n  padding: 0 20px;\n  height: 45px;\n  flex: 1;\n  display: flex;\n  align-items: center;\n  justify-content: space-between;\n  font-size: 15px;\n  line-height: 1;\n  background-color: white;\n  cursor: pointer;\n}\n.Trigger[data-state=\"open\"] {\n  background-color: var(--mauve-2);\n}\n\n.Content {\n  overflow: hidden;\n  font-size: 15px;\n  color: var(--mauve-11);\n  background-color: var(--mauve-2);\n  padding: 15px 20px;\n}\n.Content[data-state=\"closed\"] {\n  display: none;\n}"
+            tailwind_code="view! {\n    <Accordion r#type=AccordionType::Single collapsible=true class=\"rounded-md w-[300px] bg-gray-200 shadow-md\">\n        <AccordionItem value=\"item-1\" class=\"overflow-hidden mt-px first:mt-0 first:rounded-t first:rounded-t last:rounded-b\">\n            <AccordionTrigger class=\"font-inherit px-5 h-[45px] flex-1 flex items-center justify-between text-sm bg-white cursor-pointer data-[state=open]:bg-gray-50\">\n                \"Is it accessible?\"\n            </AccordionTrigger>\n            <AccordionContent class=\"overflow-hidden text-sm text-gray-500 bg-gray-50 px-5 py-4 data-[state=closed]:hidden\">\n                \"Yes. It adheres to the WAI-ARIA design pattern.\"\n            </AccordionContent>\n        </AccordionItem>\n    </Accordion>\n}"
+        />
 
         // ---- Highlights ----
         <div class="highlights">

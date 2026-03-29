@@ -1,3 +1,4 @@
+use crate::HeroCodeBlock;
 use leptix_ui::password_toggle::*;
 use leptos::prelude::*;
 
@@ -20,6 +21,12 @@ pub fn PasswordTogglePage() -> impl IntoView {
             </div>
             </div>
         </div>
+        <HeroCodeBlock
+            usage_code="use leptix_ui::password_toggle::*;\n\nview! {\n    <PasswordToggleField>\n        <PasswordToggleFieldInput />\n        <PasswordToggleFieldToggle>\"Show\"</PasswordToggleFieldToggle>\n    </PasswordToggleField>\n}"
+            css_code=".PasswordToggleFieldRoot {\n  display: flex;\n  align-items: center;\n  gap: 8px;\n}\n\n.PasswordToggleFieldInput {\n  flex: 1;\n  padding: 8px 12px;\n  border-radius: 4px;\n  border: 1px solid var(--black-a9);\n  background: transparent;\n  color: white;\n  font-size: 15px;\n  outline: none;\n}\n\n.PasswordToggleFieldInput:focus {\n  border-color: var(--violet-9);\n}\n\n.PasswordToggleFieldToggle {\n  padding: 8px 12px;\n  border-radius: 4px;\n  border: none;\n  background-color: var(--violet-9);\n  color: white;\n  font-size: 13px;\n  font-weight: 500;\n  cursor: pointer;\n}\n\n.PasswordToggleFieldToggle:hover {\n  background-color: var(--violet-10);\n}"
+            css_modules_code=".Root {\n  display: flex;\n  align-items: center;\n  gap: 8px;\n}\n\n.Input {\n  flex: 1;\n  padding: 8px 12px;\n  border-radius: 4px;\n  border: 1px solid var(--black-a9);\n  background: transparent;\n  color: white;\n  font-size: 15px;\n  outline: none;\n}\n\n.Input:focus {\n  border-color: var(--violet-9);\n}\n\n.Toggle {\n  padding: 8px 12px;\n  border-radius: 4px;\n  border: none;\n  background-color: var(--violet-9);\n  color: white;\n  font-size: 13px;\n  font-weight: 500;\n  cursor: pointer;\n}\n\n.Toggle:hover {\n  background-color: var(--violet-10);\n}"
+            tailwind_code="view! {\n    <PasswordToggleField class=\"flex items-center gap-2\">\n        <PasswordToggleFieldInput\n            class=\"flex-1 py-2 px-3 rounded border border-gray-600 bg-transparent text-white text-sm outline-none focus:border-violet-500\" />\n        <PasswordToggleFieldToggle\n            class=\"py-2 px-3 rounded bg-violet-500 text-white text-xs font-medium cursor-pointer hover:bg-violet-600\">\n            \"Show\"\n        </PasswordToggleFieldToggle>\n    </PasswordToggleField>\n}"
+        />
 
         // ---- Highlights ----
         <div class="highlights">

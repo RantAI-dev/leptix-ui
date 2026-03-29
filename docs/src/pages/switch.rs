@@ -1,3 +1,4 @@
+use crate::HeroCodeBlock;
 use leptix_ui::switch::*;
 use leptos::prelude::*;
 
@@ -20,12 +21,12 @@ pub fn SwitchPage() -> impl IntoView {
             </div>
             </div>
         </div>
-        <div class="code-block">
-            <div class="code-block-header">
-                <span class="code-block-lang">"styles.css"</span>
-            </div>
-            <pre>{".SwitchRoot {\n  width: 42px;\n  height: 25px;\n  background-color: var(--black-a9);\n  border-radius: 9999px;\n  position: relative;\n}\n.SwitchRoot[data-state=\"checked\"] {\n  background-color: black;\n}\n\n.SwitchThumb {\n  display: block;\n  width: 21px;\n  height: 21px;\n  background-color: white;\n  border-radius: 9999px;\n  transition: transform 100ms;\n  transform: translateX(2px);\n}\n.SwitchThumb[data-state=\"checked\"] {\n  transform: translateX(19px);\n}"}</pre>
-        </div>
+        <HeroCodeBlock
+            usage_code="use leptix_ui::switch::*;\n\nview! {\n    <Switch default_checked=true>\n        <SwitchThumb />\n    </Switch>\n}"
+            css_code=".SwitchRoot {\n  width: 42px;\n  height: 25px;\n  background-color: var(--black-a9);\n  border-radius: 9999px;\n  position: relative;\n}\n.SwitchRoot[data-state=\"checked\"] {\n  background-color: black;\n}\n\n.SwitchThumb {\n  display: block;\n  width: 21px;\n  height: 21px;\n  background-color: white;\n  border-radius: 9999px;\n  transition: transform 100ms;\n  transform: translateX(2px);\n}\n.SwitchThumb[data-state=\"checked\"] {\n  transform: translateX(19px);\n}"
+            css_modules_code=".Root {\n  width: 42px;\n  height: 25px;\n  background-color: var(--black-a9);\n  border-radius: 9999px;\n  position: relative;\n}\n.Root[data-state=\"checked\"] {\n  background-color: black;\n}\n\n.Thumb {\n  display: block;\n  width: 21px;\n  height: 21px;\n  background-color: white;\n  border-radius: 9999px;\n  transition: transform 100ms;\n  transform: translateX(2px);\n}\n.Thumb[data-state=\"checked\"] {\n  transform: translateX(19px);\n}"
+            tailwind_code="view! {\n    <Switch class=\"w-[42px] h-[25px] bg-black/40 rounded-full relative data-[state=checked]:bg-black\">\n        <SwitchThumb class=\"block w-[21px] h-[21px] bg-white rounded-full transition-transform translate-x-0.5 data-[state=checked]:translate-x-[19px]\" />\n    </Switch>\n}"
+        />
 
         // ---- Highlights ----
         <div class="highlights">

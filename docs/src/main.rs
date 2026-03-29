@@ -440,3 +440,101 @@ pub fn CodeBlock(
         </div>
     }
 }
+
+// ---------------------------------------------------------------------------
+// HeroCodeBlock — multi-tab code display (usage.rs + CSS/Modules/Tailwind)
+// ---------------------------------------------------------------------------
+
+#[component]
+pub fn HeroCodeBlock(
+    #[prop(into)] usage_code: String,
+    #[prop(into)] css_code: String,
+    #[prop(into)] css_modules_code: String,
+    #[prop(into)] tailwind_code: String,
+) -> impl IntoView {
+    let (active_tab, set_active_tab) = signal("usage");
+    let (css_mode, set_css_mode) = signal("css");
+    let (copied, set_copied) = signal(false);
+
+    let usage = StoredValue::new(usage_code);
+    let css = StoredValue::new(css_code);
+    let css_mod = StoredValue::new(css_modules_code);
+    let tw = StoredValue::new(tailwind_code);
+
+    let styles_filename = move || match css_mode.get() {
+        "css-modules" => "styles.module.css",
+        "tailwind" => "tailwind",
+        _ => "styles.css",
+    };
+
+    let current_code = move || match active_tab.get() {
+        "usage" => usage.get_value(),
+        _ => match css_mode.get() {
+            "css-modules" => css_mod.get_value(),
+            "tailwind" => tw.get_value(),
+            _ => css.get_value(),
+        },
+    };
+
+    let on_copy = move |_| {
+        let code = current_code();
+        if let Some(window) = web_sys::window() {
+            let nav = window.navigator();
+            let clipboard = nav.clipboard();
+            let _ = clipboard.write_text(&code);
+            set_copied.set(true);
+            let cb = wasm_bindgen::closure::Closure::once(move || {
+                set_copied.set(false);
+            });
+            let _ = window.set_timeout_with_callback_and_timeout_and_arguments_0(
+                cb.as_ref().unchecked_ref(),
+                2000,
+            );
+            cb.forget();
+        }
+    };
+
+    view! {
+        <div class="hero-code-block">
+            <div class="hero-code-tabs">
+                <div class="hero-code-tabs-left">
+                    <button
+                        class="hero-code-tab"
+                        class:active=move || active_tab.get() == "usage"
+                        on:click=move |_| set_active_tab.set("usage")
+                    >
+                        "usage.rs"
+                    </button>
+                    <button
+                        class="hero-code-tab"
+                        class:active=move || active_tab.get() == "styles"
+                        on:click=move |_| set_active_tab.set("styles")
+                    >
+                        {styles_filename}
+                    </button>
+                </div>
+                <div class="hero-code-tabs-right">
+                    <select
+                        class="hero-code-mode"
+                        on:change=move |ev| {
+                            let val = event_target_value(&ev);
+                            set_css_mode.set(match val.as_str() {
+                                "css-modules" => "css-modules",
+                                "tailwind" => "tailwind",
+                                _ => "css",
+                            });
+                        }
+                    >
+                        <option value="css" selected=move || css_mode.get() == "css">"CSS"</option>
+                        <option value="css-modules" selected=move || css_mode.get() == "css-modules">"CSS Modules"</option>
+                        <option value="tailwind" selected=move || css_mode.get() == "tailwind">"Tailwind CSS"</option>
+                    </select>
+                    <button class="copy-btn always-visible" class:copied=move || copied.get() on:click=on_copy>
+                        {move || if copied.get() { "Copied!" } else { "Copy" }}
+                    </button>
+                </div>
+            </div>
+            <pre>{current_code}</pre>
+        </div>
+    }
+}

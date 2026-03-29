@@ -1,3 +1,4 @@
+use crate::HeroCodeBlock;
 use leptix_ui::tooltip::*;
 use leptos::prelude::*;
 
@@ -27,12 +28,12 @@ pub fn TooltipPage() -> impl IntoView {
             </div>
             </div>
         </div>
-        <div class="code-block">
-            <div class="code-block-header">
-                <span class="code-block-lang">"styles.css"</span>
-            </div>
-            <pre>{".TooltipContent {\n  border-radius: 4px;\n  padding: 10px 15px;\n  font-size: 15px;\n  line-height: 1;\n  color: var(--violet-11);\n  background-color: white;\n  box-shadow: hsl(206 22% 7% / 35%) 0px 10px 38px -10px,\n    hsl(206 22% 7% / 20%) 0px 10px 20px -15px;\n  user-select: none;\n  animation: fadeIn 200ms ease;\n}\n\n@keyframes fadeIn {\n  from { opacity: 0; }\n  to { opacity: 1; }\n}"}</pre>
-        </div>
+        <HeroCodeBlock
+            usage_code="use leptix_tooltip::*;\n\nview! {\n    <TooltipProvider>\n        <Tooltip>\n            <TooltipTrigger>\"Hover me\"</TooltipTrigger>\n            <TooltipPortal>\n                <TooltipContent class=\"TooltipContent\">\n                    \"Tooltip text\"\n                    <TooltipArrow />\n                </TooltipContent>\n            </TooltipPortal>\n        </Tooltip>\n    </TooltipProvider>\n}"
+            css_code=".TooltipContent {\n  border-radius: 4px;\n  padding: 10px 15px;\n  font-size: 15px;\n  line-height: 1;\n  color: var(--violet-11);\n  background-color: white;\n  box-shadow: hsl(206 22% 7% / 35%) 0px 10px 38px -10px,\n    hsl(206 22% 7% / 20%) 0px 10px 20px -15px;\n  user-select: none;\n  animation: fadeIn 200ms ease;\n}\n\n@keyframes fadeIn {\n  from { opacity: 0; }\n  to { opacity: 1; }\n}"
+            css_modules_code=".Content {\n  border-radius: 4px;\n  padding: 10px 15px;\n  font-size: 15px;\n  line-height: 1;\n  color: var(--violet-11);\n  background-color: white;\n  box-shadow: hsl(206 22% 7% / 35%) 0px 10px 38px -10px,\n    hsl(206 22% 7% / 20%) 0px 10px 20px -15px;\n  user-select: none;\n  animation: fadeIn 200ms ease;\n}\n\n@keyframes fadeIn {\n  from { opacity: 0; }\n  to { opacity: 1; }\n}"
+            tailwind_code="<TooltipProvider>\n    <Tooltip>\n        <TooltipTrigger>\"Hover me\"</TooltipTrigger>\n        <TooltipPortal>\n            <TooltipContent class=\"rounded px-4 py-2.5 text-[15px] leading-none text-violet-700 bg-white shadow-lg select-none animate-fadeIn\">\n                \"Tooltip text\"\n                <TooltipArrow />\n            </TooltipContent>\n        </TooltipPortal>\n    </Tooltip>\n</TooltipProvider>"
+        />
 
         // ---- Highlights ----
         <div class="highlights">

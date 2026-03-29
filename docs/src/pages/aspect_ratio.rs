@@ -1,3 +1,4 @@
+use crate::HeroCodeBlock;
 use leptix_ui::aspect_ratio::*;
 use leptos::prelude::*;
 
@@ -21,6 +22,12 @@ pub fn AspectRatioPage() -> impl IntoView {
             </div>
             </div>
         </div>
+        <HeroCodeBlock
+            usage_code="use leptix_ui::aspect_ratio::*;\n\nview! {\n    <AspectRatio ratio=Signal::derive(|| 16.0 / 9.0)>\n        <img src=\"landscape.jpg\" style=\"object-fit: cover; width: 100%; height: 100%;\" />\n    </AspectRatio>\n}"
+            css_code=".AspectRatioRoot {\n  width: 300px;\n}\n\n.AspectRatioRoot img {\n  object-fit: cover;\n  width: 100%;\n  height: 100%;\n  border-radius: 6px;\n}"
+            css_modules_code=".Root {\n  width: 300px;\n}\n\n.Root img {\n  object-fit: cover;\n  width: 100%;\n  height: 100%;\n  border-radius: 6px;\n}"
+            tailwind_code="view! {\n    <AspectRatio ratio=Signal::derive(|| 16.0 / 9.0) class=\"w-[300px]\">\n        <img src=\"landscape.jpg\" class=\"object-cover w-full h-full rounded-md\" />\n    </AspectRatio>\n}"
+        />
 
         // ---- Highlights ----
         <div class="highlights">

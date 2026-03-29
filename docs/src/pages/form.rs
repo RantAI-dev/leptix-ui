@@ -1,3 +1,4 @@
+use crate::HeroCodeBlock;
 use leptix_ui::form::*;
 use leptos::prelude::*;
 
@@ -37,6 +38,12 @@ pub fn FormPage() -> impl IntoView {
             </div>
             </div>
         </div>
+        <HeroCodeBlock
+            usage_code="use leptix_ui::form::*;\n\nview! {\n    <Form>\n        <FormField name=\"email\">\n            <FormLabel>\"Email\"</FormLabel>\n            <FormControl>\n                <input type=\"email\" placeholder=\"you@example.com\" />\n            </FormControl>\n            <FormMessage>\"Please enter a valid email.\"</FormMessage>\n        </FormField>\n        <button type=\"submit\">\"Submit\"</button>\n    </Form>\n}"
+            css_code=".FormRoot {\n  width: 300px;\n}\n\n.FormField {\n  display: grid;\n  margin-bottom: 10px;\n}\n\n.FormLabel {\n  font-size: 15px;\n  font-weight: 500;\n  line-height: 35px;\n  color: white;\n}\n\n.FormControl input {\n  width: 100%;\n  display: inline-flex;\n  align-items: center;\n  justify-content: center;\n  border-radius: 4px;\n  padding: 0 10px;\n  font-size: 15px;\n  line-height: 1;\n  color: white;\n  background-color: var(--black-a5);\n  box-shadow: 0 0 0 1px var(--black-a9);\n  height: 35px;\n}\n\n.FormMessage {\n  font-size: 13px;\n  color: white;\n  opacity: 0.8;\n}"
+            css_modules_code=".Root {\n  width: 300px;\n}\n\n.Field {\n  display: grid;\n  margin-bottom: 10px;\n}\n\n.Label {\n  font-size: 15px;\n  font-weight: 500;\n  line-height: 35px;\n  color: white;\n}\n\n.Control input {\n  width: 100%;\n  display: inline-flex;\n  align-items: center;\n  justify-content: center;\n  border-radius: 4px;\n  padding: 0 10px;\n  font-size: 15px;\n  line-height: 1;\n  color: white;\n  background-color: var(--black-a5);\n  box-shadow: 0 0 0 1px var(--black-a9);\n  height: 35px;\n}\n\n.Message {\n  font-size: 13px;\n  color: white;\n  opacity: 0.8;\n}"
+            tailwind_code="view! {\n    <Form class=\"w-[300px]\">\n        <FormField name=\"email\" class=\"grid mb-2.5\">\n            <FormLabel class=\"text-sm font-medium leading-[35px] text-white\">\n                \"Email\"\n            </FormLabel>\n            <FormControl>\n                <input type=\"email\" placeholder=\"you@example.com\"\n                    class=\"w-full inline-flex items-center justify-center rounded px-2.5 text-sm text-white bg-black/20 shadow-[0_0_0_1px_rgba(0,0,0,0.6)] h-[35px]\" />\n            </FormControl>\n            <FormMessage class=\"text-xs text-white/80\">\n                \"Please enter a valid email.\"\n            </FormMessage>\n        </FormField>\n        <button type=\"submit\" class=\"mt-3 px-5 py-2 rounded-md bg-violet-500 text-white font-medium\">\n            \"Submit\"\n        </button>\n    </Form>\n}"
+        />
 
         // ---- Highlights ----
         <div class="highlights">

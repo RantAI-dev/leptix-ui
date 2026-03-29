@@ -1,3 +1,4 @@
+use crate::HeroCodeBlock;
 use leptix_ui::checkbox::*;
 use leptos::prelude::*;
 
@@ -22,12 +23,12 @@ pub fn CheckboxPage() -> impl IntoView {
             </div>
             </div>
         </div>
-        <div class="code-block">
-            <div class="code-block-header">
-                <span class="code-block-lang">"styles.css"</span>
-            </div>
-            <pre>{".CheckboxRoot {\n  all: unset;\n  background-color: white;\n  width: 25px;\n  height: 25px;\n  border-radius: 4px;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  box-shadow: 0 2px 10px var(--black-a7);\n}\n.CheckboxRoot:hover {\n  background-color: var(--violet-3);\n}\n.CheckboxRoot[data-state=\"checked\"] {\n  background-color: var(--violet-9);\n  color: white;\n}\n\n.CheckboxIndicator {\n  color: var(--violet-11);\n  display: flex;\n  align-items: center;\n  justify-content: center;\n}\n.CheckboxRoot[data-state=\"checked\"] .CheckboxIndicator {\n  color: white;\n}"}</pre>
-        </div>
+        <HeroCodeBlock
+            usage_code="use leptix_ui::checkbox::*;\n\nview! {\n    <Checkbox default_checked=CheckedState::True>\n        <CheckboxIndicator>\n            \"\\u{2713}\"\n        </CheckboxIndicator>\n    </Checkbox>\n}"
+            css_code=".CheckboxRoot {\n  all: unset;\n  background-color: white;\n  width: 25px;\n  height: 25px;\n  border-radius: 4px;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  box-shadow: 0 2px 10px var(--black-a7);\n}\n.CheckboxRoot:hover {\n  background-color: var(--violet-3);\n}\n.CheckboxRoot[data-state=\"checked\"] {\n  background-color: var(--violet-9);\n  color: white;\n}\n\n.CheckboxIndicator {\n  color: var(--violet-11);\n  display: flex;\n  align-items: center;\n  justify-content: center;\n}\n.CheckboxRoot[data-state=\"checked\"] .CheckboxIndicator {\n  color: white;\n}"
+            css_modules_code=".Root {\n  all: unset;\n  background-color: white;\n  width: 25px;\n  height: 25px;\n  border-radius: 4px;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  box-shadow: 0 2px 10px var(--black-a7);\n}\n.Root:hover {\n  background-color: var(--violet-3);\n}\n.Root[data-state=\"checked\"] {\n  background-color: var(--violet-9);\n  color: white;\n}\n\n.Indicator {\n  color: var(--violet-11);\n  display: flex;\n  align-items: center;\n  justify-content: center;\n}\n.Root[data-state=\"checked\"] .Indicator {\n  color: white;\n}"
+            tailwind_code="view! {\n    <Checkbox class=\"bg-white w-[25px] h-[25px] rounded flex items-center justify-center shadow-md hover:bg-violet-100 data-[state=checked]:bg-violet-500 data-[state=checked]:text-white\">\n        <CheckboxIndicator class=\"flex items-center justify-center text-violet-700 data-[state=checked]:text-white\">\n            \"\\u{2713}\"\n        </CheckboxIndicator>\n    </Checkbox>\n}"
+        />
 
         // ---- Highlights ----
         <div class="highlights">

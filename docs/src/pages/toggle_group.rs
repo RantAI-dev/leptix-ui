@@ -1,3 +1,4 @@
+use crate::HeroCodeBlock;
 use leptix_ui::toggle_group::*;
 use leptos::prelude::*;
 
@@ -21,12 +22,12 @@ pub fn ToggleGroupPage() -> impl IntoView {
             </div>
             </div>
         </div>
-        <div class="code-block">
-            <div class="code-block-header">
-                <span class="code-block-lang">"styles.css"</span>
-            </div>
-            <pre>{".ToggleGroupRoot {\n  display: inline-flex;\n  background-color: var(--mauve-6);\n  border-radius: 4px;\n  box-shadow: 0 2px 10px var(--black-a7);\n}\n\n.ToggleGroupItem {\n  all: unset;\n  background-color: white;\n  color: var(--mauve-11);\n  height: 35px;\n  width: 35px;\n  display: flex;\n  font-size: 15px;\n  line-height: 1;\n  align-items: center;\n  justify-content: center;\n  margin-left: 1px;\n  cursor: pointer;\n}\n.ToggleGroupItem:first-child {\n  margin-left: 0;\n  border-top-left-radius: 4px;\n  border-bottom-left-radius: 4px;\n}\n.ToggleGroupItem:last-child {\n  border-top-right-radius: 4px;\n  border-bottom-right-radius: 4px;\n}\n.ToggleGroupItem:hover {\n  background-color: var(--violet-3);\n}\n.ToggleGroupItem[data-state=\"on\"] {\n  background-color: var(--violet-6);\n  color: var(--violet-12);\n}"}</pre>
-        </div>
+        <HeroCodeBlock
+            usage_code="use leptix_toggle_group::*;\n\nview! {\n    <ToggleGroup r#type=ToggleGroupType::Single class=\"ToggleGroupRoot\">\n        <ToggleGroupItem class=\"ToggleGroupItem\" value=\"bold\">\"B\"</ToggleGroupItem>\n        <ToggleGroupItem class=\"ToggleGroupItem\" value=\"italic\">\"I\"</ToggleGroupItem>\n        <ToggleGroupItem class=\"ToggleGroupItem\" value=\"underline\">\"U\"</ToggleGroupItem>\n    </ToggleGroup>\n}"
+            css_code=".ToggleGroupRoot {\n  display: inline-flex;\n  background-color: var(--mauve-6);\n  border-radius: 4px;\n  box-shadow: 0 2px 10px var(--black-a7);\n}\n\n.ToggleGroupItem {\n  all: unset;\n  background-color: white;\n  color: var(--mauve-11);\n  height: 35px;\n  width: 35px;\n  display: flex;\n  font-size: 15px;\n  line-height: 1;\n  align-items: center;\n  justify-content: center;\n  margin-left: 1px;\n  cursor: pointer;\n}\n.ToggleGroupItem:first-child {\n  margin-left: 0;\n  border-top-left-radius: 4px;\n  border-bottom-left-radius: 4px;\n}\n.ToggleGroupItem:last-child {\n  border-top-right-radius: 4px;\n  border-bottom-right-radius: 4px;\n}\n.ToggleGroupItem:hover {\n  background-color: var(--violet-3);\n}\n.ToggleGroupItem[data-state=\"on\"] {\n  background-color: var(--violet-6);\n  color: var(--violet-12);\n}"
+            css_modules_code=".Root {\n  display: inline-flex;\n  background-color: var(--mauve-6);\n  border-radius: 4px;\n  box-shadow: 0 2px 10px var(--black-a7);\n}\n\n.Item {\n  all: unset;\n  background-color: white;\n  color: var(--mauve-11);\n  height: 35px;\n  width: 35px;\n  display: flex;\n  font-size: 15px;\n  line-height: 1;\n  align-items: center;\n  justify-content: center;\n  margin-left: 1px;\n  cursor: pointer;\n}\n.Item:first-child {\n  margin-left: 0;\n  border-top-left-radius: 4px;\n  border-bottom-left-radius: 4px;\n}\n.Item:last-child {\n  border-top-right-radius: 4px;\n  border-bottom-right-radius: 4px;\n}\n.Item:hover {\n  background-color: var(--violet-3);\n}\n.Item[data-state=\"on\"] {\n  background-color: var(--violet-6);\n  color: var(--violet-12);\n}"
+            tailwind_code="<ToggleGroup r#type=ToggleGroupType::Single class=\"inline-flex bg-gray-200 rounded shadow-md\">\n    <ToggleGroupItem class=\"bg-white text-gray-700 h-[35px] w-[35px] flex items-center justify-center text-[15px] leading-none ml-px cursor-pointer first:ml-0 first:rounded-l last:rounded-r hover:bg-violet-100 data-[state=on]:bg-violet-200 data-[state=on]:text-violet-900\" value=\"bold\">\n        \"B\"\n    </ToggleGroupItem>\n</ToggleGroup>"
+        />
 
         // ---- Highlights ----
         <div class="highlights">

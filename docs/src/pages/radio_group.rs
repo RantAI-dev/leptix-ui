@@ -1,3 +1,4 @@
+use crate::HeroCodeBlock;
 use leptix_ui::radio_group::*;
 use leptos::prelude::*;
 
@@ -32,12 +33,12 @@ pub fn RadioGroupPage() -> impl IntoView {
             </div>
             </div>
         </div>
-        <div class="code-block">
-            <div class="code-block-header">
-                <span class="code-block-lang">"styles.css"</span>
-            </div>
-            <pre>{".RadioGroupRoot {\n  display: flex;\n  flex-direction: column;\n  gap: 10px;\n}\n\n.RadioGroupItem {\n  all: unset;\n  background-color: white;\n  width: 25px;\n  height: 25px;\n  border-radius: 100%;\n  box-shadow: 0 2px 10px var(--black-a7);\n}\n.RadioGroupItem:hover {\n  background-color: var(--violet-3);\n}\n.RadioGroupItem:focus {\n  box-shadow: 0 0 0 2px black;\n}\n\n.RadioGroupIndicator {\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  width: 100%;\n  height: 100%;\n  position: relative;\n}\n.RadioGroupIndicator::after {\n  content: '';\n  display: block;\n  width: 11px;\n  height: 11px;\n  border-radius: 50%;\n  background-color: var(--violet-11);\n}"}</pre>
-        </div>
+        <HeroCodeBlock
+            usage_code="use leptix_radio_group::*;\n\nview! {\n    <RadioGroup class=\"RadioGroupRoot\" default_value=\"default\".to_string()>\n        <RadioGroupItem class=\"RadioGroupItem\" value=\"default\">\n            <RadioGroupIndicator class=\"RadioGroupIndicator\" />\n        </RadioGroupItem>\n        <label>\"Default\"</label>\n\n        <RadioGroupItem class=\"RadioGroupItem\" value=\"comfortable\">\n            <RadioGroupIndicator class=\"RadioGroupIndicator\" />\n        </RadioGroupItem>\n        <label>\"Comfortable\"</label>\n    </RadioGroup>\n}"
+            css_code=".RadioGroupRoot {\n  display: flex;\n  flex-direction: column;\n  gap: 10px;\n}\n\n.RadioGroupItem {\n  all: unset;\n  background-color: white;\n  width: 25px;\n  height: 25px;\n  border-radius: 100%;\n  box-shadow: 0 2px 10px var(--black-a7);\n}\n.RadioGroupItem:hover {\n  background-color: var(--violet-3);\n}\n.RadioGroupItem:focus {\n  box-shadow: 0 0 0 2px black;\n}\n\n.RadioGroupIndicator {\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  width: 100%;\n  height: 100%;\n  position: relative;\n}\n.RadioGroupIndicator::after {\n  content: '';\n  display: block;\n  width: 11px;\n  height: 11px;\n  border-radius: 50%;\n  background-color: var(--violet-11);\n}"
+            css_modules_code=".Root {\n  display: flex;\n  flex-direction: column;\n  gap: 10px;\n}\n\n.Item {\n  all: unset;\n  background-color: white;\n  width: 25px;\n  height: 25px;\n  border-radius: 100%;\n  box-shadow: 0 2px 10px var(--black-a7);\n}\n.Item:hover {\n  background-color: var(--violet-3);\n}\n.Item:focus {\n  box-shadow: 0 0 0 2px black;\n}\n\n.Indicator {\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  width: 100%;\n  height: 100%;\n  position: relative;\n}\n.Indicator::after {\n  content: '';\n  display: block;\n  width: 11px;\n  height: 11px;\n  border-radius: 50%;\n  background-color: var(--violet-11);\n}"
+            tailwind_code="<RadioGroup class=\"flex flex-col gap-2.5\" default_value=\"default\".to_string()>\n    <RadioGroupItem class=\"bg-white w-[25px] h-[25px] rounded-full shadow-md hover:bg-violet-100 focus:shadow-[0_0_0_2px_black]\" value=\"default\">\n        <RadioGroupIndicator class=\"flex items-center justify-center w-full h-full relative after:block after:w-[11px] after:h-[11px] after:rounded-full after:bg-violet-700\" />\n    </RadioGroupItem>\n    <label>\"Default\"</label>\n</RadioGroup>"
+        />
 
         // ---- Highlights ----
         <div class="highlights">

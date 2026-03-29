@@ -1,3 +1,4 @@
+use crate::HeroCodeBlock;
 use leptix_ui::slider::*;
 use leptos::prelude::*;
 
@@ -20,12 +21,12 @@ pub fn SliderPage() -> impl IntoView {
             </Slider>
             </div>
         </div>
-        <div class="code-block">
-            <div class="code-block-header">
-                <span class="code-block-lang">"styles.css"</span>
-            </div>
-            <pre>{".SliderRoot {\n  position: relative;\n  display: flex;\n  align-items: center;\n  user-select: none;\n  touch-action: none;\n  width: 200px;\n  height: 20px;\n}\n\n.SliderTrack {\n  background-color: var(--black-a10);\n  position: relative;\n  flex-grow: 1;\n  border-radius: 9999px;\n  height: 3px;\n}\n\n.SliderRange {\n  position: absolute;\n  background-color: white;\n  border-radius: 9999px;\n  height: 100%;\n}\n\n.SliderThumb {\n  display: block;\n  width: 20px;\n  height: 20px;\n  background-color: white;\n  box-shadow: 0 2px 10px var(--black-a7);\n  border-radius: 10px;\n}\n.SliderThumb:hover {\n  background-color: var(--violet-3);\n}\n.SliderThumb:focus {\n  outline: none;\n  box-shadow: 0 0 0 5px var(--black-a12);\n}"}</pre>
-        </div>
+        <HeroCodeBlock
+            usage_code="use leptix_ui::slider::*;\n\nview! {\n    <Slider default_value=vec![50.0] max=100.0 step=1.0>\n        <SliderTrack>\n            <SliderRange />\n        </SliderTrack>\n        <SliderThumb />\n    </Slider>\n}"
+            css_code=".SliderRoot {\n  position: relative;\n  display: flex;\n  align-items: center;\n  user-select: none;\n  touch-action: none;\n  width: 200px;\n  height: 20px;\n}\n\n.SliderTrack {\n  background-color: var(--black-a10);\n  position: relative;\n  flex-grow: 1;\n  border-radius: 9999px;\n  height: 3px;\n}\n\n.SliderRange {\n  position: absolute;\n  background-color: white;\n  border-radius: 9999px;\n  height: 100%;\n}\n\n.SliderThumb {\n  display: block;\n  width: 20px;\n  height: 20px;\n  background-color: white;\n  box-shadow: 0 2px 10px var(--black-a7);\n  border-radius: 10px;\n}\n.SliderThumb:hover {\n  background-color: var(--violet-3);\n}\n.SliderThumb:focus {\n  outline: none;\n  box-shadow: 0 0 0 5px var(--black-a12);\n}"
+            css_modules_code=".Root {\n  position: relative;\n  display: flex;\n  align-items: center;\n  user-select: none;\n  touch-action: none;\n  width: 200px;\n  height: 20px;\n}\n\n.Track {\n  background-color: var(--black-a10);\n  position: relative;\n  flex-grow: 1;\n  border-radius: 9999px;\n  height: 3px;\n}\n\n.Range {\n  position: absolute;\n  background-color: white;\n  border-radius: 9999px;\n  height: 100%;\n}\n\n.Thumb {\n  display: block;\n  width: 20px;\n  height: 20px;\n  background-color: white;\n  box-shadow: 0 2px 10px var(--black-a7);\n  border-radius: 10px;\n}\n.Thumb:hover {\n  background-color: var(--violet-3);\n}\n.Thumb:focus {\n  outline: none;\n  box-shadow: 0 0 0 5px var(--black-a12);\n}"
+            tailwind_code="view! {\n    <Slider default_value=vec![50.0] max=100.0 step=1.0 class=\"relative flex items-center select-none touch-none w-[200px] h-5\">\n        <SliderTrack class=\"bg-black/40 relative grow rounded-full h-[3px]\">\n            <SliderRange class=\"absolute bg-white rounded-full h-full\" />\n        </SliderTrack>\n        <SliderThumb class=\"block w-5 h-5 bg-white shadow-md rounded-full hover:bg-violet-100 focus:outline-none focus:ring-4 focus:ring-black/50\" />\n    </Slider>\n}"
+        />
 
         // ---- Highlights ----
         <div class="highlights">

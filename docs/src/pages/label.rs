@@ -1,3 +1,4 @@
+use crate::HeroCodeBlock;
 use leptix_ui::label::*;
 use leptos::prelude::*;
 
@@ -20,12 +21,12 @@ pub fn LabelPage() -> impl IntoView {
             </div>
             </div>
         </div>
-        <div class="code-block">
-            <div class="code-block-header">
-                <span class="code-block-lang">"styles.css"</span>
-            </div>
-            <pre>{".Label {\n  color: white;\n  font-size: 15px;\n  line-height: 35px;\n  font-weight: 500;\n  user-select: none;\n}\n\n.Label[data-disabled] {\n  color: var(--mauve-8);\n  cursor: not-allowed;\n}"}</pre>
-        </div>
+        <HeroCodeBlock
+            usage_code="use leptix_label::*;\n\nview! {\n    <Label class=\"Label\" r#for=\"email\">\"Email address\"</Label>\n    <input id=\"email\" type=\"email\" />\n}"
+            css_code=".Label {\n  color: white;\n  font-size: 15px;\n  line-height: 35px;\n  font-weight: 500;\n  user-select: none;\n}\n\n.Label[data-disabled] {\n  color: var(--mauve-8);\n  cursor: not-allowed;\n}"
+            css_modules_code=".Root {\n  color: white;\n  font-size: 15px;\n  line-height: 35px;\n  font-weight: 500;\n  user-select: none;\n}\n\n.Root[data-disabled] {\n  color: var(--mauve-8);\n  cursor: not-allowed;\n}"
+            tailwind_code="<Label class=\"text-white text-[15px] leading-[35px] font-medium select-none data-[disabled]:text-gray-500 data-[disabled]:cursor-not-allowed\" r#for=\"email\">\n    \"Email address\"\n</Label>"
+        />
 
         // ---- Highlights ----
         <div class="highlights">

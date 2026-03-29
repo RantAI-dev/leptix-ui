@@ -1,3 +1,4 @@
+use crate::HeroCodeBlock;
 use leptix_ui::popover::*;
 use leptos::prelude::*;
 
@@ -25,12 +26,12 @@ pub fn PopoverPage() -> impl IntoView {
             </div>
             </div>
         </div>
-        <div class="code-block">
-            <div class="code-block-header">
-                <span class="code-block-lang">"styles.css"</span>
-            </div>
-            <pre>{".PopoverContent {\n  border-radius: 4px;\n  padding: 20px;\n  width: 260px;\n  font-size: 14px;\n  line-height: 1.5;\n  background-color: white;\n  box-shadow: hsl(206 22% 7% / 35%) 0px 10px 38px -10px,\n    hsl(206 22% 7% / 20%) 0px 10px 20px -15px;\n  animation: scaleIn 200ms ease;\n}\n.PopoverContent:focus {\n  outline: none;\n  box-shadow: hsl(206 22% 7% / 35%) 0px 10px 38px -10px,\n    hsl(206 22% 7% / 20%) 0px 10px 20px -15px,\n    0 0 0 2px var(--violet-7);\n}\n\n@keyframes scaleIn {\n  from { opacity: 0; transform: scale(0.96); }\n  to { opacity: 1; transform: scale(1); }\n}"}</pre>
-        </div>
+        <HeroCodeBlock
+            usage_code="use leptix_popover::*;\n\nview! {\n    <Popover>\n        <PopoverTrigger>\"Open Popover\"</PopoverTrigger>\n        <PopoverPortal>\n            <PopoverContent class=\"PopoverContent\">\n                <p>\"Popover content here.\"</p>\n                <PopoverArrow />\n            </PopoverContent>\n        </PopoverPortal>\n    </Popover>\n}"
+            css_code=".PopoverContent {\n  border-radius: 4px;\n  padding: 20px;\n  width: 260px;\n  font-size: 14px;\n  line-height: 1.5;\n  background-color: white;\n  box-shadow: hsl(206 22% 7% / 35%) 0px 10px 38px -10px,\n    hsl(206 22% 7% / 20%) 0px 10px 20px -15px;\n  animation: scaleIn 200ms ease;\n}\n.PopoverContent:focus {\n  outline: none;\n  box-shadow: hsl(206 22% 7% / 35%) 0px 10px 38px -10px,\n    hsl(206 22% 7% / 20%) 0px 10px 20px -15px,\n    0 0 0 2px var(--violet-7);\n}\n\n@keyframes scaleIn {\n  from { opacity: 0; transform: scale(0.96); }\n  to { opacity: 1; transform: scale(1); }\n}"
+            css_modules_code=".Content {\n  border-radius: 4px;\n  padding: 20px;\n  width: 260px;\n  font-size: 14px;\n  line-height: 1.5;\n  background-color: white;\n  box-shadow: hsl(206 22% 7% / 35%) 0px 10px 38px -10px,\n    hsl(206 22% 7% / 20%) 0px 10px 20px -15px;\n  animation: scaleIn 200ms ease;\n}\n.Content:focus {\n  outline: none;\n  box-shadow: hsl(206 22% 7% / 35%) 0px 10px 38px -10px,\n    hsl(206 22% 7% / 20%) 0px 10px 20px -15px,\n    0 0 0 2px var(--violet-7);\n}\n\n@keyframes scaleIn {\n  from { opacity: 0; transform: scale(0.96); }\n  to { opacity: 1; transform: scale(1); }\n}"
+            tailwind_code="<Popover>\n    <PopoverTrigger>\"Open Popover\"</PopoverTrigger>\n    <PopoverPortal>\n        <PopoverContent class=\"rounded p-5 w-[260px] text-sm leading-normal bg-white shadow-lg animate-scaleIn focus:outline-none focus:ring-2 focus:ring-violet-400\">\n            <p>\"Popover content here.\"</p>\n            <PopoverArrow />\n        </PopoverContent>\n    </PopoverPortal>\n</Popover>"
+        />
 
         // ---- Highlights ----
         <div class="highlights">

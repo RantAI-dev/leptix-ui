@@ -1,3 +1,4 @@
+use crate::HeroCodeBlock;
 use leptix_ui::navigation_menu::*;
 use leptos::prelude::*;
 
@@ -29,6 +30,12 @@ pub fn NavigationMenuPage() -> impl IntoView {
             </div>
             </div>
         </div>
+        <HeroCodeBlock
+            usage_code="use leptix_ui::navigation_menu::*;\n\nview! {\n    <NavigationMenu>\n        <NavigationMenuList>\n            <NavigationMenuItem>\n                <NavigationMenuLink>\"Getting Started\"</NavigationMenuLink>\n            </NavigationMenuItem>\n            <NavigationMenuItem>\n                <NavigationMenuLink>\"Components\"</NavigationMenuLink>\n            </NavigationMenuItem>\n            <NavigationMenuItem>\n                <NavigationMenuLink>\"Documentation\"</NavigationMenuLink>\n            </NavigationMenuItem>\n        </NavigationMenuList>\n    </NavigationMenu>\n}"
+            css_code=".NavigationMenuRoot {\n  display: flex;\n  justify-content: center;\n  width: 100%;\n}\n\n.NavigationMenuList {\n  display: flex;\n  justify-content: center;\n  background-color: white;\n  padding: 4px;\n  border-radius: 6px;\n  list-style: none;\n  box-shadow: 0 2px 10px var(--black-a7);\n}\n\n.NavigationMenuLink {\n  display: block;\n  text-decoration: none;\n  font-size: 15px;\n  line-height: 1;\n  padding: 8px 12px;\n  border-radius: 4px;\n  color: var(--violet-11);\n  font-weight: 500;\n}\n\n.NavigationMenuLink:hover {\n  background-color: var(--violet-3);\n}"
+            css_modules_code=".Root {\n  display: flex;\n  justify-content: center;\n  width: 100%;\n}\n\n.List {\n  display: flex;\n  justify-content: center;\n  background-color: white;\n  padding: 4px;\n  border-radius: 6px;\n  list-style: none;\n  box-shadow: 0 2px 10px var(--black-a7);\n}\n\n.Link {\n  display: block;\n  text-decoration: none;\n  font-size: 15px;\n  line-height: 1;\n  padding: 8px 12px;\n  border-radius: 4px;\n  color: var(--violet-11);\n  font-weight: 500;\n}\n\n.Link:hover {\n  background-color: var(--violet-3);\n}"
+            tailwind_code="view! {\n    <NavigationMenu class=\"flex justify-center w-full\">\n        <NavigationMenuList class=\"flex justify-center bg-white p-1 rounded-md list-none shadow-md\">\n            <NavigationMenuItem>\n                <NavigationMenuLink class=\"block no-underline text-sm py-2 px-3 rounded text-violet-700 font-medium hover:bg-violet-100\">\n                    \"Getting Started\"\n                </NavigationMenuLink>\n            </NavigationMenuItem>\n            <NavigationMenuItem>\n                <NavigationMenuLink class=\"block no-underline text-sm py-2 px-3 rounded text-violet-700 font-medium hover:bg-violet-100\">\n                    \"Components\"\n                </NavigationMenuLink>\n            </NavigationMenuItem>\n        </NavigationMenuList>\n    </NavigationMenu>\n}"
+        />
 
         // ---- Highlights ----
         <div class="highlights">

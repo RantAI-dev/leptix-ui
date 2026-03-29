@@ -1,3 +1,4 @@
+use crate::HeroCodeBlock;
 use leptix_ui::context_menu::*;
 use leptos::prelude::*;
 
@@ -33,6 +34,12 @@ pub fn ContextMenuPage() -> impl IntoView {
             </div>
             </div>
         </div>
+        <HeroCodeBlock
+            usage_code="use leptix_ui::context_menu::*;\n\nview! {\n    <ContextMenu>\n        <ContextMenuTrigger>\n            <div>\"Right click here\"</div>\n        </ContextMenuTrigger>\n        <ContextMenuPortal>\n            <ContextMenuContent>\n                <ContextMenuItem>\"Back\"</ContextMenuItem>\n                <ContextMenuItem>\"Forward\"</ContextMenuItem>\n                <ContextMenuSeparator />\n                <ContextMenuItem>\"Inspect\"</ContextMenuItem>\n            </ContextMenuContent>\n        </ContextMenuPortal>\n    </ContextMenu>\n}"
+            css_code=".ContextMenuContent {\n  min-width: 180px;\n  background-color: white;\n  border-radius: 6px;\n  padding: 5px;\n  box-shadow: 0 10px 38px -10px rgba(22,23,24,.35),\n    0 10px 20px -15px rgba(22,23,24,.2);\n}\n\n.ContextMenuItem {\n  font-size: 13px;\n  line-height: 1;\n  color: var(--violet-11);\n  border-radius: 3px;\n  display: flex;\n  align-items: center;\n  height: 25px;\n  padding: 0 5px 0 25px;\n  position: relative;\n  user-select: none;\n  outline: none;\n}\n\n.ContextMenuItem[data-highlighted] {\n  background-color: var(--violet-9);\n  color: var(--violet-1);\n}\n\n.ContextMenuSeparator {\n  height: 1px;\n  background-color: var(--violet-6);\n  margin: 5px;\n}"
+            css_modules_code=".Content {\n  min-width: 180px;\n  background-color: white;\n  border-radius: 6px;\n  padding: 5px;\n  box-shadow: 0 10px 38px -10px rgba(22,23,24,.35),\n    0 10px 20px -15px rgba(22,23,24,.2);\n}\n\n.Item {\n  font-size: 13px;\n  line-height: 1;\n  color: var(--violet-11);\n  border-radius: 3px;\n  display: flex;\n  align-items: center;\n  height: 25px;\n  padding: 0 5px 0 25px;\n  position: relative;\n  user-select: none;\n  outline: none;\n}\n\n.Item[data-highlighted] {\n  background-color: var(--violet-9);\n  color: var(--violet-1);\n}\n\n.Separator {\n  height: 1px;\n  background-color: var(--violet-6);\n  margin: 5px;\n}"
+            tailwind_code="view! {\n    <ContextMenu>\n        <ContextMenuTrigger>\n            <div>\"Right click here\"</div>\n        </ContextMenuTrigger>\n        <ContextMenuPortal>\n            <ContextMenuContent class=\"min-w-[180px] bg-white rounded-md p-1 shadow-lg\">\n                <ContextMenuItem class=\"text-sm text-violet-700 rounded flex items-center h-[25px] px-1 pl-6 select-none outline-none data-[highlighted]:bg-violet-500 data-[highlighted]:text-white\">\n                    \"Back\"\n                </ContextMenuItem>\n                <ContextMenuSeparator class=\"h-px bg-violet-200 m-1\" />\n                <ContextMenuItem class=\"text-sm text-violet-700 rounded flex items-center h-[25px] px-1 pl-6 select-none outline-none data-[highlighted]:bg-violet-500 data-[highlighted]:text-white\">\n                    \"Inspect\"\n                </ContextMenuItem>\n            </ContextMenuContent>\n        </ContextMenuPortal>\n    </ContextMenu>\n}"
+        />
 
         // ---- Highlights ----
         <div class="highlights">

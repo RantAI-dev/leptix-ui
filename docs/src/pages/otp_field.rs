@@ -1,3 +1,4 @@
+use crate::HeroCodeBlock;
 use leptix_ui::otp_field::*;
 use leptos::prelude::*;
 
@@ -25,6 +26,12 @@ pub fn OtpFieldPage() -> impl IntoView {
             </div>
             </div>
         </div>
+        <HeroCodeBlock
+            usage_code="use leptix_ui::otp_field::*;\n\nview! {\n    <OneTimePasswordField>\n        <OneTimePasswordFieldInput index=0usize />\n        <OneTimePasswordFieldInput index=1usize />\n        <OneTimePasswordFieldInput index=2usize />\n        <OneTimePasswordFieldInput index=3usize />\n        <OneTimePasswordFieldInput index=4usize />\n        <OneTimePasswordFieldInput index=5usize />\n        <OneTimePasswordFieldHiddenInput />\n    </OneTimePasswordField>\n}"
+            css_code=".OneTimePasswordFieldRoot {\n  display: flex;\n  gap: 8px;\n}\n\n.OneTimePasswordFieldInput {\n  width: 40px;\n  height: 48px;\n  text-align: center;\n  font-size: 20px;\n  font-weight: 600;\n  border-radius: 6px;\n  border: 2px solid var(--black-a9);\n  background: transparent;\n  color: white;\n  outline: none;\n}\n\n.OneTimePasswordFieldInput:focus {\n  border-color: var(--violet-9);\n  box-shadow: 0 0 0 1px var(--violet-9);\n}"
+            css_modules_code=".Root {\n  display: flex;\n  gap: 8px;\n}\n\n.Input {\n  width: 40px;\n  height: 48px;\n  text-align: center;\n  font-size: 20px;\n  font-weight: 600;\n  border-radius: 6px;\n  border: 2px solid var(--black-a9);\n  background: transparent;\n  color: white;\n  outline: none;\n}\n\n.Input:focus {\n  border-color: var(--violet-9);\n  box-shadow: 0 0 0 1px var(--violet-9);\n}"
+            tailwind_code="view! {\n    <OneTimePasswordField class=\"flex gap-2\">\n        <OneTimePasswordFieldInput index=0usize\n            class=\"w-10 h-12 text-center text-xl font-semibold rounded-md border-2 border-gray-600 bg-transparent text-white outline-none focus:border-violet-500 focus:ring-1 focus:ring-violet-500\" />\n        <OneTimePasswordFieldInput index=1usize\n            class=\"w-10 h-12 text-center text-xl font-semibold rounded-md border-2 border-gray-600 bg-transparent text-white outline-none focus:border-violet-500 focus:ring-1 focus:ring-violet-500\" />\n        // ... more slots\n        <OneTimePasswordFieldHiddenInput />\n    </OneTimePasswordField>\n}"
+        />
 
         // ---- Highlights ----
         <div class="highlights">

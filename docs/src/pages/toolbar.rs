@@ -1,3 +1,4 @@
+use crate::HeroCodeBlock;
 use leptix_ui::toolbar::*;
 use leptos::prelude::*;
 
@@ -21,6 +22,12 @@ pub fn ToolbarPage() -> impl IntoView {
             </div>
             </div>
         </div>
+        <HeroCodeBlock
+            usage_code="use leptix_ui::toolbar::*;\n\nview! {\n    <Toolbar>\n        <ToolbarButton>\"Undo\"</ToolbarButton>\n        <ToolbarSeparator />\n        <ToolbarButton>\"Redo\"</ToolbarButton>\n    </Toolbar>\n}"
+            css_code=".ToolbarRoot {\n  display: flex;\n  padding: 10px;\n  width: 100%;\n  min-width: max-content;\n  border-radius: 6px;\n  background-color: white;\n  box-shadow: 0 2px 10px var(--black-a7);\n}\n\n.ToolbarButton {\n  flex: 0 0 auto;\n  color: var(--violet-11);\n  height: 25px;\n  padding: 0 5px;\n  border-radius: 4px;\n  display: inline-flex;\n  font-size: 13px;\n  line-height: 1;\n  align-items: center;\n  justify-content: center;\n  border: none;\n  background: transparent;\n  cursor: pointer;\n}\n\n.ToolbarButton:hover {\n  background-color: var(--violet-3);\n  color: var(--violet-11);\n}\n\n.ToolbarSeparator {\n  width: 1px;\n  background-color: var(--violet-6);\n  margin: 0 10px;\n}"
+            css_modules_code=".Root {\n  display: flex;\n  padding: 10px;\n  width: 100%;\n  min-width: max-content;\n  border-radius: 6px;\n  background-color: white;\n  box-shadow: 0 2px 10px var(--black-a7);\n}\n\n.Button {\n  flex: 0 0 auto;\n  color: var(--violet-11);\n  height: 25px;\n  padding: 0 5px;\n  border-radius: 4px;\n  display: inline-flex;\n  font-size: 13px;\n  line-height: 1;\n  align-items: center;\n  justify-content: center;\n  border: none;\n  background: transparent;\n  cursor: pointer;\n}\n\n.Button:hover {\n  background-color: var(--violet-3);\n  color: var(--violet-11);\n}\n\n.Separator {\n  width: 1px;\n  background-color: var(--violet-6);\n  margin: 0 10px;\n}"
+            tailwind_code="view! {\n    <Toolbar class=\"flex p-2.5 w-full min-w-max rounded-md bg-white shadow-md\">\n        <ToolbarButton class=\"flex-none text-violet-700 h-[25px] px-1 rounded inline-flex text-sm items-center justify-center bg-transparent cursor-pointer hover:bg-violet-100\">\n            \"Undo\"\n        </ToolbarButton>\n        <ToolbarSeparator class=\"w-px bg-violet-200 mx-2.5\" />\n        <ToolbarButton class=\"flex-none text-violet-700 h-[25px] px-1 rounded inline-flex text-sm items-center justify-center bg-transparent cursor-pointer hover:bg-violet-100\">\n            \"Redo\"\n        </ToolbarButton>\n    </Toolbar>\n}"
+        />
 
         // ---- Highlights ----
         <div class="highlights">

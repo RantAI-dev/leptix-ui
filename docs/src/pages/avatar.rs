@@ -1,3 +1,4 @@
+use crate::HeroCodeBlock;
 use leptix_ui::avatar::*;
 use leptos::prelude::*;
 
@@ -25,12 +26,12 @@ pub fn AvatarPage() -> impl IntoView {
             </div>
             </div>
         </div>
-        <div class="code-block">
-            <div class="code-block-header">
-                <span class="code-block-lang">"styles.css"</span>
-            </div>
-            <pre>{".AvatarRoot {\n  display: inline-flex;\n  align-items: center;\n  justify-content: center;\n  vertical-align: middle;\n  overflow: hidden;\n  user-select: none;\n  width: 45px;\n  height: 45px;\n  border-radius: 100%;\n  background-color: var(--black-a3);\n}\n\n.AvatarImage {\n  width: 100%;\n  height: 100%;\n  object-fit: cover;\n  border-radius: inherit;\n}\n\n.AvatarFallback {\n  width: 100%;\n  height: 100%;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  background-color: white;\n  color: var(--violet-11);\n  font-size: 15px;\n  line-height: 1;\n  font-weight: 500;\n}"}</pre>
-        </div>
+        <HeroCodeBlock
+            usage_code="use leptix_ui::avatar::*;\n\nview! {\n    <Avatar>\n        <AvatarImage src=\"https://i.pravatar.cc/48?u=leptix\" />\n        <AvatarFallback>\"JD\"</AvatarFallback>\n    </Avatar>\n}"
+            css_code=".AvatarRoot {\n  display: inline-flex;\n  align-items: center;\n  justify-content: center;\n  vertical-align: middle;\n  overflow: hidden;\n  user-select: none;\n  width: 45px;\n  height: 45px;\n  border-radius: 100%;\n  background-color: var(--black-a3);\n}\n\n.AvatarImage {\n  width: 100%;\n  height: 100%;\n  object-fit: cover;\n  border-radius: inherit;\n}\n\n.AvatarFallback {\n  width: 100%;\n  height: 100%;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  background-color: white;\n  color: var(--violet-11);\n  font-size: 15px;\n  line-height: 1;\n  font-weight: 500;\n}"
+            css_modules_code=".Root {\n  display: inline-flex;\n  align-items: center;\n  justify-content: center;\n  vertical-align: middle;\n  overflow: hidden;\n  user-select: none;\n  width: 45px;\n  height: 45px;\n  border-radius: 100%;\n  background-color: var(--black-a3);\n}\n\n.Image {\n  width: 100%;\n  height: 100%;\n  object-fit: cover;\n  border-radius: inherit;\n}\n\n.Fallback {\n  width: 100%;\n  height: 100%;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  background-color: white;\n  color: var(--violet-11);\n  font-size: 15px;\n  line-height: 1;\n  font-weight: 500;\n}"
+            tailwind_code="view! {\n    <Avatar class=\"inline-flex items-center justify-center align-middle overflow-hidden select-none w-[45px] h-[45px] rounded-full bg-black/10\">\n        <AvatarImage src=\"https://i.pravatar.cc/48?u=leptix\" class=\"w-full h-full object-cover rounded-[inherit]\" />\n        <AvatarFallback class=\"w-full h-full flex items-center justify-center bg-white text-violet-700 text-sm font-medium\">\n            \"JD\"\n        </AvatarFallback>\n    </Avatar>\n}"
+        />
 
         // ---- Highlights ----
         <div class="highlights">

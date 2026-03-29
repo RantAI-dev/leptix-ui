@@ -1,3 +1,4 @@
+use crate::HeroCodeBlock;
 use leptix_ui::tabs::*;
 use leptos::prelude::*;
 
@@ -30,12 +31,12 @@ pub fn TabsPage() -> impl IntoView {
             </Tabs>
             </div>
         </div>
-        <div class="code-block">
-            <div class="code-block-header">
-                <span class="code-block-lang">"styles.css"</span>
-            </div>
-            <pre>{".TabsList {\n  display: flex;\n  border-bottom: 1px solid var(--mauve-6);\n  flex-shrink: 0;\n}\n\n.TabsTrigger {\n  all: unset;\n  font-family: inherit;\n  padding: 0 20px;\n  height: 45px;\n  flex: 1;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  font-size: 15px;\n  line-height: 1;\n  color: var(--mauve-11);\n  user-select: none;\n  cursor: pointer;\n}\n.TabsTrigger[data-state=\"active\"] {\n  color: var(--violet-11);\n  box-shadow: inset 0 -1px 0 0 currentColor, 0 1px 0 0 currentColor;\n}\n\n.TabsContent {\n  flex-grow: 1;\n  padding: 20px;\n  outline: none;\n}"}</pre>
-        </div>
+        <HeroCodeBlock
+            usage_code="use leptix_ui::tabs::*;\n\nview! {\n    <Tabs default_value=\"account\">\n        <TabsList>\n            <TabsTrigger value=\"account\">\"Account\"</TabsTrigger>\n            <TabsTrigger value=\"password\">\"Password\"</TabsTrigger>\n        </TabsList>\n        <TabsContent value=\"account\">\"Account content\"</TabsContent>\n        <TabsContent value=\"password\">\"Password content\"</TabsContent>\n    </Tabs>\n}"
+            css_code=".TabsList {\n  display: flex;\n  border-bottom: 1px solid var(--mauve-6);\n  flex-shrink: 0;\n}\n\n.TabsTrigger {\n  all: unset;\n  font-family: inherit;\n  padding: 0 20px;\n  height: 45px;\n  flex: 1;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  font-size: 15px;\n  line-height: 1;\n  color: var(--mauve-11);\n  user-select: none;\n  cursor: pointer;\n}\n.TabsTrigger[data-state=\"active\"] {\n  color: var(--violet-11);\n  box-shadow: inset 0 -1px 0 0 currentColor, 0 1px 0 0 currentColor;\n}\n\n.TabsContent {\n  flex-grow: 1;\n  padding: 20px;\n  outline: none;\n}"
+            css_modules_code=".List {\n  display: flex;\n  border-bottom: 1px solid var(--mauve-6);\n  flex-shrink: 0;\n}\n\n.Trigger {\n  all: unset;\n  font-family: inherit;\n  padding: 0 20px;\n  height: 45px;\n  flex: 1;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  font-size: 15px;\n  line-height: 1;\n  color: var(--mauve-11);\n  user-select: none;\n  cursor: pointer;\n}\n.Trigger[data-state=\"active\"] {\n  color: var(--violet-11);\n  box-shadow: inset 0 -1px 0 0 currentColor, 0 1px 0 0 currentColor;\n}\n\n.Content {\n  flex-grow: 1;\n  padding: 20px;\n  outline: none;\n}"
+            tailwind_code="view! {\n    <Tabs default_value=\"account\">\n        <TabsList class=\"flex border-b border-gray-200 shrink-0\">\n            <TabsTrigger value=\"account\" class=\"flex-1 flex items-center justify-center px-5 h-[45px] text-sm text-gray-500 cursor-pointer select-none data-[state=active]:text-violet-700 data-[state=active]:shadow-[inset_0_-1px_0_0_currentColor,0_1px_0_0_currentColor]\">\"Account\"</TabsTrigger>\n            <TabsTrigger value=\"password\" class=\"flex-1 flex items-center justify-center px-5 h-[45px] text-sm text-gray-500 cursor-pointer select-none data-[state=active]:text-violet-700 data-[state=active]:shadow-[inset_0_-1px_0_0_currentColor,0_1px_0_0_currentColor]\">\"Password\"</TabsTrigger>\n        </TabsList>\n        <TabsContent value=\"account\" class=\"grow p-5 outline-none\">\"Account content\"</TabsContent>\n        <TabsContent value=\"password\" class=\"grow p-5 outline-none\">\"Password content\"</TabsContent>\n    </Tabs>\n}"
+        />
 
         // ---- Highlights ----
         <div class="highlights">

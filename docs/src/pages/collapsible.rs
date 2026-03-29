@@ -1,3 +1,4 @@
+use crate::HeroCodeBlock;
 use leptix_ui::collapsible::*;
 use leptos::prelude::*;
 
@@ -35,12 +36,12 @@ pub fn CollapsiblePage() -> impl IntoView {
             </Collapsible>
             </div>
         </div>
-        <div class="code-block">
-            <div class="code-block-header">
-                <span class="code-block-lang">"styles.css"</span>
-            </div>
-            <pre>{".CollapsibleRoot {\n  width: 300px;\n}\n\n.CollapsibleContent {\n  overflow: hidden;\n}\n.CollapsibleContent[data-state=\"open\"] {\n  animation: slideDown 300ms ease-out;\n}\n.CollapsibleContent[data-state=\"closed\"] {\n  animation: slideUp 300ms ease-out;\n}\n\n@keyframes slideDown {\n  from { height: 0; }\n  to { height: var(--leptix-collapsible-content-height); }\n}\n@keyframes slideUp {\n  from { height: var(--leptix-collapsible-content-height); }\n  to { height: 0; }\n}"}</pre>
-        </div>
+        <HeroCodeBlock
+            usage_code="use leptix_collapsible::*;\n\nview! {\n    <Collapsible class=\"CollapsibleRoot\">\n        <CollapsibleTrigger>\"Toggle\"</CollapsibleTrigger>\n        <CollapsibleContent class=\"CollapsibleContent\">\n            \"Hidden content here.\"\n        </CollapsibleContent>\n    </Collapsible>\n}"
+            css_code=".CollapsibleRoot {\n  width: 300px;\n}\n\n.CollapsibleContent {\n  overflow: hidden;\n}\n.CollapsibleContent[data-state=\"open\"] {\n  animation: slideDown 300ms ease-out;\n}\n.CollapsibleContent[data-state=\"closed\"] {\n  animation: slideUp 300ms ease-out;\n}\n\n@keyframes slideDown {\n  from { height: 0; }\n  to { height: var(--leptix-collapsible-content-height); }\n}\n@keyframes slideUp {\n  from { height: var(--leptix-collapsible-content-height); }\n  to { height: 0; }\n}"
+            css_modules_code=".Root {\n  width: 300px;\n}\n\n.Content {\n  overflow: hidden;\n}\n.Content[data-state=\"open\"] {\n  animation: slideDown 300ms ease-out;\n}\n.Content[data-state=\"closed\"] {\n  animation: slideUp 300ms ease-out;\n}\n\n@keyframes slideDown {\n  from { height: 0; }\n  to { height: var(--leptix-collapsible-content-height); }\n}\n@keyframes slideUp {\n  from { height: var(--leptix-collapsible-content-height); }\n  to { height: 0; }\n}"
+            tailwind_code="<Collapsible class=\"w-[300px]\">\n    <CollapsibleTrigger>\"Toggle\"</CollapsibleTrigger>\n    <CollapsibleContent class=\"overflow-hidden data-[state=open]:animate-slideDown data-[state=closed]:animate-slideUp\">\n        \"Hidden content here.\"\n    </CollapsibleContent>\n</Collapsible>"
+        />
 
         // ---- Highlights ----
         <div class="highlights">

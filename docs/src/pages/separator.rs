@@ -1,3 +1,4 @@
+use crate::HeroCodeBlock;
 use leptix_ui::separator::*;
 use leptos::prelude::*;
 
@@ -26,12 +27,12 @@ pub fn SeparatorPage() -> impl IntoView {
             </div>
             </div>
         </div>
-        <div class="code-block">
-            <div class="code-block-header">
-                <span class="code-block-lang">"styles.css"</span>
-            </div>
-            <pre>{".SeparatorRoot {\n  background-color: var(--violet-6);\n}\n.SeparatorRoot[data-orientation=\"horizontal\"] {\n  height: 1px;\n  width: 100%;\n}\n.SeparatorRoot[data-orientation=\"vertical\"] {\n  height: 100%;\n  width: 1px;\n  min-height: 20px;\n}"}</pre>
-        </div>
+        <HeroCodeBlock
+            usage_code="use leptix_separator::*;\n\nview! {\n    <Separator class=\"SeparatorRoot\" />\n    <Separator orientation=Orientation::Vertical class=\"SeparatorRoot\" />\n}"
+            css_code=".SeparatorRoot {\n  background-color: var(--violet-6);\n}\n.SeparatorRoot[data-orientation=\"horizontal\"] {\n  height: 1px;\n  width: 100%;\n}\n.SeparatorRoot[data-orientation=\"vertical\"] {\n  height: 100%;\n  width: 1px;\n  min-height: 20px;\n}"
+            css_modules_code=".Root {\n  background-color: var(--violet-6);\n}\n.Root[data-orientation=\"horizontal\"] {\n  height: 1px;\n  width: 100%;\n}\n.Root[data-orientation=\"vertical\"] {\n  height: 100%;\n  width: 1px;\n  min-height: 20px;\n}"
+            tailwind_code="<Separator class=\"bg-violet-300\" />\n// horizontal: h-px w-full\n// vertical: w-px h-full min-h-[20px]"
+        />
 
         // ---- Highlights ----
         <div class="highlights">

@@ -479,6 +479,93 @@ code {
 .code-block:hover .copy-btn { opacity: 1; }
 .copy-btn:hover { color: #e2e8f0; background: rgba(255,255,255,0.08); }
 .copy-btn.copied { color: #4ade80; }
+.copy-btn.always-visible { opacity: 1; }
+
+/* ===== Hero Code Block (tabbed) ===== */
+.hero-code-block {
+    border: 1px solid var(--border);
+    border-radius: 0 0 var(--radius) var(--radius);
+    overflow: hidden;
+    margin-bottom: 28px;
+}
+
+.hero-code-tabs {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 12px;
+    height: 44px;
+    background: var(--code-header);
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    gap: 8px;
+}
+
+.hero-code-tabs-left {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+}
+
+.hero-code-tabs-right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.hero-code-tab {
+    all: unset;
+    display: flex;
+    align-items: center;
+    padding: 6px 12px;
+    font-size: 13px;
+    font-family: var(--font-mono);
+    color: #64748b;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: color 0.15s, background 0.15s;
+}
+
+.hero-code-tab:hover { color: #94a3b8; }
+.hero-code-tab.active { color: #e2e8f0; background: rgba(255,255,255,0.08); }
+
+.hero-code-mode {
+    appearance: none;
+    -webkit-appearance: none;
+    background: rgba(255,255,255,0.06);
+    color: #94a3b8;
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 4px;
+    padding: 4px 28px 4px 10px;
+    font-size: 12px;
+    font-family: inherit;
+    cursor: pointer;
+    outline: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12' fill='none'%3E%3Cpath d='M3 5l3 3 3-3' stroke='%2394a3b8' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 8px center;
+}
+
+.hero-code-mode:hover { border-color: rgba(255,255,255,0.2); color: #e2e8f0; }
+.hero-code-mode:focus { border-color: var(--accent-light); }
+
+.hero-code-mode option {
+    background: #1e293b;
+    color: #e2e8f0;
+}
+
+.hero-code-block pre {
+    margin: 0;
+    padding: 16px 20px;
+    background: var(--code-bg);
+    color: var(--code-text);
+    font-family: var(--font-mono);
+    font-size: 13px;
+    line-height: 1.65;
+    overflow-x: auto;
+    tab-size: 2;
+    max-height: 400px;
+    overflow-y: auto;
+}
 
 .code-block pre {
     margin: 0;

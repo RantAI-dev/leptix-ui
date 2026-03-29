@@ -1,3 +1,4 @@
+use crate::HeroCodeBlock;
 use leptix_ui::dialog::*;
 use leptos::prelude::*;
 
@@ -50,12 +51,12 @@ pub fn DialogPage() -> impl IntoView {
                 </div>
             </div>
         </div>
-        <div class="code-block">
-            <div class="code-block-header">
-                <span class="code-block-lang">"styles.css"</span>
-            </div>
-            <pre>{".DialogOverlay {\n  background-color: var(--black-a9);\n  position: fixed;\n  inset: 0;\n  animation: overlayShow 150ms cubic-bezier(0.16, 1, 0.3, 1);\n}\n\n.DialogContent {\n  background-color: white;\n  border-radius: 6px;\n  box-shadow: hsl(206 22% 7% / 35%) 0px 10px 38px -10px,\n    hsl(206 22% 7% / 20%) 0px 10px 20px -15px;\n  position: fixed;\n  top: 50%;\n  left: 50%;\n  transform: translate(-50%, -50%);\n  width: 90vw;\n  max-width: 450px;\n  max-height: 85vh;\n  padding: 25px;\n  animation: contentShow 150ms cubic-bezier(0.16, 1, 0.3, 1);\n}\n\n@keyframes overlayShow {\n  from { opacity: 0; }\n  to { opacity: 1; }\n}\n@keyframes contentShow {\n  from { opacity: 0; transform: translate(-50%, -48%) scale(0.96); }\n  to { opacity: 1; transform: translate(-50%, -50%) scale(1); }\n}"}</pre>
-        </div>
+        <HeroCodeBlock
+            usage_code="use leptix_ui::dialog::*;\n\nview! {\n    <Dialog>\n        <DialogTrigger>\"Edit Profile\"</DialogTrigger>\n        <DialogPortal>\n            <DialogOverlay />\n            <DialogContent>\n                <DialogTitle>\"Edit profile\"</DialogTitle>\n                <DialogDescription>\"Make changes to your profile here.\"</DialogDescription>\n                <DialogClose>\"Save changes\"</DialogClose>\n            </DialogContent>\n        </DialogPortal>\n    </Dialog>\n}"
+            css_code=".DialogOverlay {\n  background-color: var(--black-a9);\n  position: fixed;\n  inset: 0;\n  animation: overlayShow 150ms cubic-bezier(0.16, 1, 0.3, 1);\n}\n\n.DialogContent {\n  background-color: white;\n  border-radius: 6px;\n  box-shadow: hsl(206 22% 7% / 35%) 0px 10px 38px -10px,\n    hsl(206 22% 7% / 20%) 0px 10px 20px -15px;\n  position: fixed;\n  top: 50%;\n  left: 50%;\n  transform: translate(-50%, -50%);\n  width: 90vw;\n  max-width: 450px;\n  max-height: 85vh;\n  padding: 25px;\n  animation: contentShow 150ms cubic-bezier(0.16, 1, 0.3, 1);\n}\n\n@keyframes overlayShow {\n  from { opacity: 0; }\n  to { opacity: 1; }\n}\n@keyframes contentShow {\n  from { opacity: 0; transform: translate(-50%, -48%) scale(0.96); }\n  to { opacity: 1; transform: translate(-50%, -50%) scale(1); }\n}"
+            css_modules_code=".Overlay {\n  background-color: var(--black-a9);\n  position: fixed;\n  inset: 0;\n  animation: overlayShow 150ms cubic-bezier(0.16, 1, 0.3, 1);\n}\n\n.Content {\n  background-color: white;\n  border-radius: 6px;\n  box-shadow: hsl(206 22% 7% / 35%) 0px 10px 38px -10px,\n    hsl(206 22% 7% / 20%) 0px 10px 20px -15px;\n  position: fixed;\n  top: 50%;\n  left: 50%;\n  transform: translate(-50%, -50%);\n  width: 90vw;\n  max-width: 450px;\n  max-height: 85vh;\n  padding: 25px;\n  animation: contentShow 150ms cubic-bezier(0.16, 1, 0.3, 1);\n}\n\n@keyframes overlayShow {\n  from { opacity: 0; }\n  to { opacity: 1; }\n}\n@keyframes contentShow {\n  from { opacity: 0; transform: translate(-50%, -48%) scale(0.96); }\n  to { opacity: 1; transform: translate(-50%, -50%) scale(1); }\n}"
+            tailwind_code="view! {\n    <Dialog>\n        <DialogTrigger>\"Edit Profile\"</DialogTrigger>\n        <DialogPortal>\n            <DialogOverlay class=\"fixed inset-0 bg-black/60 animate-[overlayShow_150ms_ease-out]\" />\n            <DialogContent class=\"fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white rounded-md shadow-xl w-[90vw] max-w-[450px] max-h-[85vh] p-6 animate-[contentShow_150ms_ease-out]\">\n                <DialogTitle>\"Edit profile\"</DialogTitle>\n                <DialogDescription>\"Make changes to your profile here.\"</DialogDescription>\n                <DialogClose>\"Save changes\"</DialogClose>\n            </DialogContent>\n        </DialogPortal>\n    </Dialog>\n}"
+        />
 
         // ---- Highlights ----
         <div class="highlights">
