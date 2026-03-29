@@ -236,10 +236,10 @@ pub fn Toast(
                         is_swiping.set(true);
                         swipe_data_attr.set(Some("start"));
                         // Capture pointer for reliable tracking
-                        if let Some(target) = event.target() {
-                            if let Ok(el) = target.dyn_into::<web_sys::Element>() {
-                                let _ = el.set_pointer_capture(event.pointer_id());
-                            }
+                        if let Some(target) = event.target()
+                            && let Ok(el) = target.dyn_into::<web_sys::Element>()
+                        {
+                            let _ = el.set_pointer_capture(event.pointer_id());
                         }
                         // Pause auto-close timer during swipe
                         if let Some(id) = timer_id.get_untracked() {
@@ -273,10 +273,10 @@ pub fn Toast(
                             return;
                         }
                         // Release pointer capture
-                        if let Some(target) = event.target() {
-                            if let Ok(el) = target.dyn_into::<web_sys::Element>() {
-                                let _ = el.release_pointer_capture(event.pointer_id());
-                            }
+                        if let Some(target) = event.target()
+                            && let Ok(el) = target.dyn_into::<web_sys::Element>()
+                        {
+                            let _ = el.release_pointer_capture(event.pointer_id());
                         }
                         let dx = swipe_delta_x.get_untracked();
                         let dy = swipe_delta_y.get_untracked();
@@ -311,11 +311,11 @@ pub fn Toast(
                     }
                     on:pointerenter=move |_: leptos::ev::PointerEvent| {
                         // Pause: clear auto-close timer (only if not swiping, since swipe already pauses)
-                        if !is_swiping.get_untracked() {
-                            if let Some(id) = timer_id.get_untracked() {
-                                clear_timeout(id);
-                                timer_id.set(None);
-                            }
+                        if !is_swiping.get_untracked()
+                            && let Some(id) = timer_id.get_untracked()
+                        {
+                            clear_timeout(id);
+                            timer_id.set(None);
                         }
                     }
                     on:pointerleave=move |_: leptos::ev::PointerEvent| {

@@ -337,10 +337,9 @@ pub fn ScrollAreaThumb(
     });
 
     // Store closures for global pointermove/pointerup during drag.
-    let move_closure: Arc<Mutex<Option<SendWrapper<Closure<dyn Fn(web_sys::PointerEvent)>>>>> =
-        Arc::new(Mutex::new(None));
-    let up_closure: Arc<Mutex<Option<SendWrapper<Closure<dyn Fn(web_sys::PointerEvent)>>>>> =
-        Arc::new(Mutex::new(None));
+    type PointerClosure = Arc<Mutex<Option<SendWrapper<Closure<dyn Fn(web_sys::PointerEvent)>>>>>;
+    let move_closure: PointerClosure = Arc::new(Mutex::new(None));
+    let up_closure: PointerClosure = Arc::new(Mutex::new(None));
     let cleanup_move = move_closure.clone();
     let cleanup_up = up_closure.clone();
 
@@ -521,10 +520,10 @@ pub fn ScrollAreaThumb(
                 }
 
                 // Capture pointer on the target element.
-                if let Some(target) = event.current_target() {
-                    if let Ok(el) = target.dyn_into::<web_sys::Element>() {
-                        let _ = el.set_pointer_capture(event.pointer_id());
-                    }
+                if let Some(target) = event.current_target()
+                    && let Ok(el) = target.dyn_into::<web_sys::Element>()
+                {
+                    let _ = el.set_pointer_capture(event.pointer_id());
                 }
 
                 set_dragging.set(true);

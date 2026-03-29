@@ -567,10 +567,9 @@ fn focus_select_item(event: &KeyboardEvent, target: FocusTarget) {
 
     if let Some(i) = next
         && let Some(n) = nodes.get(i)
+        && let Ok(el) = n.clone().dyn_into::<web_sys::HtmlElement>()
     {
-        if let Ok(el) = n.clone().dyn_into::<web_sys::HtmlElement>() {
-            let _ = el.focus();
-        }
+        let _ = el.focus();
     }
 }
 
@@ -603,15 +602,15 @@ fn typeahead_focus_item(event: &KeyboardEvent, search: &str) {
     let len = nodes.len();
     for offset in 0..len {
         let i = (start + offset) % len;
-        if let Some(n) = nodes.get(i) {
-            if let Ok(el) = n.clone().dyn_into::<web_sys::Element>() {
-                let text = el.text_content().unwrap_or_default().trim().to_lowercase();
-                if text.starts_with(&search_lower) {
-                    if let Ok(html_el) = el.dyn_into::<web_sys::HtmlElement>() {
-                        let _ = html_el.focus();
-                    }
-                    return;
+        if let Some(n) = nodes.get(i)
+            && let Ok(el) = n.clone().dyn_into::<web_sys::Element>()
+        {
+            let text = el.text_content().unwrap_or_default().trim().to_lowercase();
+            if text.starts_with(&search_lower) {
+                if let Ok(html_el) = el.dyn_into::<web_sys::HtmlElement>() {
+                    let _ = html_el.focus();
                 }
+                return;
             }
         }
     }

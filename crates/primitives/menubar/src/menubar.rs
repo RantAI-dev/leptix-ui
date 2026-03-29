@@ -212,12 +212,12 @@ fn focus_menubar_trigger(event: &KeyboardEvent, forward: bool, do_loop: bool) {
             None
         }
     };
-    if let Some(next) = next {
-        if let Some(n) = nodes.get(next) {
-            use web_sys::wasm_bindgen::JsCast;
-            if let Ok(el) = n.clone().dyn_into::<web_sys::HtmlElement>() {
-                let _ = el.focus();
-            }
+    if let Some(next) = next
+        && let Some(n) = nodes.get(next)
+    {
+        use web_sys::wasm_bindgen::JsCast;
+        if let Ok(el) = n.clone().dyn_into::<web_sys::HtmlElement>() {
+            let _ = el.focus();
         }
     }
 }
