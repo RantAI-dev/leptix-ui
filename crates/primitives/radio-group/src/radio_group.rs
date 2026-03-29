@@ -115,7 +115,10 @@ pub fn RadioGroupItem(
     let is_checked =
         Signal::derive(move || context.value.get().as_deref() == Some(item_value.as_str()));
 
+    let item_ctx = RadioItemContextValue { is_checked };
+
     view! {
+        <Provider value=item_ctx>
         <Primitive
             element=html::button
             as_child=as_child
@@ -141,6 +144,7 @@ pub fn RadioGroupItem(
         >
             {children.with_value(|children| children())}
         </Primitive>
+        </Provider>
     }
 }
 

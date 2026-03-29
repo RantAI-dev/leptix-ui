@@ -69,11 +69,6 @@ pub fn Toast(
             open_state.set(o);
         }
     });
-    Effect::new(move |_| {
-        if let Some(cb) = on_open_change {
-            cb.run(open_state.get());
-        }
-    });
 
     let id = leptix_core::id::use_id(None).get();
 
@@ -82,6 +77,9 @@ pub fn Toast(
         open: open_state,
         on_close: Callback::new(move |()| {
             open_state.set(false);
+            if let Some(cb) = on_open_change {
+                cb.run(false);
+            }
         }),
     };
 
