@@ -1186,6 +1186,29 @@ kbd {
 .demo-toolbar [role="toolbar"] [role="separator"] { width: 1px; height: 20px; background: var(--border); margin: 0 4px; }
 
 /* Dropdown / Context menu */
+/* Dropdown/Context trigger button */
+.demo-dropdown-menu > div > button,
+.demo-dropdown-menu > button {
+    all: unset;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 0 16px;
+    height: 36px;
+    border-radius: var(--radius-sm);
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    background: var(--accent);
+    color: white;
+    font-family: inherit;
+    transition: opacity 0.15s;
+    box-sizing: border-box;
+}
+.demo-dropdown-menu > div > button:hover,
+.demo-dropdown-menu > button:hover { opacity: 0.9; }
+
 .demo-dropdown-menu [role="menu"],
 .demo-context-menu [role="menu"] {
     background: var(--bg-panel);
