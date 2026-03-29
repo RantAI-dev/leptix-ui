@@ -1342,6 +1342,29 @@ kbd {
     font-size: 14px;
 }
 
+/* Popover trigger */
+.demo-popover > div > button,
+.demo-popover > button {
+    all: unset;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 0 16px;
+    height: 36px;
+    border-radius: var(--radius-sm);
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    background: var(--accent);
+    color: white;
+    font-family: inherit;
+    transition: opacity 0.15s;
+    box-sizing: border-box;
+}
+.demo-popover > div > button:hover,
+.demo-popover > button:hover { opacity: 0.9; }
+
 /* Popover / Hover Card content */
 .demo-popover [role="dialog"],
 .demo-hover-card > div > div {
@@ -1352,7 +1375,34 @@ kbd {
     max-width: 300px;
     font-size: 14px;
     color: var(--text-secondary);
+    line-height: 1.5;
 }
+[data-theme="dark"] .demo-popover [role="dialog"],
+[data-theme="dark"] .demo-hover-card > div > div {
+    box-shadow: 0 8px 30px rgba(0,0,0,0.4), 0 0 0 1px rgba(255,255,255,0.06);
+}
+
+/* Tooltip trigger */
+.demo-tooltip > div > div > button,
+.demo-tooltip button[aria-describedby] {
+    all: unset;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 16px;
+    height: 36px;
+    border-radius: var(--radius-sm);
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    background: var(--bg-panel);
+    color: var(--text);
+    border: 1px solid var(--border);
+    font-family: inherit;
+    transition: background 0.15s;
+    box-sizing: border-box;
+}
+.demo-tooltip button:hover { background: var(--bg-hover); }
 
 /* Tooltip */
 .demo-tooltip [role="tooltip"] {
