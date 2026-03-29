@@ -1,2 +1,5 @@
 [serve]
 port = 3999
+
+[build]
+release = true
