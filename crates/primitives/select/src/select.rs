@@ -3,7 +3,9 @@ use leptix_core::compose_refs::use_composed_refs;
 use leptix_core::dismissable_layer::use_dismissable_layer;
 use leptix_core::focus_scope::use_focus_scope;
 use leptix_core::id::use_id;
-use leptix_core::popper::{Align, Popper, PopperAnchor, PopperArrow, PopperContent};
+use leptix_core::popper::{
+    Popper, PopperAnchor, PopperArrow, PopperContent, parse_align_opt, parse_side_or,
+};
 use leptix_core::portal::Portal;
 use leptix_core::presence::use_presence;
 use leptix_core::primitive::{Primitive, VoidPrimitive};
@@ -201,9 +203,9 @@ pub fn SelectContent(
 ) -> impl IntoView {
     let children = StoredValue::new(children.into_inner());
 
-    let popper_side = Signal::derive(move || parse_side(side.get().as_deref(), Side::Bottom));
+    let popper_side = Signal::derive(move || parse_side_or(side.get().as_deref(), Side::Bottom));
     let popper_side_offset = Signal::derive(move || side_offset.get().unwrap_or(0.0));
-    let popper_align = Signal::derive(move || parse_align(align.get().as_deref()));
+    let popper_align = Signal::derive(move || parse_align_opt(align.get().as_deref()));
     let popper_align_offset = Signal::derive(move || align_offset.get().unwrap_or(0.0));
     let popper_avoid_collisions = Signal::derive(move || avoid_collisions.get().unwrap_or(true));
     let popper_collision_padding =
@@ -612,23 +614,5 @@ fn typeahead_focus_item(event: &KeyboardEvent, search: &str) {
                 }
             }
         }
-    }
-}
-
-fn parse_side(s: Option<&str>, default: Side) -> Side {
-    match s {
-        Some("top") => Side::Top,
-        Some("right") => Side::Right,
-        Some("bottom") => Side::Bottom,
-        Some("left") => Side::Left,
-        _ => default,
-    }
-}
-
-fn parse_align(s: Option<&str>) -> Align {
-    match s {
-        Some("start") => Align::Start,
-        Some("end") => Align::End,
-        _ => Align::Center,
     }
 }

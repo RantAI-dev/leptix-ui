@@ -1,7 +1,9 @@
 use std::sync::Arc;
 
-use floating_ui_leptos::{Padding, Side};
-use leptix_core::popper::{Align, Popper, PopperAnchor, PopperArrow, PopperContent};
+use floating_ui_leptos::Padding;
+use leptix_core::popper::{
+    Popper, PopperAnchor, PopperArrow, PopperContent, parse_align, parse_side,
+};
 use leptix_core::portal::Portal;
 use leptix_core::presence::use_presence;
 use leptix_core::primitive::Primitive;
@@ -25,23 +27,6 @@ fn set_timeout(callback: &Closure<dyn Fn()>, ms: i32) -> i32 {
 
 fn clear_timeout(id: i32) {
     window().clear_timeout_with_handle(id);
-}
-
-fn parse_side(s: &str) -> Side {
-    match s {
-        "top" => Side::Top,
-        "right" => Side::Right,
-        "left" => Side::Left,
-        _ => Side::Bottom,
-    }
-}
-
-fn parse_align(s: &str) -> Align {
-    match s {
-        "start" => Align::Start,
-        "end" => Align::End,
-        _ => Align::Center,
-    }
 }
 
 #[derive(Clone, Debug)]

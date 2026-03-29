@@ -43,6 +43,48 @@ impl From<Option<Alignment>> for Align {
     }
 }
 
+/// Parse a side string ("top", "right", "bottom", "left") into a `Side` enum.
+/// Defaults to `Side::Bottom` for unrecognized values.
+pub fn parse_side(s: &str) -> Side {
+    match s {
+        "top" => Side::Top,
+        "right" => Side::Right,
+        "bottom" => Side::Bottom,
+        "left" => Side::Left,
+        _ => Side::Bottom,
+    }
+}
+
+/// Parse an optional side string with a custom default.
+pub fn parse_side_or(s: Option<&str>, default: Side) -> Side {
+    match s {
+        Some("top") => Side::Top,
+        Some("right") => Side::Right,
+        Some("bottom") => Side::Bottom,
+        Some("left") => Side::Left,
+        _ => default,
+    }
+}
+
+/// Parse an alignment string ("start", "center", "end") into an `Align` enum.
+/// Defaults to `Align::Center` for unrecognized values.
+pub fn parse_align(s: &str) -> Align {
+    match s {
+        "start" => Align::Start,
+        "end" => Align::End,
+        _ => Align::Center,
+    }
+}
+
+/// Parse an optional alignment string.
+pub fn parse_align_opt(s: Option<&str>) -> Align {
+    match s {
+        Some("start") => Align::Start,
+        Some("end") => Align::End,
+        _ => Align::Center,
+    }
+}
+
 #[derive(Clone, Copy, Debug, Eq, Hash, PartialEq)]
 pub enum Sticky {
     Partial,
@@ -547,5 +589,66 @@ impl Middleware<web_sys::Element, web_sys::Window> for TransformOrigin {
             ),
             reset: None,
         }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn parse_side_known_values() {
+        assert_eq!(parse_side("top"), Side::Top);
+        assert_eq!(parse_side("right"), Side::Right);
+        assert_eq!(parse_side("bottom"), Side::Bottom);
+        assert_eq!(parse_side("left"), Side::Left);
+    }
+
+    #[test]
+    fn parse_side_unknown_defaults_to_bottom() {
+        assert_eq!(parse_side(""), Side::Bottom);
+        assert_eq!(parse_side("center"), Side::Bottom);
+        assert_eq!(parse_side("TOP"), Side::Bottom);
+    }
+
+    #[test]
+    fn parse_side_or_with_custom_default() {
+        assert_eq!(parse_side_or(Some("top"), Side::Bottom), Side::Top);
+        assert_eq!(parse_side_or(None, Side::Top), Side::Top);
+        assert_eq!(parse_side_or(Some("unknown"), Side::Left), Side::Left);
+    }
+
+    #[test]
+    fn parse_align_known_values() {
+        assert_eq!(parse_align("start"), Align::Start);
+        assert_eq!(parse_align("end"), Align::End);
+        assert_eq!(parse_align("center"), Align::Center);
+    }
+
+    #[test]
+    fn parse_align_unknown_defaults_to_center() {
+        assert_eq!(parse_align(""), Align::Center);
+        assert_eq!(parse_align("middle"), Align::Center);
+    }
+
+    #[test]
+    fn parse_align_opt_works() {
+        assert_eq!(parse_align_opt(Some("start")), Align::Start);
+        assert_eq!(parse_align_opt(Some("end")), Align::End);
+        assert_eq!(parse_align_opt(None), Align::Center);
+    }
+
+    #[test]
+    fn align_alignment_roundtrip() {
+        assert_eq!(Align::Start.alignment(), Some(Alignment::Start));
+        assert_eq!(Align::End.alignment(), Some(Alignment::End));
+        assert_eq!(Align::Center.alignment(), None);
+    }
+
+    #[test]
+    fn align_from_alignment() {
+        assert_eq!(Align::from(Some(Alignment::Start)), Align::Start);
+        assert_eq!(Align::from(Some(Alignment::End)), Align::End);
+        assert_eq!(Align::from(None), Align::Center);
     }
 }

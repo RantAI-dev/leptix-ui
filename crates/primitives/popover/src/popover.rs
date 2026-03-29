@@ -1,31 +1,16 @@
-use floating_ui_leptos::{Padding, Side};
+use floating_ui_leptos::Padding;
 use leptix_core::compose_refs::use_composed_refs;
 use leptix_core::dismissable_layer::use_dismissable_layer;
 use leptix_core::focus_scope::use_focus_scope;
-use leptix_core::popper::{Align, Popper, PopperAnchor, PopperArrow, PopperContent};
+use leptix_core::popper::{
+    Popper, PopperAnchor, PopperArrow, PopperContent, parse_align, parse_side,
+};
 use leptix_core::portal::Portal;
 use leptix_core::presence::use_presence;
 use leptix_core::primitive::Primitive;
 use leptos::{context::Provider, html, prelude::*};
 use leptos_node_ref::AnyNodeRef;
 use send_wrapper::SendWrapper;
-
-fn parse_side(s: &str) -> Side {
-    match s {
-        "top" => Side::Top,
-        "right" => Side::Right,
-        "left" => Side::Left,
-        _ => Side::Bottom,
-    }
-}
-
-fn parse_align(s: &str) -> Align {
-    match s {
-        "start" => Align::Start,
-        "end" => Align::End,
-        _ => Align::Center,
-    }
-}
 
 #[derive(Clone, Debug)]
 struct PopoverContextValue {

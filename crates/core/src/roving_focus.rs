@@ -417,7 +417,7 @@ fn get_direction_aware_key(key: String, dir: Option<Direction>) -> String {
 
     (match key.as_str() {
         "ArrowLeft" => "ArrowRight",
-        "ArrowRight" => "Arrowleft",
+        "ArrowRight" => "ArrowLeft",
         key => key,
     })
     .into()
@@ -484,4 +484,57 @@ fn focus_first(candidates: Vec<web_sys::HtmlElement>, _prevent_scroll: Option<bo
 fn wrap_array<T: Clone>(array: &mut [T], start_index: usize) -> &[T] {
     array.rotate_right(start_index);
     array
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn direction_aware_key_ltr_passthrough() {
+        assert_eq!(
+            get_direction_aware_key("ArrowLeft".into(), Some(Direction::Ltr)),
+            "ArrowLeft"
+        );
+        assert_eq!(
+            get_direction_aware_key("ArrowRight".into(), Some(Direction::Ltr)),
+            "ArrowRight"
+        );
+    }
+
+    #[test]
+    fn direction_aware_key_rtl_swaps_arrows() {
+        assert_eq!(
+            get_direction_aware_key("ArrowLeft".into(), Some(Direction::Rtl)),
+            "ArrowRight"
+        );
+        assert_eq!(
+            get_direction_aware_key("ArrowRight".into(), Some(Direction::Rtl)),
+            "ArrowLeft"
+        );
+    }
+
+    #[test]
+    fn direction_aware_key_rtl_non_arrow_passthrough() {
+        assert_eq!(
+            get_direction_aware_key("ArrowUp".into(), Some(Direction::Rtl)),
+            "ArrowUp"
+        );
+        assert_eq!(
+            get_direction_aware_key("Enter".into(), Some(Direction::Rtl)),
+            "Enter"
+        );
+    }
+
+    #[test]
+    fn direction_aware_key_none_passthrough() {
+        assert_eq!(
+            get_direction_aware_key("ArrowLeft".into(), None),
+            "ArrowLeft"
+        );
+        assert_eq!(
+            get_direction_aware_key("ArrowRight".into(), None),
+            "ArrowRight"
+        );
+    }
 }

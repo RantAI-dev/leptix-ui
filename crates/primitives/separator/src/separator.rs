@@ -59,3 +59,19 @@ pub fn Separator(
         </Primitive>
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn orientation_display() {
+        assert_eq!(Orientation::Horizontal.to_string(), "horizontal");
+        assert_eq!(Orientation::Vertical.to_string(), "vertical");
+    }
+
+    #[test]
+    fn orientation_default_is_horizontal() {
+        assert_eq!(Orientation::default(), Orientation::Horizontal);
+    }
+}

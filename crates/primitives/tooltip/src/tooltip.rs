@@ -1,7 +1,9 @@
 use std::sync::Arc;
 
-use floating_ui_leptos::{Padding, Side};
-use leptix_core::popper::{Align, Popper, PopperAnchor, PopperArrow, PopperContent};
+use floating_ui_leptos::Padding;
+use leptix_core::popper::{
+    Popper, PopperAnchor, PopperArrow, PopperContent, parse_align, parse_side,
+};
 use leptix_core::portal::Portal;
 use leptix_core::presence::use_presence;
 use leptix_core::primitive::Primitive;
@@ -166,24 +168,6 @@ pub fn Tooltip(
                 {children.with_value(|children| children())}
             </Provider>
         </Popper>
-    }
-}
-
-fn parse_side(s: &str) -> Side {
-    match s {
-        "top" => Side::Top,
-        "right" => Side::Right,
-        "bottom" => Side::Bottom,
-        "left" => Side::Left,
-        _ => Side::Top,
-    }
-}
-
-fn parse_align(s: &str) -> Align {
-    match s {
-        "start" => Align::Start,
-        "end" => Align::End,
-        _ => Align::Center,
     }
 }
 
