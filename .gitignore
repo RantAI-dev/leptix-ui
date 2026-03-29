@@ -1,6 +1,7 @@
 /target
 /ref/
 Cargo.lock
+docs/dist/
 *.swp
 *.swo
 *~
