@@ -170,11 +170,12 @@ fn Header() -> impl IntoView {
                     <img src="public/logo/favicon-32x32.png" alt="" width="22" height="22" style="border-radius:5px" />
                     "Leptix"
                 </a>
-                <nav class="header-nav">
-                    <a href="/" class="active">"Primitives"</a>
-                </nav>
             </div>
             <div class="header-right">
+                <a href="https://rantai.dev" target="_blank" class="header-rantai">
+                    "Made with \u{2764} by "
+                    <span style="font-weight:600">"RantAI"</span>
+                </a>
                 <button class="theme-toggle" on:click=toggle_theme aria-label="Toggle theme">
                     {move || if is_dark.get() { "☀" } else { "☾" }}
                 </button>
@@ -232,8 +233,23 @@ fn Sidebar() -> impl IntoView {
         ("Visually Hidden", "/visually-hidden"),
     ];
 
+    let (search, set_search) = signal(String::new());
+
     view! {
         <nav class="sidebar" class:open=move || mobile_open.get()>
+            // Search
+            <div class="sidebar-search">
+                <input
+                    type="text"
+                    placeholder="Search components..."
+                    class="sidebar-search-input"
+                    on:input=move |ev| {
+                        let target: web_sys::HtmlInputElement = event_target(&ev);
+                        set_search.set(target.value().to_lowercase());
+                    }
+                />
+            </div>
+
             <div class="nav-section">"Overview"</div>
             <a href="/" class="nav-link"
                 class:active=move || location.pathname.get() == "/"
@@ -242,9 +258,14 @@ fn Sidebar() -> impl IntoView {
             <div class="nav-section">"Components"</div>
             {components.into_iter().map(|(title, href, badge)| {
                 let href_owned = href.to_string();
+                let title_lower = title.to_lowercase();
                 view! {
                     <a href=href class="nav-link"
                         class:active=move || location.pathname.get() == href_owned
+                        style:display=move || {
+                            let q = search.get();
+                            if q.is_empty() || title_lower.contains(&q) { "flex" } else { "none" }
+                        }
                     >
                         {title}
                         {badge.map(|b| view! { <span class="nav-badge">{b}</span> })}
@@ -255,9 +276,14 @@ fn Sidebar() -> impl IntoView {
             <div class="nav-section">"Utilities"</div>
             {utilities.into_iter().map(|(title, href)| {
                 let href_owned = href.to_string();
+                let title_lower = title.to_lowercase();
                 view! {
                     <a href=href class="nav-link"
                         class:active=move || location.pathname.get() == href_owned
+                        style:display=move || {
+                            let q = search.get();
+                            if q.is_empty() || title_lower.contains(&q) { "flex" } else { "none" }
+                        }
                     >{title}</a>
                 }
             }).collect_view()}
