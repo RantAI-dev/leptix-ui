@@ -15,7 +15,7 @@ pub fn HoverCardPage() -> impl IntoView {
             <div class="hero-demo-card">
             <div class="demo-hover-card">
                 <HoverCard>
-                    <HoverCardTrigger attr:style="text-decoration:none;display:inline-flex;align-items:center;gap:8px;padding:8px 16px;border-radius:999px;cursor:pointer;color:var(--accent);font-weight:600;font-size:14px;background:var(--bg-panel);border:1px solid var(--border);transition:box-shadow 0.15s">
+                    <HoverCardTrigger attr:style="text-decoration:none;display:inline-flex;align-items:center;gap:8px;padding:10px 18px;border-radius:8px;cursor:pointer;color:var(--accent);font-weight:600;font-size:14px;background:transparent;border:none;transition:opacity 0.15s">
                         <img src="https://avatars.githubusercontent.com/u/208423893?s=24" width="24" height="24" style="border-radius:50%" alt="" />
                         "@RantAI-dev"
                     </HoverCardTrigger>
