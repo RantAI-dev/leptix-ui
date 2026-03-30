@@ -20,13 +20,13 @@ pub fn HoverCardPage() -> impl IntoView {
                         "@RantAI-dev"
                     </HoverCardTrigger>
                     <HoverCardPortal>
-                        <HoverCardContent>
+                        <HoverCardContent attr:style="background:var(--bg-panel);border-radius:8px;padding:20px;box-shadow:0 10px 38px -10px rgba(22,23,24,0.35),0 10px 20px -15px rgba(22,23,24,0.2);width:300px;z-index:9999">
                             <div style="display:flex;gap:16px;align-items:flex-start">
                                 <img src="https://avatars.githubusercontent.com/u/208423893?s=48" width="48" height="48" style="border-radius:50%;flex-shrink:0" alt="" />
                                 <div>
-                                    <div style="font-weight:600;font-size:15px;color:var(--text);margin-bottom:2px">"RantAI"</div>
-                                    <div style="font-size:13px;color:var(--text-secondary);margin-bottom:10px">"@RantAI-dev"</div>
-                                    <p style="font-size:14px;color:var(--text-secondary);line-height:1.5;margin:0">"Building intelligent developer tools and open-source infrastructure for the Rust ecosystem."</p>
+                                    <div style="font-weight:600;font-size:15px;margin-bottom:2px">"RantAI"</div>
+                                    <div style="font-size:13px;color:#888;margin-bottom:10px">"@RantAI-dev"</div>
+                                    <p style="font-size:14px;color:#888;line-height:1.5;margin:0">"Building intelligent developer tools and open-source infrastructure for the Rust ecosystem."</p>
                                 </div>
                             </div>
                             <HoverCardArrow />
