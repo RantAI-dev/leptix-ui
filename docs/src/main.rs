@@ -174,6 +174,7 @@ fn Header() -> impl IntoView {
             <div class="header-right">
                 <a href="https://rantai.dev" target="_blank" class="header-rantai">
                     "Made with \u{2764} by "
+                    <img src="/public/logo/logo-rantai.png" alt="RantAI" width="18" height="18" style="vertical-align:middle" />
                     <span style="font-weight:600">"RantAI"</span>
                 </a>
                 <button class="theme-toggle" on:click=toggle_theme aria-label="Toggle theme">

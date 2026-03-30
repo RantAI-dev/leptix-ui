@@ -16,11 +16,11 @@ pub fn TooltipPage() -> impl IntoView {
             <div class="demo-tooltip">
                 <TooltipProvider>
                     <Tooltip>
-                        <TooltipTrigger>"+"</TooltipTrigger>
+                        <TooltipTrigger attr:style="all:unset;display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;border-radius:50%;cursor:pointer;background:var(--accent);color:#fff;font-size:18px;font-weight:600;box-shadow:0 2px 8px rgba(0,0,0,0.15);transition:opacity 0.15s">"+"</TooltipTrigger>
                         <TooltipPortal>
-                            <TooltipContent>
+                            <TooltipContent attr:style="background:#1c1c1e;color:#f5f5f7;padding:8px 14px;border-radius:6px;font-size:13px;font-weight:500;line-height:1;box-shadow:0 8px 30px rgba(0,0,0,0.25);z-index:9999;animation:tooltipFadeIn 0.15s ease-out">
                                 "Add to library"
-                                <TooltipArrow />
+                                <TooltipArrow attr:style="fill:#1c1c1e" />
                             </TooltipContent>
                         </TooltipPortal>
                     </Tooltip>
