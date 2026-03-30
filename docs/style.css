@@ -1899,6 +1899,49 @@ kbd {
     font-size: 16px;
 }
 
+.home-btn {
+    all: unset;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 24px;
+    height: 44px;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.15s, box-shadow 0.15s, transform 0.1s;
+    text-decoration: none;
+    box-sizing: border-box;
+}
+
+.home-btn-primary {
+    background: var(--accent);
+    color: #fff;
+    font-weight: 600;
+}
+.home-btn-primary:hover {
+    background: var(--accent-light, #7c7ff7);
+    box-shadow: 0 4px 16px rgba(99, 102, 241, 0.35);
+    transform: translateY(-1px);
+}
+
+.home-btn-outline {
+    background: var(--bg-panel);
+    color: var(--text);
+    border: 1px solid var(--border);
+}
+.home-btn-outline:hover {
+    background: var(--bg-hover);
+    border-color: var(--accent);
+    color: var(--accent);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    transform: translateY(-1px);
+}
+[data-theme="dark"] .home-btn-outline:hover {
+    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+}
+
 .home-install {
     padding: 32px 0;
 }

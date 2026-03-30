@@ -12,15 +12,9 @@ pub fn HomePage() -> impl IntoView {
             </p>
 
             <div style="display:flex;gap:12px;margin-top:28px;justify-content:center;flex-wrap:wrap">
-                <a href="/dialog" style="all:unset;display:inline-flex;align-items:center;justify-content:center;padding:0 24px;height:44px;border-radius:8px;font-size:15px;font-weight:600;cursor:pointer;background:var(--accent);color:#fff;transition:opacity 0.15s">
-                    "Browse Components"
-                </a>
-                <a href="https://github.com/RantAI-dev/leptix-ui" target="_blank" style="all:unset;display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:0 24px;height:44px;border-radius:8px;font-size:15px;font-weight:500;cursor:pointer;background:var(--bg-panel);color:var(--text);border:1px solid var(--border);transition:background 0.15s">
-                    "GitHub"
-                </a>
-                <a href="https://crates.io/crates/leptix-ui" target="_blank" style="all:unset;display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:0 24px;height:44px;border-radius:8px;font-size:15px;font-weight:500;cursor:pointer;background:var(--bg-panel);color:var(--text);border:1px solid var(--border);transition:background 0.15s">
-                    "crates.io"
-                </a>
+                <a href="/dialog" class="home-btn home-btn-primary">"Browse Components"</a>
+                <a href="https://github.com/RantAI-dev/leptix-ui" target="_blank" class="home-btn home-btn-outline">"GitHub"</a>
+                <a href="https://crates.io/crates/leptix-ui" target="_blank" class="home-btn home-btn-outline">"crates.io"</a>
             </div>
         </div>
 
