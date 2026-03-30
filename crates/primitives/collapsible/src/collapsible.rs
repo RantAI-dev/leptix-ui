@@ -109,59 +109,66 @@ pub fn CollapsibleContent(
     let content_ref =
         leptix_core::compose_refs::use_composed_refs(vec![node_ref, AnyNodeRef::new()]);
 
-    // Measure content dimensions and set CSS variables (like Radix does)
+    // Track whether we've ever measured (first open)
+    let measured_height = RwSignal::new(0.0f64);
+    let measured_width = RwSignal::new(0.0f64);
+    // Track if content is "present" (stays true during close animation)
+    let is_present = RwSignal::new(context.open.get());
+
+    // When opening: immediately set present=true so content renders.
+    // When closing: keep present=true until animation ends.
     Effect::new(move |_| {
-        // Track open state to re-measure
-        let _open = context.open.get();
-
-        if let Some(node) = content_ref.get() {
-            let node: &web_sys::HtmlElement = node.unchecked_ref();
-            // Temporarily remove transitions to measure full dimensions
-            let style = node.style();
-            let orig_transition = style
-                .get_property_value("transition-duration")
-                .unwrap_or_default();
-            let orig_animation = style
-                .get_property_value("animation-name")
-                .unwrap_or_default();
-            let _ = style.set_property("transition-duration", "0s");
-            let _ = style.set_property("animation-name", "none");
-
-            // Measure full dimensions
-            let rect = node.get_bounding_client_rect();
-            let height = rect.height();
-            let width = rect.width();
-
-            // Set CSS custom properties (matches Radix's --radix-collapsible-content-height)
-            let _ = style.set_property(
-                "--leptix-collapsible-content-height",
-                &format!("{height}px"),
-            );
-            let _ = style.set_property("--leptix-collapsible-content-width", &format!("{width}px"));
-
-            // Also set the Radix-compatible variable for compatibility with Radix CSS
-            let _ =
-                style.set_property("--radix-collapsible-content-height", &format!("{height}px"));
-            let _ = style.set_property("--radix-collapsible-content-width", &format!("{width}px"));
-
-            // Restore original transition/animation
-            let _ = style.set_property("transition-duration", &orig_transition);
-            let _ = style.set_property("animation-name", &orig_animation);
+        if context.open.get() {
+            is_present.set(true);
         }
     });
 
-    // For accordion, also set on the parent (Radix uses --radix-accordion-content-height)
+    // Measure the content's natural height whenever it becomes present
     Effect::new(move |_| {
+        let _present = is_present.get();
         let _open = context.open.get();
+
+        // Use request_animation_frame to measure after the DOM has rendered
         if let Some(node) = content_ref.get() {
-            let node: &web_sys::HtmlElement = node.unchecked_ref();
-            let rect = node.get_bounding_client_rect();
-            let height = rect.height();
-            let style = node.style();
-            let _ = style.set_property("--radix-accordion-content-height", &format!("{height}px"));
-            let _ = style.set_property("--leptix-accordion-content-height", &format!("{height}px"));
+            let node: web_sys::HtmlElement = node.unchecked_ref::<web_sys::HtmlElement>().clone();
+            // Defer measurement to next frame so content has rendered
+            let cb = web_sys::wasm_bindgen::closure::Closure::once_into_js(move || {
+                let style = node.style();
+                // Temporarily show content at natural height to measure
+                let _ = style.set_property("height", "auto");
+                let _ = style.set_property("animation", "none");
+                let rect = node.get_bounding_client_rect();
+                let h = rect.height();
+                let w = rect.width();
+                measured_height.set(h);
+                measured_width.set(w);
+                // Set CSS variables for animations
+                let _ =
+                    style.set_property("--leptix-collapsible-content-height", &format!("{h}px"));
+                let _ = style.set_property("--leptix-collapsible-content-width", &format!("{w}px"));
+                let _ = style.set_property("--radix-collapsible-content-height", &format!("{h}px"));
+                let _ = style.set_property("--radix-collapsible-content-width", &format!("{w}px"));
+                let _ = style.set_property("--radix-accordion-content-height", &format!("{h}px"));
+                let _ = style.set_property("--leptix-accordion-content-height", &format!("{h}px"));
+                // Remove overrides so CSS animations can take over
+                let _ = style.remove_property("height");
+                let _ = style.remove_property("animation");
+            });
+            if let Some(w) = web_sys::window() {
+                let _ = w.request_animation_frame(cb.as_ref().unchecked_ref());
+            }
         }
     });
+
+    // Handle close: listen for animationend to remove content
+    let on_animation_end = move |_: web_sys::AnimationEvent| {
+        if !context.open.get() {
+            is_present.set(false);
+        }
+    };
+
+    let should_render =
+        Signal::derive(move || context.open.get() || is_present.get() || force_mount.get());
 
     view! {
         <Primitive
@@ -172,10 +179,11 @@ pub fn CollapsibleContent(
             attr:data-state=move || if context.open.get() { "open" } else { "closed" }
             attr:data-disabled=move || context.disabled.get().then_some("")
             attr:role="region"
-            attr:hidden=move || (!context.open.get() && !force_mount.get()).then_some("")
+            attr:hidden=move || (!should_render.get()).then_some("")
+            on:animationend=on_animation_end
         >
             {move || {
-                if context.open.get() || force_mount.get() {
+                if should_render.get() {
                     Some(children.with_value(|children| children()))
                 } else {
                     None
