@@ -309,9 +309,9 @@ pub fn SliderThumb(
             style=move || {
                 let pos = percent.get();
                 if is_horizontal.get() {
-                    format!("position:absolute;left:{}%;transform:translateX(-50%)", pos)
+                    format!("position:absolute;left:{}%;transform:translateX(-50%);pointer-events:none", pos)
                 } else {
-                    format!("position:absolute;bottom:{}%;transform:translateY(50%)", pos)
+                    format!("position:absolute;bottom:{}%;transform:translateY(50%);pointer-events:none", pos)
                 }
             }
         >
@@ -328,12 +328,7 @@ pub fn SliderThumb(
                 attr:data-disabled=move || context.disabled.get().then_some("")
                 attr:disabled=move || context.disabled.get().then_some("")
                 attr:tabindex=move || if context.disabled.get() { None } else { Some("0") }
-                attr:style="pointer-events:auto;cursor:grab"
-                on:pointerdown=move |event: PointerEvent| {
-                    // Prevent browser default (text selection drag) so the
-                    // root element's pointer capture works when starting from the thumb
-                    event.prevent_default();
-                }
+                attr:style="pointer-events:none;cursor:grab"
                 on:keydown=move |event: KeyboardEvent| {
                     if context.disabled.get() {
                         return;
