@@ -78,6 +78,33 @@ pub fn Slider(
         active_thumb: RwSignal::new(None),
     };
 
+    // Drag state lives at the root so it works from track, range, or thumb
+    let dragging_idx = RwSignal::new(Option::<usize>::None);
+
+    let calc_value_from_pointer =
+        move |client_x: f64, client_y: f64, el: &web_sys::HtmlElement| -> f64 {
+            let rect = el.get_bounding_client_rect();
+            let is_horizontal = orientation.get() == "horizontal";
+            let is_inv = inverted.get();
+            let percent = if is_horizontal {
+                let offset = client_x - rect.left();
+                let ratio = offset / rect.width();
+                let ratio = if direction.get() == Direction::Rtl {
+                    1.0 - ratio
+                } else {
+                    ratio
+                };
+                if is_inv { 1.0 - ratio } else { ratio }
+            } else {
+                let offset = client_y - rect.top();
+                let ratio = 1.0 - (offset / rect.height());
+                if is_inv { 1.0 - ratio } else { ratio }
+            };
+            let new_value = min.get() + percent * (max.get() - min.get());
+            let new_value = snap_to_step(new_value, step.get(), min.get());
+            clamp(new_value, [min.get(), max.get()])
+        };
+
     view! {
         <Provider value=context_value>
             <Primitive
@@ -88,6 +115,69 @@ pub fn Slider(
                 attr:data-disabled=move || disabled.get().then_some("")
                 attr:aria-disabled=move || disabled.get().to_string()
                 attr:dir=move || direction.get().to_string()
+                attr:style="touch-action:none;position:relative"
+                on:pointerdown=move |event: PointerEvent| {
+                    if disabled.get() {
+                        return;
+                    }
+                    event.prevent_default();
+                    if let Some(target) = event.current_target()
+                        && let Ok(el) = target.dyn_into::<web_sys::HtmlElement>()
+                    {
+                        let _ = el.set_pointer_capture(event.pointer_id());
+
+                        let new_value = calc_value_from_pointer(
+                            event.client_x() as f64,
+                            event.client_y() as f64,
+                            &el,
+                        );
+
+                        let values = value.get();
+                        let closest_idx = values.iter().enumerate()
+                            .min_by(|(_, a), (_, b)| {
+                                ((**a - new_value).abs()).partial_cmp(&((**b - new_value).abs())).unwrap()
+                            })
+                            .map(|(idx, _)| idx)
+                            .unwrap_or(0);
+
+                        dragging_idx.set(Some(closest_idx));
+
+                        let mut new_values = values;
+                        if let Some(v) = new_values.get_mut(closest_idx) {
+                            *v = new_value;
+                        }
+                        set_value.run(Some(new_values));
+                    }
+                }
+                on:pointermove=move |event: PointerEvent| {
+                    if let Some(idx) = dragging_idx.get_untracked()
+                        && let Some(target) = event.current_target()
+                        && let Ok(el) = target.dyn_into::<web_sys::HtmlElement>()
+                    {
+                        let new_value = calc_value_from_pointer(
+                            event.client_x() as f64,
+                            event.client_y() as f64,
+                            &el,
+                        );
+
+                        let mut new_values = value.get();
+                        if let Some(v) = new_values.get_mut(idx) {
+                            *v = new_value;
+                        }
+                        set_value.run(Some(new_values));
+                    }
+                }
+                on:pointerup=move |_: PointerEvent| {
+                    if dragging_idx.get_untracked().is_some()
+                        && let Some(on_commit) = on_value_commit
+                    {
+                        on_commit.run(value.get());
+                    }
+                    dragging_idx.set(None);
+                }
+                on:pointercancel=move |_: PointerEvent| {
+                    dragging_idx.set(None);
+                }
             >
                 {children.with_value(|children| children())}
             </Primitive>
@@ -104,33 +194,6 @@ pub fn SliderTrack(
     let children = StoredValue::new(children.into_inner());
     let context = expect_context::<SliderContextValue>();
 
-    // Track which thumb index is being dragged
-    let dragging_idx = RwSignal::new(Option::<usize>::None);
-
-    let calc_value_from_pointer =
-        move |client_x: f64, client_y: f64, el: &web_sys::HtmlElement| -> f64 {
-            let rect = el.get_bounding_client_rect();
-            let is_horizontal = context.orientation.get() == "horizontal";
-            let is_inverted = context.inverted.get();
-            let percent = if is_horizontal {
-                let offset = client_x - rect.left();
-                let ratio = offset / rect.width();
-                let ratio = if context.direction.get() == Direction::Rtl {
-                    1.0 - ratio
-                } else {
-                    ratio
-                };
-                if is_inverted { 1.0 - ratio } else { ratio }
-            } else {
-                let offset = client_y - rect.top();
-                let ratio = 1.0 - (offset / rect.height());
-                if is_inverted { 1.0 - ratio } else { ratio }
-            };
-            let new_value = context.min.get() + percent * (context.max.get() - context.min.get());
-            let new_value = snap_to_step(new_value, context.step.get(), context.min.get());
-            clamp(new_value, [context.min.get(), context.max.get()])
-        };
-
     view! {
         <Primitive
             element=html::div
@@ -138,66 +201,7 @@ pub fn SliderTrack(
             node_ref=node_ref
             attr:data-orientation=move || context.orientation.get()
             attr:data-disabled=move || context.disabled.get().then_some("")
-            attr:style="touch-action:none"
-            on:pointerdown=move |event: PointerEvent| {
-                if context.disabled.get() {
-                    return;
-                }
-                event.prevent_default();
-                if let Some(target) = event.current_target()
-                    && let Ok(el) = target.dyn_into::<web_sys::HtmlElement>()
-                {
-                    // Capture pointer for drag tracking
-                    let _ = el.set_pointer_capture(event.pointer_id());
-
-                    let new_value = calc_value_from_pointer(
-                        event.client_x() as f64,
-                        event.client_y() as f64,
-                        &el,
-                    );
-
-                    // Find closest thumb
-                    let values = context.value.get();
-                    let closest_idx = values.iter().enumerate()
-                        .min_by(|(_, a), (_, b)| {
-                            ((**a - new_value).abs()).partial_cmp(&((**b - new_value).abs())).unwrap()
-                        })
-                        .map(|(idx, _)| idx)
-                        .unwrap_or(0);
-
-                    dragging_idx.set(Some(closest_idx));
-
-                    let mut new_values = values;
-                    if let Some(v) = new_values.get_mut(closest_idx) {
-                        *v = new_value;
-                    }
-                    context.on_value_change.run(new_values);
-                }
-            }
-            on:pointermove=move |event: PointerEvent| {
-                if let Some(idx) = dragging_idx.get_untracked()
-                    && let Some(target) = event.current_target()
-                    && let Ok(el) = target.dyn_into::<web_sys::HtmlElement>()
-                {
-                    let new_value = calc_value_from_pointer(
-                        event.client_x() as f64,
-                        event.client_y() as f64,
-                        &el,
-                    );
-
-                    let mut new_values = context.value.get();
-                    if let Some(v) = new_values.get_mut(idx) {
-                        *v = new_value;
-                    }
-                    context.on_value_change.run(new_values);
-                }
-            }
-            on:pointerup=move |_: PointerEvent| {
-                dragging_idx.set(None);
-            }
-            on:pointercancel=move |_: PointerEvent| {
-                dragging_idx.set(None);
-            }
+            attr:style="position:relative"
         >
             {children.with_value(|children| children())}
         </Primitive>
