@@ -7,6 +7,7 @@ pub fn ToastPage() -> impl IntoView {
     let (open, set_open) = signal(false);
 
     view! {
+        <ToastProvider>
         <h1>"Toast"</h1>
         <p class="description">
             "A succinct message that is displayed temporarily."
@@ -16,7 +17,6 @@ pub fn ToastPage() -> impl IntoView {
         <div class="hero-container" data-component="toast">
             <div class="hero-demo-card">
             <div class="demo-toast">
-                <ToastProvider>
                     <button
                         on:click=move |_| set_open.set(true)
                         style="padding:0.5rem 1.25rem;border-radius:6px;background:var(--accent);color:#fff;border:none;cursor:pointer;font-weight:500;"
@@ -25,15 +25,12 @@ pub fn ToastPage() -> impl IntoView {
                     </button>
 
                     <Toast open=open on_open_change=Callback::new(move |val: bool| set_open.set(val))
-                        attr:style="background:var(--bg-panel);border-radius:8px;padding:15px;box-shadow:0 10px 38px -10px rgba(22,23,24,0.35),0 10px 20px -15px rgba(22,23,24,0.2);display:grid;grid-template-areas:'title action' 'description action';grid-template-columns:auto max-content;column-gap:15px;align-items:center;animation:toastSlideIn 0.3s cubic-bezier(0.16,1,0.3,1)"
+                        attr:style="background:var(--bg-panel);border-radius:8px;padding:15px;box-shadow:0 10px 38px -10px rgba(22,23,24,0.35),0 10px 20px -15px rgba(22,23,24,0.2);display:grid;grid-template-areas:'title action' 'description action';grid-template-columns:auto max-content;column-gap:15px;align-items:center;list-style:none"
                     >
                         <ToastTitle attr:style="grid-area:title;font-weight:600;font-size:15px;margin-bottom:2px">"Event Created"</ToastTitle>
                         <ToastDescription attr:style="grid-area:description;font-size:13px;color:#888;line-height:1.4;margin:0">"Your meeting has been scheduled."</ToastDescription>
                         <ToastClose attr:style="grid-area:action;all:unset;display:inline-flex;align-items:center;justify-content:center;padding:0 12px;height:28px;border-radius:4px;font-size:12px;font-weight:500;cursor:pointer;background:var(--accent);color:#fff">"Dismiss"</ToastClose>
                     </Toast>
-
-                    <ToastViewport attr:style="position:fixed;bottom:0;right:0;display:flex;flex-direction:column;padding:25px;gap:10px;width:390px;max-width:100vw;z-index:2147483647;outline:none;margin:0;list-style:none" />
-                </ToastProvider>
             </div>
             </div>
         </div>
@@ -110,5 +107,9 @@ pub fn ToastPage() -> impl IntoView {
                 <tr><td><kbd>"Escape"</kbd></td><td>"Dismisses the focused toast."</td></tr>
             </tbody>
         </table>
+
+        // Toast viewport at page level — fixed bottom-right
+        <ToastViewport attr:style="position:fixed;bottom:0;right:0;display:flex;flex-direction:column;padding:25px;gap:10px;width:390px;max-width:100vw;z-index:2147483647;outline:none;margin:0;list-style:none" />
+        </ToastProvider>
     }
 }
