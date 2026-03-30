@@ -4,6 +4,7 @@ use leptix_core::primitive::Primitive;
 use leptix_core::use_controllable_state::{UseControllableStateParams, use_controllable_state};
 use leptos::{context::Provider, ev::KeyboardEvent, ev::PointerEvent, html, prelude::*};
 use leptos_node_ref::AnyNodeRef;
+use web_sys::wasm_bindgen::JsCast;
 
 #[derive(Clone, Debug)]
 #[allow(dead_code)]
@@ -103,6 +104,33 @@ pub fn SliderTrack(
     let children = StoredValue::new(children.into_inner());
     let context = expect_context::<SliderContextValue>();
 
+    // Track which thumb index is being dragged
+    let dragging_idx = RwSignal::new(Option::<usize>::None);
+
+    let calc_value_from_pointer =
+        move |client_x: f64, client_y: f64, el: &web_sys::HtmlElement| -> f64 {
+            let rect = el.get_bounding_client_rect();
+            let is_horizontal = context.orientation.get() == "horizontal";
+            let is_inverted = context.inverted.get();
+            let percent = if is_horizontal {
+                let offset = client_x - rect.left();
+                let ratio = offset / rect.width();
+                let ratio = if context.direction.get() == Direction::Rtl {
+                    1.0 - ratio
+                } else {
+                    ratio
+                };
+                if is_inverted { 1.0 - ratio } else { ratio }
+            } else {
+                let offset = client_y - rect.top();
+                let ratio = 1.0 - (offset / rect.height());
+                if is_inverted { 1.0 - ratio } else { ratio }
+            };
+            let new_value = context.min.get() + percent * (context.max.get() - context.min.get());
+            let new_value = snap_to_step(new_value, context.step.get(), context.min.get());
+            clamp(new_value, [context.min.get(), context.max.get()])
+        };
+
     view! {
         <Primitive
             element=html::div
@@ -110,47 +138,65 @@ pub fn SliderTrack(
             node_ref=node_ref
             attr:data-orientation=move || context.orientation.get()
             attr:data-disabled=move || context.disabled.get().then_some("")
+            attr:style="touch-action:none"
             on:pointerdown=move |event: PointerEvent| {
                 if context.disabled.get() {
                     return;
                 }
-                let target = event.current_target();
-                if let Some(target) = target {
-                    use web_sys::wasm_bindgen::JsCast;
-                    if let Ok(el) = target.dyn_into::<web_sys::HtmlElement>() {
-                        let rect = el.get_bounding_client_rect();
-                        let is_horizontal = context.orientation.get() == "horizontal";
-                        let is_inverted = context.inverted.get();
-                        let percent = if is_horizontal {
-                            let offset = event.client_x() as f64 - rect.left();
-                            let ratio = offset / rect.width();
-                            let ratio = if context.direction.get() == Direction::Rtl { 1.0 - ratio } else { ratio };
-                            if is_inverted { 1.0 - ratio } else { ratio }
-                        } else {
-                            let offset = event.client_y() as f64 - rect.top();
-                            let ratio = 1.0 - (offset / rect.height());
-                            if is_inverted { 1.0 - ratio } else { ratio }
-                        };
-                        let new_value = context.min.get() + percent * (context.max.get() - context.min.get());
-                        let new_value = snap_to_step(new_value, context.step.get(), context.min.get());
-                        let new_value = clamp(new_value, [context.min.get(), context.max.get()]);
+                event.prevent_default();
+                if let Some(target) = event.current_target()
+                    && let Ok(el) = target.dyn_into::<web_sys::HtmlElement>()
+                {
+                    // Capture pointer for drag tracking
+                    let _ = el.set_pointer_capture(event.pointer_id());
 
-                        // Find closest thumb
-                        let values = context.value.get();
-                        let closest_idx = values.iter().enumerate()
-                            .min_by(|(_, a), (_, b)| {
-                                ((**a - new_value).abs()).partial_cmp(&((**b - new_value).abs())).unwrap()
-                            })
-                            .map(|(idx, _)| idx)
-                            .unwrap_or(0);
+                    let new_value = calc_value_from_pointer(
+                        event.client_x() as f64,
+                        event.client_y() as f64,
+                        &el,
+                    );
 
-                        let mut new_values = values;
-                        if let Some(v) = new_values.get_mut(closest_idx) {
-                            *v = new_value;
-                        }
-                        context.on_value_change.run(new_values);
+                    // Find closest thumb
+                    let values = context.value.get();
+                    let closest_idx = values.iter().enumerate()
+                        .min_by(|(_, a), (_, b)| {
+                            ((**a - new_value).abs()).partial_cmp(&((**b - new_value).abs())).unwrap()
+                        })
+                        .map(|(idx, _)| idx)
+                        .unwrap_or(0);
+
+                    dragging_idx.set(Some(closest_idx));
+
+                    let mut new_values = values;
+                    if let Some(v) = new_values.get_mut(closest_idx) {
+                        *v = new_value;
                     }
+                    context.on_value_change.run(new_values);
                 }
+            }
+            on:pointermove=move |event: PointerEvent| {
+                if let Some(idx) = dragging_idx.get_untracked()
+                    && let Some(target) = event.current_target()
+                    && let Ok(el) = target.dyn_into::<web_sys::HtmlElement>()
+                {
+                    let new_value = calc_value_from_pointer(
+                        event.client_x() as f64,
+                        event.client_y() as f64,
+                        &el,
+                    );
+
+                    let mut new_values = context.value.get();
+                    if let Some(v) = new_values.get_mut(idx) {
+                        *v = new_value;
+                    }
+                    context.on_value_change.run(new_values);
+                }
+            }
+            on:pointerup=move |_: PointerEvent| {
+                dragging_idx.set(None);
+            }
+            on:pointercancel=move |_: PointerEvent| {
+                dragging_idx.set(None);
             }
         >
             {children.with_value(|children| children())}

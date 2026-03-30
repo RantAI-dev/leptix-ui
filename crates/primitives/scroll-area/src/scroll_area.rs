@@ -76,7 +76,7 @@ pub fn ScrollArea(
         <Provider value=ctx>
             <Primitive element=html::div as_child=as_child node_ref=node_ref
                 attr:dir=move || dir.get()
-                attr:style="position:relative;overflow:hidden"
+                attr:style="position:relative;overflow:hidden;height:100%;width:100%"
             >
                 {children.with_value(|c| c())}
             </Primitive>

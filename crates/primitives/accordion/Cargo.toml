@@ -13,5 +13,5 @@ readme = "README.md"
 leptos.workspace = true
 leptos-node-ref.workspace = true
 leptix-core.workspace = true
-leptix-collapsible = { path = "../collapsible", version = "0.1.0" }
+leptix-collapsible = { path = "../collapsible", version = "0.1" }
 web-sys = { workspace = true, features = ["HtmlElement", "NodeList"] }

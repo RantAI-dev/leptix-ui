@@ -13,5 +13,5 @@ readme = "README.md"
 leptos.workspace = true
 leptos-node-ref.workspace = true
 leptix-core.workspace = true
-leptix-dialog = { path = "../dialog", version = "0.1.0" }
+leptix-dialog = { path = "../dialog", version = "0.1" }
 web-sys.workspace = true
