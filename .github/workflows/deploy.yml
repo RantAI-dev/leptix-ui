@@ -38,7 +38,7 @@ jobs:
       - name: Build docs site
         run: |
           cd docs
-          trunk build --release --public-url /leptix-ui/
+          trunk build --release --public-url /
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3

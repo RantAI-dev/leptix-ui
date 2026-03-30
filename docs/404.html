@@ -4,10 +4,9 @@
     <meta charset="utf-8" />
     <title>Leptix</title>
     <script>
-        // SPA redirect for GitHub Pages
-        // Stores the path and redirects to index.html
+        // SPA redirect for GitHub Pages with custom domain
         sessionStorage.redirect = location.href;
-        location.replace(location.pathname.split('/').slice(0, 2).join('/') + '/');
+        location.replace('/');
     </script>
 </head>
 <body></body>

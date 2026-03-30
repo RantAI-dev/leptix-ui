@@ -167,7 +167,7 @@ fn Header() -> impl IntoView {
                     {move || if mobile_open.get() { "✕" } else { "☰" }}
                 </button>
                 <a href="/" class="header-logo">
-                    <img src="public/logo/favicon-32x32.png" alt="" width="22" height="22" style="border-radius:5px" />
+                    <img src="/public/logo/favicon-32x32.png" alt="" width="22" height="22" style="border-radius:5px" />
                     "Leptix"
                 </a>
             </div>
