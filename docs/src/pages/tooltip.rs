@@ -16,10 +16,10 @@ pub fn TooltipPage() -> impl IntoView {
             <div class="demo-tooltip">
                 <TooltipProvider>
                     <Tooltip>
-                        <TooltipTrigger>"Hover me"</TooltipTrigger>
+                        <TooltipTrigger>"+"</TooltipTrigger>
                         <TooltipPortal>
                             <TooltipContent>
-                                "Tooltip text"
+                                "Add to library"
                                 <TooltipArrow />
                             </TooltipContent>
                         </TooltipPortal>

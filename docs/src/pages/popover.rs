@@ -15,10 +15,20 @@ pub fn PopoverPage() -> impl IntoView {
             <div class="hero-demo-card">
             <div class="demo-popover">
                 <Popover>
-                    <PopoverTrigger>"Open Popover"</PopoverTrigger>
+                    <PopoverTrigger>"Update dimensions"</PopoverTrigger>
                     <PopoverPortal>
                         <PopoverContent>
-                            <p>"This is the popover content. You can place any rich content here."</p>
+                            <div style="display:flex;flex-direction:column;gap:12px">
+                                <p style="font-weight:600;font-size:15px;color:var(--text);margin:0">"Dimensions"</p>
+                                <div style="display:flex;align-items:center;gap:8px">
+                                    <label style="font-size:13px;color:var(--text-secondary);width:60px">"Width"</label>
+                                    <input type="text" value="100%" style="flex:1;padding:4px 8px;border-radius:4px;border:1px solid var(--border);background:var(--bg);color:var(--text);font-size:13px;font-family:inherit" />
+                                </div>
+                                <div style="display:flex;align-items:center;gap:8px">
+                                    <label style="font-size:13px;color:var(--text-secondary);width:60px">"Height"</label>
+                                    <input type="text" value="25px" style="flex:1;padding:4px 8px;border-radius:4px;border:1px solid var(--border);background:var(--bg);color:var(--text);font-size:13px;font-family:inherit" />
+                                </div>
+                            </div>
                             <PopoverArrow />
                         </PopoverContent>
                     </PopoverPortal>

@@ -15,12 +15,20 @@ pub fn HoverCardPage() -> impl IntoView {
             <div class="hero-demo-card">
             <div class="demo-hover-card">
                 <HoverCard>
-                    <HoverCardTrigger attr:style="text-decoration:none;display:block;padding:16px 24px;border-radius:8px;border:1px solid var(--border);cursor:pointer;color:var(--accent-light);font-weight:500;font-size:15px">
-                        "Hover over @leptix"
+                    <HoverCardTrigger attr:style="text-decoration:none;display:inline-flex;align-items:center;gap:8px;padding:8px 16px;border-radius:999px;cursor:pointer;color:var(--accent);font-weight:600;font-size:14px;background:var(--bg-panel);border:1px solid var(--border);transition:box-shadow 0.15s">
+                        <img src="https://avatars.githubusercontent.com/u/208423893?s=24" width="24" height="24" style="border-radius:50%" alt="" />
+                        "@RantAI-dev"
                     </HoverCardTrigger>
                     <HoverCardPortal>
                         <HoverCardContent>
-                            <p>"Leptix is an open-source Rust UI component library for Leptos, inspired by Radix."</p>
+                            <div style="display:flex;gap:16px;align-items:flex-start">
+                                <img src="https://avatars.githubusercontent.com/u/208423893?s=48" width="48" height="48" style="border-radius:50%;flex-shrink:0" alt="" />
+                                <div>
+                                    <div style="font-weight:600;font-size:15px;color:var(--text);margin-bottom:2px">"RantAI"</div>
+                                    <div style="font-size:13px;color:var(--text-secondary);margin-bottom:10px">"@RantAI-dev"</div>
+                                    <p style="font-size:14px;color:var(--text-secondary);line-height:1.5;margin:0">"Building intelligent developer tools and open-source infrastructure for the Rust ecosystem."</p>
+                                </div>
+                            </div>
                             <HoverCardArrow />
                         </HoverCardContent>
                     </HoverCardPortal>
