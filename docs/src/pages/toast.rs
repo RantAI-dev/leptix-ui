@@ -24,7 +24,7 @@ pub fn ToastPage() -> impl IntoView {
                         "Show Toast"
                     </button>
 
-                    <ToastViewport attr:style="position:fixed;bottom:0;right:0;display:flex;flex-direction:column;padding:25px;gap:10px;width:390px;max-width:100vw;z-index:2147483647;outline:none;margin:0;list-style:none">
+                    <ToastViewport attr:style="position:fixed;bottom:0;right:0;display:flex;flex-direction:column;padding:25px;gap:10px;width:100%;max-width:390px;z-index:2147483647;outline:none;margin:0;list-style:none;box-sizing:border-box">
                         <Toast open=open on_open_change=Callback::new(move |val: bool| set_open.set(val))
                             attr:style="background:var(--bg-panel);border-radius:8px;padding:15px;box-shadow:0 10px 38px -10px rgba(22,23,24,0.35),0 10px 20px -15px rgba(22,23,24,0.2);display:grid;grid-template-areas:'title action' 'description action';grid-template-columns:auto max-content;column-gap:15px;align-items:center;list-style:none"
                         >

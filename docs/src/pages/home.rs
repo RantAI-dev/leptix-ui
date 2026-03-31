@@ -6,8 +6,8 @@ pub fn HomePage() -> impl IntoView {
         // ---- Hero ----
         <div class="home-hero">
             <img src="/public/logo/logo.png" alt="Leptix" width="80" height="80" style="margin-bottom:16px" />
-            <h1 style="font-size:52px;font-weight:800;letter-spacing:-0.04em;line-height:1.05;margin:0">"Radix Primitives"<br/>"for Leptos"</h1>
-            <p style="font-size:19px;color:var(--text-secondary);max-width:520px;margin:16px auto 0;line-height:1.6">
+            <h1 class="home-hero-title" style="font-size:52px;font-weight:800;letter-spacing:-0.04em;line-height:1.05;margin:0">"Radix Primitives"<br/>"for Leptos"</h1>
+            <p class="home-hero-desc" style="font-size:19px;color:var(--text-secondary);max-width:520px;margin:16px auto 0;line-height:1.6">
                 "An open-source Rust component library of 33 unstyled, accessible primitives for building high-quality design systems and web apps."
             </p>
 
