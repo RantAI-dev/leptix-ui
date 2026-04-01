@@ -98,6 +98,7 @@ body {
     -moz-osx-font-smoothing: grayscale;
     font-size: 15px;
     min-width: 320px;
+    overflow-x: hidden;
 }
 
 /* ===== Focus ===== */
@@ -280,6 +281,8 @@ a { color: var(--text-link); }
     width: 100%;
     max-width: var(--content-max-width);
     padding: 48px 56px 100px;
+    box-sizing: border-box;
+    overflow-x: hidden;
 }
 
 /* ===== Quick Nav (right TOC) ===== */
@@ -377,6 +380,9 @@ code {
     display: flex;
     align-items: center;
     justify-content: center;
+    overflow: hidden;
+    box-sizing: border-box;
+    max-width: 100%;
     margin-bottom: 0;
     min-height: 220px;
 }
@@ -418,8 +424,10 @@ code {
     border-radius: 12px;
     padding: 32px 40px;
     box-shadow: var(--hero-card-shadow);
-    min-width: 280px;
-    max-width: 90%;
+    min-width: 0;
+    max-width: 100%;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 /* ===== Code Block ===== */
@@ -429,6 +437,8 @@ code {
     overflow: hidden;
     margin-bottom: 28px;
     position: relative;
+    max-width: 100%;
+    box-sizing: border-box;
 }
 
 .code-block.standalone {
@@ -949,7 +959,8 @@ kbd {
 
 /* Accordion — pixel-match Radix UI demo */
 .demo-accordion {
-    width: 300px;
+    width: 100%;
+    max-width: 300px;
     border-radius: 6px;
     background-color: #dfdde3;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.07);
@@ -1234,53 +1245,69 @@ kbd {
 
     .sidebar-overlay.open { display: block; }
 
-    .main-content { margin-left: 0; }
-    .doc-page { padding: 24px 20px 60px; }
-    .hero-container { padding: 48px 20px; }
-    .hero-demo-card { min-width: auto; padding: 24px; }
-    .footer { margin-left: 0; flex-direction: column; padding: 32px 20px; }
+    .main-content { margin-left: 0; overflow-x: hidden; }
+    .doc-page { padding: 24px 16px 60px; overflow-x: hidden; }
+    .hero-container { padding: 40px 16px; }
+    .hero-demo-card { min-width: 0; padding: 20px 16px; max-width: 100%; }
+    .footer { margin-left: 0; flex-direction: column; padding: 32px 16px; }
 
-    /* Demo components — constrain fixed widths */
+    /* All demo wrappers — fluid */
     .demo-context-menu-trigger,
     .demo-scroll-area,
     .demo-aspect-ratio,
-    .demo-form form { width: 100%; max-width: 300px; }
+    .demo-form form,
+    .demo-separator,
+    .demo-progress,
+    .demo-navigation-menu,
+    .demo-slider,
+    .demo-accordion,
+    .demo-hover-card { width: 100%; max-width: 100%; box-sizing: border-box; }
     .demo-password-toggle input { width: 100%; max-width: 200px; }
 
     /* Home page hero */
-    .home-hero-title { font-size: 40px !important; }
+    .home-hero-title { font-size: 36px !important; }
     .home-hero-desc { font-size: 16px !important; }
 
-    /* Header RantAI link — hide text, show on larger */
-    .header-rantai { font-size: 12px; padding: 4px 8px; }
+    /* Header RantAI link */
+    .header-rantai { font-size: 11px; padding: 4px 6px; }
 
-    /* Props tables — ensure min-width for scroll */
+    /* Props tables — scroll wrapper */
     .props-table { min-width: 500px; }
+    .props-table-wrapper { -webkit-overflow-scrolling: touch; }
+
+    /* Code blocks */
+    .code-block pre { font-size: 12px; padding: 12px; }
+
+    /* Accordion items */
+    .demo-accordion > div { max-width: 100%; }
 }
 
 @media (max-width: 480px) {
-    .doc-page h1 { font-size: 28px; }
-    .description { font-size: 16px; }
-    .hero-container { padding: 32px 16px; }
+    .doc-page h1 { font-size: 26px; }
+    .description { font-size: 15px; }
+    .hero-container { padding: 32px 12px; }
+    .hero-demo-card { padding: 16px 12px; }
 
-    /* Hero demo card — tighter padding */
-    .hero-demo-card { padding: 20px 16px; min-width: 0; }
+    /* Home hero */
+    .home-hero-title { font-size: 28px !important; }
+    .home-hero-desc { font-size: 14px !important; }
+    .home-hero { padding: 40px 12px 32px; }
 
-    /* Home hero — smaller text */
-    .home-hero-title { font-size: 32px !important; }
-    .home-hero-desc { font-size: 15px !important; }
+    /* Portal content */
+    [role="dialog"] { max-width: calc(100vw - 24px) !important; }
+    [role="tooltip"] { max-width: calc(100vw - 24px) !important; }
 
-    /* Portal content — prevent overflow */
-    [role="dialog"] { max-width: calc(100vw - 32px) !important; }
-    [role="tooltip"] { max-width: calc(100vw - 32px) !important; }
+    /* Code blocks — even tighter */
+    .code-block pre { font-size: 11px; padding: 10px; }
+    .install-block { padding: 10px 12px; font-size: 12px; }
 
-    /* Code blocks — smaller on mobile */
-    .code-block pre { font-size: 12px; padding: 12px; }
-    .install-block { padding: 12px 16px; font-size: 13px; }
-
-    /* Home buttons — stack vertically */
+    /* Home buttons — stack */
     .home-hero > div:last-child { flex-direction: column; align-items: center; }
     .home-btn { width: 100%; max-width: 260px; justify-content: center; }
+
+    /* Navigation menu demo — wrap items */
+    .demo-navigation-menu [role="menubar"],
+    .demo-navigation-menu ul { flex-wrap: wrap; }
 }
 
 /* ===== New component demo styles (target rendered DOM) ===== */
@@ -1432,7 +1459,8 @@ kbd {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 300px;
+    width: 100%;
+    max-width: 300px;
     height: 150px;
     border: 2px dashed var(--border);
     border-radius: var(--radius-sm);
@@ -1506,7 +1534,8 @@ kbd {
     padding: 20px;
     box-shadow: 0 10px 38px -10px rgba(22,23,24,0.35),
                 0 10px 20px -15px rgba(22,23,24,0.2);
-    width: 300px;
+    width: 100%;
+    max-width: 300px;
     animation: popoverFadeIn 0.2s ease-out;
 }
 .demo-hover-card p {
@@ -1629,7 +1658,8 @@ kbd {
 
 /* Scroll Area */
 .demo-scroll-area {
-    width: 300px;
+    width: 100%;
+    max-width: 300px;
     height: 200px;
     border: 1px solid var(--border);
     border-radius: var(--radius-sm);
@@ -1690,14 +1720,14 @@ kbd {
 .demo-password-toggle button:hover { background: var(--bg-hover); color: var(--text); }
 
 /* Aspect Ratio */
-.demo-aspect-ratio { width: 300px; }
+.demo-aspect-ratio { width: 100%; max-width: 300px; }
 .demo-aspect-ratio [data-leptix-aspect-ratio-wrapper] {
     border-radius: var(--radius-sm);
     overflow: hidden;
 }
 
 /* Form */
-.demo-form form { display: flex; flex-direction: column; gap: 16px; width: 300px; }
+.demo-form form { display: flex; flex-direction: column; gap: 16px; width: 100%; max-width: 300px; }
 .demo-form form > div { display: flex; flex-direction: column; gap: 6px; }
 .demo-form label { font-size: 14px; font-weight: 500; color: var(--text); }
 .demo-form input {
@@ -1760,6 +1790,7 @@ kbd {
     padding: 0;
     display: flex;
     gap: 4px;
+    flex-wrap: wrap;
 }
 .demo-navigation-menu li a {
     padding: 8px 12px;
