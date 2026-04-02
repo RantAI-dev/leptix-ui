@@ -201,7 +201,7 @@ pub fn Toast(
                     attr:aria-live="off"
                     attr:aria-atomic="true"
                     attr:data-state=move || if open_state.get() { "open" } else { "closed" }
-                    attr:data-swipe=move || swipe_data_attr.get().unwrap_or("")
+                    attr:data-swipe=move || swipe_data_attr.get()
                     attr:tabindex="0"
                     style:transform=move || {
                         if !is_swiping.get() {
@@ -401,15 +401,46 @@ pub fn ToastClose(
 #[component]
 pub fn ToastViewport(
     #[prop(into, optional)] label: MaybeProp<String>,
+    /// Keyboard shortcut(s) to focus the viewport. Defaults to `["F8"]`.
+    #[prop(into, optional)]
+    hotkey: Option<Vec<String>>,
     #[prop(into, optional)] as_child: MaybeProp<bool>,
     #[prop(into, optional)] node_ref: AnyNodeRef,
     #[prop(optional)] children: Option<ChildrenFn>,
 ) -> impl IntoView {
     let children = StoredValue::new(children);
     let label = Signal::derive(move || label.get().unwrap_or("Notifications".into()));
+    let hotkeys = hotkey.unwrap_or_else(|| vec!["F8".into()]);
+    let viewport_ref = AnyNodeRef::new();
+    let refs = leptix_core::compose_refs::use_composed_refs(vec![node_ref, viewport_ref]);
+
+    // Register global hotkey listener to focus viewport
+    let hotkeys = StoredValue::new(hotkeys);
+    Effect::new(move |_| {
+        // Attach document-level keydown for hotkey
+        if let Some(document) = web_sys::window().and_then(|w| w.document()) {
+            let handler = web_sys::wasm_bindgen::closure::Closure::<dyn Fn(web_sys::KeyboardEvent)>::new(move |event: web_sys::KeyboardEvent| {
+                let keys = hotkeys.get_value();
+                if keys.iter().any(|k| k.eq_ignore_ascii_case(&event.key()))
+                    && let Some(el) = viewport_ref.get() {
+                        use web_sys::wasm_bindgen::JsCast;
+                        if let Ok(html_el) = el.dyn_into::<web_sys::HtmlElement>() {
+                            let _ = html_el.focus();
+                        }
+                    }
+            });
+            let _ = document.add_event_listener_with_callback(
+                "keydown",
+                handler.as_ref().unchecked_ref(),
+            );
+            // Leak the closure to keep it alive for the document listener lifetime.
+            // This is acceptable for a global singleton viewport.
+            handler.forget();
+        }
+    });
 
     view! {
-        <Primitive element=html::ol as_child=as_child node_ref=node_ref
+        <Primitive element=html::ol as_child=as_child node_ref=refs
             attr:role="region"
             attr:aria-label=move || label.get()
             attr:tabindex="-1"

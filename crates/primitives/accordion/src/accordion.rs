@@ -189,20 +189,18 @@ pub fn AccordionTrigger(
     children: TypedChildrenFn<impl IntoView + 'static>,
 ) -> impl IntoView {
     let children = StoredValue::new(children.into_inner());
-    let item_context = expect_context::<AccordionItemContextValue>();
-    let accordion_context = expect_context::<AccordionContextValue>();
+    let _item_context = expect_context::<AccordionItemContextValue>();
+    let _accordion_context = expect_context::<AccordionContextValue>();
 
+    // Note: AccordionHeader provides the <h3> wrapper. AccordionTrigger should NOT
+    // add its own <h3> to avoid double-nesting (invalid HTML).
     view! {
-        <h3 data-orientation=move || accordion_context.orientation.get() data-state=move || {
-            if accordion_context.value.get().contains(&item_context.value) { "open" } else { "closed" }
-        }>
-            <CollapsibleTrigger
-                as_child=as_child
-                node_ref=node_ref
-            >
-                {children.with_value(|children| children())}
-            </CollapsibleTrigger>
-        </h3>
+        <CollapsibleTrigger
+            as_child=as_child
+            node_ref=node_ref
+        >
+            {children.with_value(|children| children())}
+        </CollapsibleTrigger>
     }
 }
 
@@ -214,14 +212,16 @@ pub fn AccordionContent(
     children: TypedChildrenFn<impl IntoView + 'static>,
 ) -> impl IntoView {
     let children = StoredValue::new(children.into_inner());
-    let _item_context = expect_context::<AccordionItemContextValue>();
+    let item_context = expect_context::<AccordionItemContextValue>();
     let _accordion_context = expect_context::<AccordionContextValue>();
+    let trigger_id = item_context.trigger_id.clone();
 
     view! {
         <CollapsibleContent
             force_mount=force_mount
             as_child=as_child
             node_ref=node_ref
+            attr:aria-labelledby=trigger_id
         >
             {children.with_value(|children| children())}
         </CollapsibleContent>

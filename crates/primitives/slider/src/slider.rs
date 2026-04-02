@@ -21,6 +21,8 @@ struct SliderContextValue {
     on_value_commit: Option<Callback<Vec<f64>>>,
     /// Index of the thumb currently being dragged.
     active_thumb: RwSignal<Option<usize>>,
+    /// Auto-incrementing counter for thumb index assignment.
+    thumb_count: RwSignal<usize>,
 }
 
 #[component]
@@ -76,6 +78,7 @@ pub fn Slider(
         }),
         on_value_commit,
         active_thumb: RwSignal::new(None),
+        thumb_count: RwSignal::new(0),
     };
 
     // Drag state lives at the root so it works from track, range, or thumb
@@ -278,7 +281,12 @@ pub fn SliderThumb(
 ) -> impl IntoView {
     let children = StoredValue::new(children);
     let context = expect_context::<SliderContextValue>();
-    let thumb_index = index.unwrap_or(0);
+    // Auto-assign index from render order if not explicitly provided.
+    let thumb_index = index.unwrap_or_else(|| {
+        let idx = context.thumb_count.get_untracked();
+        context.thumb_count.update(|c| *c += 1);
+        idx
+    });
 
     let thumb_value = Signal::derive(move || {
         context

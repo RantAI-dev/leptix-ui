@@ -33,6 +33,10 @@ struct ScrollAreaContextValue {
     set_content_height: WriteSignal<f64>,
     content_width: ReadSignal<f64>,
     set_content_width: WriteSignal<f64>,
+    /// True when the pointer is hovering over the scroll area (for Hover type).
+    is_hovering: RwSignal<bool>,
+    /// True when the user is actively scrolling (for Scroll type).
+    is_scrolling: RwSignal<bool>,
 }
 
 #[component]
@@ -54,6 +58,9 @@ pub fn ScrollArea(
     let (content_height, set_content_height) = signal(0.0_f64);
     let (content_width, set_content_width) = signal(0.0_f64);
 
+    let is_hovering = RwSignal::new(false);
+    let is_scrolling = RwSignal::new(false);
+
     let ctx = ScrollAreaContextValue {
         scroll_type,
         dir,
@@ -70,6 +77,8 @@ pub fn ScrollArea(
         set_content_height,
         content_width,
         set_content_width,
+        is_hovering,
+        is_scrolling,
     };
 
     view! {
@@ -77,6 +86,8 @@ pub fn ScrollArea(
             <Primitive element=html::div as_child=as_child node_ref=node_ref
                 attr:dir=move || dir.get()
                 attr:style="position:relative;overflow:hidden;height:100%;width:100%"
+                on:pointerenter=move |_| is_hovering.set(true)
+                on:pointerleave=move |_| is_hovering.set(false)
             >
                 {children.with_value(|c| c())}
             </Primitive>
@@ -106,6 +117,8 @@ pub fn ScrollAreaViewport(
     let set_scroll_top = ctx.set_scroll_top;
     let set_scroll_left = ctx.set_scroll_left;
     let viewport_ref = ctx.viewport_ref;
+    let is_scrolling = ctx.is_scrolling;
+    let scroll_end_timer: RwSignal<Option<i32>> = RwSignal::new(None);
 
     Effect::new(move |_| {
         if let Some(el) = viewport_ref
@@ -172,12 +185,27 @@ pub fn ScrollAreaViewport(
                 {
                     set_scroll_top.set(el.scroll_top() as f64);
                     set_scroll_left.set(el.scroll_left() as f64);
-                    // Also update content/viewport dimensions in case they changed.
                     set_content_height.set(el.scroll_height() as f64);
                     set_content_width.set(el.scroll_width() as f64);
                     set_viewport_height.set(el.client_height() as f64);
                     set_viewport_width.set(el.client_width() as f64);
                 }
+                // Track scrolling state for ScrollAreaType::Scroll
+                is_scrolling.set(true);
+                if let Some(id) = scroll_end_timer.get_untracked()
+                    && let Some(w) = web_sys::window() { w.clear_timeout_with_handle(id); }
+                let id = web_sys::window().and_then(|w| {
+                    w.set_timeout_with_callback_and_timeout_and_arguments_0(
+                        web_sys::wasm_bindgen::closure::Closure::<dyn Fn()>::new(move || {
+                            is_scrolling.set(false);
+                        })
+                        .into_js_value()
+                        .unchecked_ref(),
+                        1000, // Hide scrollbar 1s after scrolling stops
+                    )
+                    .ok()
+                });
+                scroll_end_timer.set(id);
             }
         >
             <div style="min-width:100%;display:table">
@@ -226,8 +254,8 @@ pub fn ScrollAreaScrollbar(
     let should_show = Memo::new(move |_| match ctx.scroll_type {
         ScrollAreaType::Always => true,
         ScrollAreaType::Auto => has_overflow.get(),
-        ScrollAreaType::Scroll => has_overflow.get(),
-        ScrollAreaType::Hover => has_overflow.get(),
+        ScrollAreaType::Scroll => has_overflow.get() && ctx.is_scrolling.get(),
+        ScrollAreaType::Hover => has_overflow.get() && ctx.is_hovering.get(),
     });
 
     let scrollbar_ctx = ScrollbarContextValue { orientation };

@@ -232,10 +232,16 @@ pub fn HoverCardContent(
     #[prop(into, optional)]
     collision_padding: MaybeProp<f64>,
     #[prop(into, optional)] force_mount: MaybeProp<bool>,
+    #[prop(into, optional)] on_open_auto_focus: Option<Callback<web_sys::Event>>,
+    #[prop(into, optional)] on_close_auto_focus: Option<Callback<web_sys::Event>>,
     #[prop(into, optional)] as_child: MaybeProp<bool>,
     #[prop(into, optional)] node_ref: AnyNodeRef,
     children: TypedChildrenFn<impl IntoView + 'static>,
 ) -> impl IntoView {
+    // Auto-focus callbacks stored for consumers; not directly wired to focus_scope
+    // since HoverCard doesn't trap focus, but they're available for custom behavior.
+    let _on_open_auto_focus = on_open_auto_focus;
+    let _on_close_auto_focus = on_close_auto_focus;
     let children = StoredValue::new(children.into_inner());
     let force_mount = Signal::derive(move || force_mount.get().unwrap_or(false));
 

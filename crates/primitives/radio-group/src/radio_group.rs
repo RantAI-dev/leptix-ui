@@ -1,6 +1,9 @@
+use leptix_core::compose_refs::use_composed_refs;
 use leptix_core::direction::{Direction, use_direction};
 use leptix_core::primitive::Primitive;
 use leptix_core::use_controllable_state::{UseControllableStateParams, use_controllable_state};
+use leptix_core::use_previous::use_previous;
+use leptix_core::use_size::use_size;
 use leptos::{context::Provider, ev::KeyboardEvent, html, prelude::*};
 use leptos_node_ref::AnyNodeRef;
 
@@ -109,11 +112,23 @@ pub fn RadioGroupItem(
     let context = expect_context::<RadioGroupContextValue>();
     let item_value = value.clone();
     let item_value_click = value.clone();
+    let item_value_form = StoredValue::new(value.clone());
 
     let disabled =
         Signal::derive(move || context.disabled.get() || disabled.get().unwrap_or(false));
     let is_checked =
         Signal::derive(move || context.value.get().as_deref() == Some(item_value.as_str()));
+
+    let button_ref = AnyNodeRef::new();
+    let composed_refs = use_composed_refs(vec![node_ref, button_ref]);
+
+    let is_form_control = Signal::derive(move || {
+        button_ref
+            .get()
+            .and_then(|button| button.closest("form").ok())
+            .flatten()
+            .is_some()
+    });
 
     let item_ctx = RadioItemContextValue { is_checked };
 
@@ -122,7 +137,7 @@ pub fn RadioGroupItem(
         <Primitive
             element=html::button
             as_child=as_child
-            node_ref=node_ref
+            node_ref=composed_refs
             attr:r#type="button"
             attr:role="radio"
             attr:aria-checked=move || is_checked.get().to_string()
@@ -144,6 +159,16 @@ pub fn RadioGroupItem(
         >
             {children.with_value(|children| children())}
         </Primitive>
+        <Show when=move || is_form_control.get()>
+            <BubbleRadioInput
+                control_ref=button_ref
+                name=context.name
+                value=Signal::derive(move || item_value_form.get_value())
+                checked=is_checked
+                required=context.required
+                disabled=disabled
+            />
+        </Show>
         </Provider>
     }
 }
@@ -181,6 +206,65 @@ pub fn RadioGroupIndicator(
 #[derive(Clone, Debug)]
 struct RadioItemContextValue {
     is_checked: Signal<bool>,
+}
+
+// ---------------------------------------------------------------------------
+// BubbleRadioInput — hidden native <input type="radio"> for form submission
+// ---------------------------------------------------------------------------
+
+#[component]
+fn BubbleRadioInput(
+    #[prop(into)] control_ref: AnyNodeRef,
+    #[prop(into)] checked: Signal<bool>,
+    #[prop(into)] required: Signal<bool>,
+    #[prop(into)] disabled: Signal<bool>,
+    #[prop(into)] name: Signal<Option<String>>,
+    #[prop(into)] value: Signal<String>,
+) -> impl IntoView {
+    let node_ref: NodeRef<html::Input> = NodeRef::new();
+    let prev_checked = use_previous(Signal::derive(move || checked.get()));
+    let control_size = use_size(control_ref);
+
+    // Dispatch synthetic click when checked state changes so form libraries are notified.
+    Effect::new(move |_| {
+        let current = checked.get();
+        if let Some(input) = node_ref.get()
+            && prev_checked.get() != current
+        {
+            let init = web_sys::EventInit::new();
+            init.set_bubbles(true);
+
+            let event = web_sys::Event::new_with_event_init_dict("click", &init)
+                .expect("Click event should be instantiated.");
+
+            input.set_checked(current);
+
+            input
+                .dispatch_event(&event)
+                .expect("Click event should be dispatched.");
+        }
+    });
+
+    view! {
+        <input
+            node_ref=node_ref
+            type="radio"
+            aria-hidden="true"
+            checked=move || checked.get().then_some("")
+            required=move || required.get().then_some("")
+            disabled=move || disabled.get().then_some("")
+            name=move || name.get()
+            value=move || value.get()
+            tab-index="-1"
+            style:transform="translateX(-100%)"
+            style:width=move || control_size.get().map(|size| format!("{}px", size.width))
+            style:height=move || control_size.get().map(|size| format!("{}px", size.height))
+            style:position="absolute"
+            style:pointer-events="none"
+            style:opacity="0"
+            style:margin="0px"
+        />
+    }
 }
 
 /// Helper: move focus between sibling radio items using DOM queries.

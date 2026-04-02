@@ -48,6 +48,7 @@ pub fn Checkbox(
     #[prop(into, optional)] required: MaybeProp<bool>,
     #[prop(into, optional)] disabled: MaybeProp<bool>,
     #[prop(into, optional)] value: MaybeProp<String>,
+    #[prop(into, optional)] form: MaybeProp<String>,
     #[prop(into, optional)] on_keydown: Option<Callback<KeyboardEvent>>,
     #[prop(into, optional)] on_click: Option<Callback<MouseEvent>>,
     #[prop(into, optional)] as_child: MaybeProp<bool>,
@@ -60,6 +61,7 @@ pub fn Checkbox(
     let required = Signal::derive(move || required.get().unwrap_or(false));
     let disabled = Signal::derive(move || disabled.get().unwrap_or(false));
     let value = Signal::derive(move || value.get().unwrap_or("on".into()));
+    let form = Signal::derive(move || form.get());
 
     let button_ref = AnyNodeRef::new();
     let composed_refs = use_composed_refs(vec![node_ref, button_ref]);
@@ -173,6 +175,7 @@ pub fn Checkbox(
                     checked=checked
                     required=required
                     disabled=disabled
+                    form=form
                 />
             </Show>
         </Provider>
@@ -199,13 +202,14 @@ pub fn CheckboxIndicator(
     });
 
     let presence = use_presence(present);
+    let composed_refs = use_composed_refs(vec![node_ref, presence.node_ref]);
 
     view! {
         <Show when=move || presence.is_present.get()>
             <Primitive
                 element=html::span
                 as_child=as_child
-                node_ref=node_ref
+                node_ref=composed_refs
                 attr:data-state=move || get_state(context.state.get())
                 attr:data-disabled=move || context.disabled.get().then_some("")
                 attr:style="pointer-events: none;"
@@ -225,6 +229,7 @@ fn BubbleInput(
     #[prop(into)] disabled: Signal<bool>,
     #[prop(into)] name: Signal<Option<String>>,
     #[prop(into)] value: Signal<String>,
+    #[prop(into)] form: Signal<Option<String>>,
 ) -> impl IntoView {
     let node_ref: NodeRef<html::Input> = NodeRef::new();
     let prev_checked = use_previous(checked);
@@ -259,6 +264,7 @@ fn BubbleInput(
             disabled=move || disabled.get().then_some("")
             name=move || name.get()
             value=move || value.get()
+            form=move || form.get()
             tab-index="-1"
             style:transform="translateX(-100%)"
             style:width=move || control_size.get().map(|size| format!("{}px", size.width))

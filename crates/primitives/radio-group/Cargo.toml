@@ -13,4 +13,5 @@ readme = "README.md"
 leptos.workspace = true
 leptos-node-ref.workspace = true
 leptix-core.workspace = true
-web-sys = { workspace = true, features = ["DomRect", "HtmlElement", "NodeList"] }
+send_wrapper.workspace = true
+web-sys = { workspace = true, features = ["DomRect", "EventInit", "HtmlElement", "HtmlInputElement", "NodeList"] }

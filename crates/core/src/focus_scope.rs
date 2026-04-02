@@ -190,16 +190,30 @@ fn get_tabbable_elements(container: &web_sys::Element) -> Vec<web_sys::HtmlEleme
         return vec![];
     };
 
+    let window = web_sys::window();
+
     let mut result = vec![];
     for i in 0..nodes.length() {
         if let Some(node) = nodes.item(i)
             && let Ok(el) = node.dyn_into::<web_sys::HtmlElement>()
         {
-            // Skip hidden elements
-            let style = el.style();
-            let display = style.get_property_value("display").unwrap_or_default();
-            let visibility = style.get_property_value("visibility").unwrap_or_default();
-            if display != "none" && visibility != "hidden" {
+            // Skip elements inside inert subtrees
+            if el.closest("[inert]").ok().flatten().is_some() {
+                continue;
+            }
+
+            // Use getComputedStyle for accurate visibility check
+            let is_visible = window
+                .as_ref()
+                .and_then(|w| w.get_computed_style(&el).ok().flatten())
+                .map(|style| {
+                    let display = style.get_property_value("display").unwrap_or_default();
+                    let visibility = style.get_property_value("visibility").unwrap_or_default();
+                    display != "none" && visibility != "hidden"
+                })
+                .unwrap_or(true);
+
+            if is_visible {
                 result.push(el);
             }
         }

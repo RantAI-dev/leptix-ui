@@ -1,10 +1,12 @@
 use leptix_core::compose_refs::use_composed_refs;
 use leptix_core::dismissable_layer::use_dismissable_layer;
 use leptix_core::focus_scope::use_focus_scope;
+use leptix_core::portal::Portal;
 use leptix_core::presence::use_presence;
 use leptix_core::primitive::Primitive;
 use leptos::{context::Provider, html, prelude::*};
 use leptos_node_ref::AnyNodeRef;
+use send_wrapper::SendWrapper;
 use web_sys::wasm_bindgen::JsCast;
 
 #[derive(Clone, Debug)]
@@ -93,13 +95,20 @@ pub fn DialogTrigger(
 
 /// Renders dialog content in a portal when open.
 #[component]
-pub fn DialogPortal(children: TypedChildrenFn<impl IntoView + 'static>) -> impl IntoView {
+pub fn DialogPortal(
+    #[prop(into, optional)] container: MaybeProp<SendWrapper<web_sys::Element>>,
+    #[prop(into, optional)] container_ref: AnyNodeRef,
+    #[prop(into, optional)] _force_mount: MaybeProp<bool>,
+    children: TypedChildrenFn<impl IntoView + 'static>,
+) -> impl IntoView {
     let children = StoredValue::new(children.into_inner());
     let context = expect_context::<DialogContextValue>();
 
     view! {
         <Show when=move || context.open.get()>
-            {children.with_value(|children| children())}
+            <Portal container=container container_ref=container_ref>
+                {children.with_value(|children| children())}
+            </Portal>
         </Show>
     }
 }
@@ -187,16 +196,28 @@ pub fn DialogContent(
     ]);
 
     // Body scroll lock: only when modal is true.
+    // Compensates for scrollbar width to prevent layout shift.
     let is_modal = context.modal;
     Effect::new(move |_| {
         let is_open = context.open.get();
         if is_modal && is_open {
-            if let Some(body) = web_sys::window()
-                .and_then(|w| w.document())
-                .and_then(|d| d.body())
+            if let Some(window) = web_sys::window()
+                && let Some(document) = window.document()
+                && let Some(body) = document.body()
             {
+                // Measure scrollbar width before hiding overflow
+                let scrollbar_width = window.inner_width().ok()
+                    .and_then(|w| w.as_f64())
+                    .unwrap_or(0.0)
+                    - document.document_element()
+                        .map(|el| el.client_width() as f64)
+                        .unwrap_or(0.0);
+
                 let style = body.unchecked_ref::<web_sys::HtmlElement>().style();
                 let _ = style.set_property("overflow", "hidden");
+                if scrollbar_width > 0.0 {
+                    let _ = style.set_property("padding-right", &format!("{scrollbar_width}px"));
+                }
             }
         } else if is_modal {
             // Restore when modal dialog closes.
@@ -206,6 +227,7 @@ pub fn DialogContent(
             {
                 let style = body.unchecked_ref::<web_sys::HtmlElement>().style();
                 let _ = style.remove_property("overflow");
+                let _ = style.remove_property("padding-right");
             }
         }
     });

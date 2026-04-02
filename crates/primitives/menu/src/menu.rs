@@ -194,8 +194,8 @@ pub fn MenuPortal(
     force_mount: MaybeProp<bool>,
     children: ChildrenFn,
 ) -> impl IntoView {
-    // TODO: portal
-    // view! {}
+    // TODO: portal — menu crate is reference code, not compiled.
+    // Concrete implementations (dropdown-menu, context-menu, menubar) have real portals.
     children()
 }
 

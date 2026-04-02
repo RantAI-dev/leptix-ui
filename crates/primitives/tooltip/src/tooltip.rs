@@ -7,7 +7,6 @@ use leptix_core::popper::{
 use leptix_core::portal::Portal;
 use leptix_core::presence::use_presence;
 use leptix_core::primitive::Primitive;
-use leptix_core::visually_hidden::VisuallyHidden;
 use leptos::{context::Provider, html, prelude::*};
 use leptos_node_ref::AnyNodeRef;
 use send_wrapper::SendWrapper;
@@ -39,6 +38,7 @@ struct TooltipContextValue {
     content_id: String,
     delay_duration: Signal<i32>,
     open_timer_id: RwSignal<Option<i32>>,
+    was_instant_open: RwSignal<bool>,
 }
 
 impl TooltipContextValue {
@@ -140,14 +140,20 @@ pub fn Tooltip(
         }
     });
 
+    let was_instant_open = RwSignal::new(false);
+
     let context_value = TooltipContextValue {
         open,
-        on_open: Callback::new(move |()| set_open.run(Some(true))),
+        on_open: Callback::new(move |()| {
+            was_instant_open.set(effective_delay.get_untracked() == 0);
+            set_open.run(Some(true));
+        }),
         on_close: on_close_cb,
         trigger_ref: AnyNodeRef::new(),
         content_id: format!("{}-tooltip", base_id),
         delay_duration: effective_delay,
         open_timer_id,
+        was_instant_open,
     };
 
     // Clean up timer on unmount
@@ -204,7 +210,9 @@ pub fn TooltipTrigger(
                 as_child=as_child
                 node_ref=composed_refs
                 attr:aria-describedby=move || ctx_open.get().then(|| content_id.get_value())
-                attr:data-state=move || if ctx_open.get() { "delayed-open" } else { "closed" }
+                attr:data-state=move || if ctx_open.get() {
+                    if context.was_instant_open.get() { "instant-open" } else { "delayed-open" }
+                } else { "closed" }
                 on:pointerenter=move |_: leptos::ev::PointerEvent| {
                     if let Some(id) = ctx_timer.try_get_untracked().flatten() {
                         clear_timeout(id);
@@ -320,7 +328,9 @@ pub fn TooltipContent(
                 node_ref=composed_refs
                 attr:id=content_id.get_value()
                 attr:role="tooltip"
-                attr:data-state=move || if ctx_open.get() { "delayed-open" } else { "closed" }
+                attr:data-state=move || if ctx_open.get() {
+                    if context.was_instant_open.get() { "instant-open" } else { "delayed-open" }
+                } else { "closed" }
                 attr:style="pointer-events:auto"
                 on:pointerenter=move |_| ctx_on_open.run(())
                 on:pointerleave=move |_| {
@@ -332,9 +342,6 @@ pub fn TooltipContent(
                 }
             >
                 {children.with_value(|children| children())}
-                <VisuallyHidden>
-                    {children.with_value(|children| children())}
-                </VisuallyHidden>
             </PopperContent>
         </Show>
     }

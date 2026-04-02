@@ -52,9 +52,15 @@ pub fn Select(
             open_state.set(o);
         }
     });
+    // Only fire on_open_change when the state actually changes, not on initial render.
+    let prev_open = RwSignal::new(open_state.get_untracked());
     Effect::new(move |_| {
-        if let Some(cb) = on_open_change {
-            cb.run(open_state.get());
+        let current = open_state.get();
+        if current != prev_open.get_untracked() {
+            prev_open.set(current);
+            if let Some(cb) = on_open_change {
+                cb.run(current);
+            }
         }
     });
 
@@ -308,7 +314,10 @@ pub fn SelectItem(
     let is_selected =
         Signal::derive(move || ctx.value.get().as_deref() == Some(item_value.as_str()));
 
+    let item_ctx = SelectItemContextValue { is_selected };
+
     view! {
+        <Provider value=item_ctx>
         <Primitive element=html::div as_child=as_child node_ref=node_ref
             attr:role="option"
             attr:aria-selected=move || is_selected.get().to_string()
@@ -325,7 +334,13 @@ pub fn SelectItem(
         >
             {children.with_value(|c| c())}
         </Primitive>
+        </Provider>
     }
+}
+
+#[derive(Clone, Debug)]
+struct SelectItemContextValue {
+    is_selected: Signal<bool>,
 }
 
 #[component]
@@ -441,17 +456,23 @@ pub fn SelectItemText(
 
 #[component]
 pub fn SelectItemIndicator(
+    #[prop(into, optional)] force_mount: MaybeProp<bool>,
     #[prop(into, optional)] as_child: MaybeProp<bool>,
     #[prop(into, optional)] node_ref: AnyNodeRef,
     #[prop(optional)] children: Option<ChildrenFn>,
 ) -> impl IntoView {
     let children = StoredValue::new(children);
-    // The indicator is rendered inside a SelectItem. It shows only when selected.
-    // For now, consumers wrap it in their own <Show> or use CSS [data-state="checked"].
+    let force_mount = Signal::derive(move || force_mount.get().unwrap_or(false));
+    let item_ctx = expect_context::<SelectItemContextValue>();
+
     view! {
-        <Primitive element=html::span as_child=as_child node_ref=node_ref>
-            {children.with_value(|c| c.as_ref().map(|c| c()))}
-        </Primitive>
+        <Show when=move || force_mount.get() || item_ctx.is_selected.get()>
+            <Primitive element=html::span as_child=as_child node_ref=node_ref
+                attr:data-state=move || if item_ctx.is_selected.get() { "checked" } else { "unchecked" }
+            >
+                {children.with_value(|c| c.as_ref().map(|c| c()))}
+            </Primitive>
+        </Show>
     }
 }
 
@@ -466,13 +487,66 @@ pub fn SelectScrollUpButton(
     #[prop(optional)] children: Option<ChildrenFn>,
 ) -> impl IntoView {
     let children = StoredValue::new(children);
+    let btn_ref = AnyNodeRef::new();
+    let refs = use_composed_refs(vec![node_ref, btn_ref]);
+    let scroll_timer: RwSignal<Option<i32>> = RwSignal::new(None);
+
+    let can_scroll_up = RwSignal::new(false);
+
+    // Check if viewport can scroll up
+    let update_visibility = move || {
+        if let Some(btn) = btn_ref.get()
+            && let Some(viewport) = btn.parent_element()
+                .and_then(|p| p.query_selector("[role='presentation']").ok().flatten())
+        {
+            can_scroll_up.set(viewport.scroll_top() > 0);
+        }
+    };
+
+    let start_scroll = move || {
+        let id = web_sys::window()
+            .and_then(|w| {
+                w.set_interval_with_callback_and_timeout_and_arguments_0(
+                    web_sys::wasm_bindgen::closure::Closure::<dyn Fn()>::new(move || {
+                        if let Some(btn) = btn_ref.get()
+                            && let Some(viewport) = btn.parent_element()
+                                .and_then(|p| p.query_selector("[role='presentation']").ok().flatten())
+                        {
+                            viewport.set_scroll_top(viewport.scroll_top() - 20);
+                            can_scroll_up.set(viewport.scroll_top() > 0);
+                        }
+                    })
+                    .into_js_value()
+                    .unchecked_ref(),
+                    50,
+                )
+                .ok()
+            });
+        scroll_timer.set(id);
+    };
+
+    let stop_scroll = move || {
+        if let Some(id) = scroll_timer.get_untracked()
+            && let Some(w) = web_sys::window() {
+                w.clear_interval_with_handle(id);
+            }
+        scroll_timer.set(None);
+    };
+
+    on_cleanup(stop_scroll);
+
     view! {
-        <Primitive element=html::div as_child=as_child node_ref=node_ref
-            attr:aria-hidden="true"
-            attr:style="flex-shrink:0"
-        >
-            {children.with_value(|c| c.as_ref().map(|c| c()).unwrap_or_else(|| "▲".into_any()))}
-        </Primitive>
+        <Show when=move || { update_visibility(); can_scroll_up.get() }>
+            <Primitive element=html::div as_child=as_child node_ref=refs
+                attr:aria-hidden="true"
+                attr:style="flex-shrink:0"
+                on:pointerdown=move |_| start_scroll()
+                on:pointerup=move |_| stop_scroll()
+                on:pointerleave=move |_| stop_scroll()
+            >
+                {children.with_value(|c| c.as_ref().map(|c| c()).unwrap_or_else(|| "▲".into_any()))}
+            </Primitive>
+        </Show>
     }
 }
 
@@ -483,13 +557,67 @@ pub fn SelectScrollDownButton(
     #[prop(optional)] children: Option<ChildrenFn>,
 ) -> impl IntoView {
     let children = StoredValue::new(children);
+    let btn_ref = AnyNodeRef::new();
+    let refs = use_composed_refs(vec![node_ref, btn_ref]);
+    let scroll_timer: RwSignal<Option<i32>> = RwSignal::new(None);
+
+    let can_scroll_down = RwSignal::new(true);
+
+    let update_visibility = move || {
+        if let Some(btn) = btn_ref.get()
+            && let Some(viewport) = btn.parent_element()
+                .and_then(|p| p.query_selector("[role='presentation']").ok().flatten())
+        {
+            let at_bottom = viewport.scroll_top() + viewport.client_height() >= viewport.scroll_height();
+            can_scroll_down.set(!at_bottom);
+        }
+    };
+
+    let start_scroll = move || {
+        let id = web_sys::window()
+            .and_then(|w| {
+                w.set_interval_with_callback_and_timeout_and_arguments_0(
+                    web_sys::wasm_bindgen::closure::Closure::<dyn Fn()>::new(move || {
+                        if let Some(btn) = btn_ref.get()
+                            && let Some(viewport) = btn.parent_element()
+                                .and_then(|p| p.query_selector("[role='presentation']").ok().flatten())
+                        {
+                            viewport.set_scroll_top(viewport.scroll_top() + 20);
+                            let at_bottom = viewport.scroll_top() + viewport.client_height() >= viewport.scroll_height();
+                            can_scroll_down.set(!at_bottom);
+                        }
+                    })
+                    .into_js_value()
+                    .unchecked_ref(),
+                    50,
+                )
+                .ok()
+            });
+        scroll_timer.set(id);
+    };
+
+    let stop_scroll = move || {
+        if let Some(id) = scroll_timer.get_untracked()
+            && let Some(w) = web_sys::window() {
+                w.clear_interval_with_handle(id);
+            }
+        scroll_timer.set(None);
+    };
+
+    on_cleanup(stop_scroll);
+
     view! {
-        <Primitive element=html::div as_child=as_child node_ref=node_ref
-            attr:aria-hidden="true"
-            attr:style="flex-shrink:0"
-        >
-            {children.with_value(|c| c.as_ref().map(|c| c()).unwrap_or_else(|| "▼".into_any()))}
-        </Primitive>
+        <Show when=move || { update_visibility(); can_scroll_down.get() }>
+            <Primitive element=html::div as_child=as_child node_ref=refs
+                attr:aria-hidden="true"
+                attr:style="flex-shrink:0"
+                on:pointerdown=move |_| start_scroll()
+                on:pointerup=move |_| stop_scroll()
+                on:pointerleave=move |_| stop_scroll()
+            >
+                {children.with_value(|c| c.as_ref().map(|c| c()).unwrap_or_else(|| "▼".into_any()))}
+            </Primitive>
+        </Show>
     }
 }
 

@@ -235,13 +235,9 @@ pub fn PopoverAnchor(
     let children = StoredValue::new(children.into_inner());
 
     view! {
-        <Primitive
-            element=html::div
-            as_child=as_child
-            node_ref=node_ref
-        >
+        <PopperAnchor as_child=as_child node_ref=node_ref>
             {children.with_value(|children| children())}
-        </Primitive>
+        </PopperAnchor>
     }
 }
 

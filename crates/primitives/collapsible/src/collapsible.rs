@@ -116,10 +116,28 @@ pub fn CollapsibleContent(
     let is_present = RwSignal::new(context.open.get());
 
     // When opening: immediately set present=true so content renders.
-    // When closing: keep present=true until animation ends.
+    // When closing: keep present=true until animation ends; if no animation, unmount immediately.
     Effect::new(move |_| {
         if context.open.get() {
             is_present.set(true);
+        } else if is_present.get_untracked() {
+            // Check if the element has a CSS animation. If not, unmount immediately
+            // instead of waiting for an animationend event that will never fire.
+            let has_animation = content_ref
+                .get()
+                .and_then(|node| {
+                    web_sys::window()?
+                        .get_computed_style(node.as_ref())
+                        .ok()
+                        .flatten()
+                })
+                .and_then(|style| style.get_property_value("animation-name").ok())
+                .is_some_and(|name| name != "none" && !name.is_empty());
+
+            if !has_animation {
+                is_present.set(false);
+            }
+            // Otherwise, animationend handler will clear is_present.
         }
     });
 

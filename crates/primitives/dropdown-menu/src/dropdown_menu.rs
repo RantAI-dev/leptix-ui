@@ -6,10 +6,13 @@ use leptix_core::id::use_id;
 use leptix_core::popper::{
     Popper, PopperAnchor, PopperArrow, PopperContent, parse_align, parse_side,
 };
+use leptix_core::portal::Portal;
 use leptix_core::presence::use_presence;
 use leptix_core::primitive::Primitive;
 use leptos::{context::Provider, ev::KeyboardEvent, html, prelude::*};
 use leptos_node_ref::AnyNodeRef;
+use send_wrapper::SendWrapper;
+use web_sys::wasm_bindgen::JsCast;
 
 // ---------------------------------------------------------------------------
 // Context
@@ -134,10 +137,21 @@ pub fn DropdownMenuTrigger(
 // ---------------------------------------------------------------------------
 
 #[component]
-pub fn DropdownMenuPortal(children: TypedChildrenFn<impl IntoView + 'static>) -> impl IntoView {
+pub fn DropdownMenuPortal(
+    #[prop(into, optional)] container: MaybeProp<SendWrapper<web_sys::Element>>,
+    #[prop(into, optional)] container_ref: AnyNodeRef,
+    #[prop(into, optional)] _force_mount: MaybeProp<bool>,
+    children: TypedChildrenFn<impl IntoView + 'static>,
+) -> impl IntoView {
     let children = StoredValue::new(children.into_inner());
     let ctx = expect_context::<MenuContextValue>();
-    view! { <Show when=move || ctx.open.get()>{children.with_value(|c| c())}</Show> }
+    view! {
+        <Show when=move || ctx.open.get()>
+            <Portal container=container container_ref=container_ref>
+                {children.with_value(|c| c())}
+            </Portal>
+        </Show>
+    }
 }
 
 // ---------------------------------------------------------------------------
@@ -199,6 +213,9 @@ pub fn DropdownMenuContent(
     let refs = use_composed_refs(vec![node_ref, presence.node_ref, focus_ref, dismiss_ref]);
 
     let content_id = StoredValue::new(ctx.content_id.clone());
+    let search_buffer: RwSignal<String> = RwSignal::new(String::new());
+    let search_timer: RwSignal<Option<i32>> = RwSignal::new(None);
+
     view! {
         <Show when=move || presence.is_present.get()>
             <PopperContent
@@ -217,8 +234,14 @@ pub fn DropdownMenuContent(
                     attr:tabindex="-1"
                     on:keydown=move |event: KeyboardEvent| {
                         match event.key().as_str() {
-                            "ArrowDown" => { event.prevent_default(); focus_menu_item(&event, true); }
-                            "ArrowUp" => { event.prevent_default(); focus_menu_item(&event, false); }
+                            "Tab" => { event.prevent_default(); }
+                            "ArrowDown" | "PageDown" => { event.prevent_default(); focus_menu_item(&event, true); }
+                            "ArrowUp" | "PageUp" => { event.prevent_default(); focus_menu_item(&event, false); }
+                            "Home" => { event.prevent_default(); focus_menu_item_edge(&event, true); }
+                            "End" => { event.prevent_default(); focus_menu_item_edge(&event, false); }
+                            key if key.len() == 1 && !event.ctrl_key() && !event.meta_key() => {
+                                handle_typeahead(&event, key, search_buffer, search_timer);
+                            }
                             _ => {}
                         }
                     }
@@ -540,7 +563,9 @@ pub fn DropdownMenuSub(
 
     view! {
         <Provider value=sub_ctx>
-            {children.with_value(|c| c())}
+            <Popper>
+                {children.with_value(|c| c())}
+            </Popper>
         </Provider>
     }
 }
@@ -557,39 +582,43 @@ pub fn DropdownMenuSubTrigger(
     let sub_ctx = expect_context::<SubMenuContextValue>();
     let disabled = Signal::derive(move || disabled.get().unwrap_or(false));
     let refs = use_composed_refs(vec![node_ref, sub_ctx.trigger_ref]);
+    let sub_content_id = StoredValue::new(sub_ctx.content_id.clone());
 
     view! {
-        <Primitive element=html::div as_child=as_child node_ref=refs
-            attr:role="menuitem"
-            attr:aria-haspopup="menu"
-            attr:aria-expanded=move || sub_ctx.open.get().to_string()
-            attr:aria-controls=move || sub_ctx.open.get().then(|| sub_ctx.content_id.clone())
-            attr:data-state=move || if sub_ctx.open.get() { "open" } else { "closed" }
-            attr:data-disabled=move || disabled.get().then_some("")
-            attr:tabindex="-1"
-            on:click=move |_| {
-                if !disabled.get() { sub_ctx.open.set(!sub_ctx.open.get()); }
-            }
-            on:pointerenter=move |_| {
-                if !disabled.get() { sub_ctx.open.set(true); }
-            }
-            on:keydown=move |event: KeyboardEvent| {
-                let open_key = if menu_ctx.dir.get() == leptix_core::direction::Direction::Rtl { "ArrowLeft" } else { "ArrowRight" };
-                if event.key() == open_key && !disabled.get() {
-                    event.prevent_default();
-                    sub_ctx.open.set(true);
+        <PopperAnchor as_child=MaybeProp::derive(|| Some(true))>
+            <Primitive element=html::div as_child=as_child node_ref=refs
+                attr:role="menuitem"
+                attr:aria-haspopup="menu"
+                attr:aria-expanded=move || sub_ctx.open.get().to_string()
+                attr:aria-controls=move || sub_ctx.open.get().then(|| sub_content_id.get_value())
+                attr:data-state=move || if sub_ctx.open.get() { "open" } else { "closed" }
+                attr:data-disabled=move || disabled.get().then_some("")
+                attr:tabindex="-1"
+                on:click=move |_| {
+                    if !disabled.get() { sub_ctx.open.set(!sub_ctx.open.get()); }
                 }
-            }
-        >
-            {children.with_value(|c| c())}
-        </Primitive>
+                on:pointerenter=move |_| {
+                    if !disabled.get() { sub_ctx.open.set(true); }
+                }
+                on:keydown=move |event: KeyboardEvent| {
+                    let open_key = if menu_ctx.dir.get() == leptix_core::direction::Direction::Rtl { "ArrowLeft" } else { "ArrowRight" };
+                    if event.key() == open_key && !disabled.get() {
+                        event.prevent_default();
+                        sub_ctx.open.set(true);
+                    }
+                }
+            >
+                {children.with_value(|c| c())}
+            </Primitive>
+        </PopperAnchor>
     }
 }
 
 #[component]
 pub fn DropdownMenuSubContent(
     #[prop(into, optional)] force_mount: MaybeProp<bool>,
-    #[prop(into, optional)] as_child: MaybeProp<bool>,
+    #[prop(into, optional)] side_offset: MaybeProp<f64>,
+    #[prop(into, optional)] _as_child: MaybeProp<bool>,
     #[prop(into, optional)] node_ref: AnyNodeRef,
     children: TypedChildrenFn<impl IntoView + 'static>,
 ) -> impl IntoView {
@@ -599,6 +628,20 @@ pub fn DropdownMenuSubContent(
     let force_mount = Signal::derive(move || force_mount.get().unwrap_or(false));
     let present = Signal::derive(move || force_mount.get() || sub_ctx.open.get());
     let presence = use_presence(present);
+
+    // Default sub-menu side: right for LTR, left for RTL
+    let popper_side = Signal::derive(move || {
+        if menu_ctx.dir.get() == leptix_core::direction::Direction::Rtl {
+            parse_side("left")
+        } else {
+            parse_side("right")
+        }
+    });
+    let popper_side_offset = Signal::derive(move || side_offset.get().unwrap_or(0.0));
+    let popper_align = Signal::derive(|| parse_align("start"));
+    let popper_align_offset = Signal::derive(|| 0.0);
+    let popper_avoid_collisions = Signal::derive(|| true);
+    let popper_collision_padding = Signal::derive(|| Padding::All(0.0));
 
     let dismiss_ref = use_dismissable_layer(
         None,
@@ -610,9 +653,27 @@ pub fn DropdownMenuSubContent(
     );
     let refs = use_composed_refs(vec![node_ref, presence.node_ref, dismiss_ref]);
 
+    // Safe triangle: use a grace timer on pointerleave instead of closing immediately.
+    // This gives the user time to move diagonally from the sub-trigger to the sub-content.
+    let grace_timer: RwSignal<Option<i32>> = RwSignal::new(None);
+    let clear_grace = move || {
+        if let Some(id) = grace_timer.get_untracked()
+            && let Some(w) = web_sys::window() { w.clear_timeout_with_handle(id); }
+        grace_timer.set(None);
+    };
+
+    on_cleanup(clear_grace);
+
     view! {
         <Show when=move || presence.is_present.get()>
-            <Primitive element=html::div as_child=as_child node_ref=refs
+            <PopperContent
+                side=popper_side
+                side_offset=popper_side_offset
+                align=popper_align
+                align_offset=popper_align_offset
+                avoid_collisions=popper_avoid_collisions
+                collision_padding=popper_collision_padding
+                node_ref=refs
                 attr:id=sub_ctx.content_id.clone()
                 attr:role="menu"
                 attr:aria-orientation="vertical"
@@ -628,10 +689,25 @@ pub fn DropdownMenuSubContent(
                         _ => {}
                     }
                 }
-                on:pointerleave=move |_| { sub_ctx.open.set(false); }
+                on:pointerenter=move |_| { clear_grace(); }
+                on:pointerleave=move |_| {
+                    clear_grace();
+                    let id = web_sys::window().and_then(|w| {
+                        w.set_timeout_with_callback_and_timeout_and_arguments_0(
+                            web_sys::wasm_bindgen::closure::Closure::<dyn Fn()>::new(move || {
+                                sub_ctx.open.set(false);
+                            })
+                            .into_js_value()
+                            .unchecked_ref(),
+                            150, // 150ms grace period for diagonal pointer movement
+                        )
+                        .ok()
+                    });
+                    grace_timer.set(id);
+                }
             >
                 {children.with_value(|c| c())}
-            </Primitive>
+            </PopperContent>
         </Show>
     }
 }
@@ -682,6 +758,83 @@ fn focus_menu_item(event: &KeyboardEvent, forward: bool) {
         use web_sys::wasm_bindgen::JsCast;
         if let Ok(el) = node.clone().dyn_into::<web_sys::HtmlElement>() {
             let _ = el.focus();
+        }
+    }
+}
+
+/// Focus the first or last menu item.
+fn focus_menu_item_edge(event: &KeyboardEvent, first: bool) {
+    let Some(container) = event.current_target().and_then(|t| {
+        use web_sys::wasm_bindgen::JsCast;
+        t.dyn_into::<web_sys::Element>().ok()
+    }) else {
+        return;
+    };
+
+    let Ok(items) =
+        container.query_selector_all("[role='menuitem']:not([data-disabled]), [role='menuitemcheckbox']:not([data-disabled]), [role='menuitemradio']:not([data-disabled])")
+    else {
+        return;
+    };
+
+    let target_idx = if first { 0 } else { items.length().saturating_sub(1) };
+    if let Some(node) = items.item(target_idx) {
+        use web_sys::wasm_bindgen::JsCast;
+        if let Ok(el) = node.dyn_into::<web_sys::HtmlElement>() {
+            let _ = el.focus();
+        }
+    }
+}
+
+/// Typeahead search: accumulate typed characters and focus matching item.
+fn handle_typeahead(
+    event: &KeyboardEvent,
+    key: &str,
+    search_buffer: RwSignal<String>,
+    search_timer: RwSignal<Option<i32>>,
+) {
+    let Some(container) = event.current_target().and_then(|t| {
+        use web_sys::wasm_bindgen::JsCast;
+        t.dyn_into::<web_sys::Element>().ok()
+    }) else {
+        return;
+    };
+
+    // Clear previous timer and start a new 1-second reset
+    if let Some(id) = search_timer.get_untracked()
+        && let Some(w) = web_sys::window() { w.clear_timeout_with_handle(id); }
+    search_buffer.update(|buf| buf.push_str(key));
+
+    let id = web_sys::window().and_then(|w| {
+        w.set_timeout_with_callback_and_timeout_and_arguments_0(
+            web_sys::wasm_bindgen::closure::Closure::<dyn Fn()>::new(move || {
+                search_buffer.set(String::new());
+            })
+            .into_js_value()
+            .unchecked_ref(),
+            1000,
+        )
+        .ok()
+    });
+    search_timer.set(id);
+
+    let search = search_buffer.get_untracked().to_lowercase();
+    let Ok(items) =
+        container.query_selector_all("[role='menuitem']:not([data-disabled]), [role='menuitemcheckbox']:not([data-disabled]), [role='menuitemradio']:not([data-disabled])")
+    else {
+        return;
+    };
+
+    // Find the first item whose text starts with the search string
+    for i in 0..items.length() {
+        if let Some(node) = items.item(i) {
+            use web_sys::wasm_bindgen::JsCast;
+            if let Some(text) = node.text_content()
+                && text.trim().to_lowercase().starts_with(&search)
+                    && let Ok(el) = node.dyn_into::<web_sys::HtmlElement>() {
+                        let _ = el.focus();
+                        return;
+                    }
         }
     }
 }

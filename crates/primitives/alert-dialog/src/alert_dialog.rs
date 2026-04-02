@@ -45,6 +45,7 @@ pub fn AlertDialogContent(
     #[prop(into, optional)] on_open_auto_focus: Option<Callback<web_sys::Event>>,
     #[prop(into, optional)] on_close_auto_focus: Option<Callback<web_sys::Event>>,
     #[prop(into, optional)] on_escape_key_down: Option<Callback<web_sys::KeyboardEvent>>,
+    #[prop(into, optional)] force_mount: MaybeProp<bool>,
     #[prop(into, optional)] as_child: MaybeProp<bool>,
     #[prop(into, optional)] node_ref: AnyNodeRef,
     children: TypedChildrenFn<impl IntoView + 'static>,
@@ -61,6 +62,7 @@ pub fn AlertDialogContent(
             on_open_auto_focus=open_focus
             on_close_auto_focus=close_focus
             on_escape_key_down=escape
+            force_mount=force_mount
             on_pointer_down_outside=Callback::new(|event: web_sys::PointerEvent| {
                 event.prevent_default();
             })
