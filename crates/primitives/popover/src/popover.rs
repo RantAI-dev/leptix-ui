@@ -138,9 +138,12 @@ pub fn PopoverContent(
     /// Whether to flip/shift to avoid viewport collisions.
     #[prop(into, optional)]
     avoid_collisions: MaybeProp<bool>,
-    /// Padding from viewport edge when avoiding collisions. Accepts a scalar f64 or per-side Padding.
+    /// Padding from viewport edge when avoiding collisions (pixels).
     #[prop(into, optional)]
     collision_padding: MaybeProp<f64>,
+    /// Per-side padding from viewport edge. Overrides `collision_padding` when set.
+    #[prop(into, optional)]
+    collision_padding_object: MaybeProp<Padding>,
     /// Elements used as the collision boundary.
     #[prop(into, optional)]
     collision_boundary: MaybeProp<Vec<web_sys::Element>>,
@@ -166,8 +169,11 @@ pub fn PopoverContent(
     let popper_side_offset = Signal::derive(move || side_offset.get().unwrap_or(0.0));
     let popper_align_offset = Signal::derive(move || align_offset.get().unwrap_or(0.0));
     let popper_avoid_collisions = Signal::derive(move || avoid_collisions.get().unwrap_or(true));
-    let popper_collision_padding =
-        Signal::derive(move || Padding::All(collision_padding.get().unwrap_or(0.0)));
+    let popper_collision_padding = Signal::derive(move || {
+        collision_padding_object
+            .get()
+            .unwrap_or_else(|| Padding::All(collision_padding.get().unwrap_or(0.0)))
+    });
     let popper_collision_boundary =
         Signal::derive(move || SendWrapper::new(collision_boundary.get().unwrap_or_default()));
     let popper_sticky = Signal::derive(move || match sticky.get().as_deref() {

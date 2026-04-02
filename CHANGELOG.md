@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.1.5 — Final Audit Fixes (36/36)
+
+All 36 Radix compatibility issues resolved.
+
+- **#17** `collision_padding_object` prop added to Popover, Tooltip, HoverCard for per-side padding via `Padding::PerSide(...)`.
+- **#23** ContextMenu uses `page_x`/`page_y` with `position:absolute` for correct positioning regardless of scroll offset.
+- **#31** Select `position="item-aligned"` mode: content positions itself over the trigger using fixed positioning aligned to the trigger rect.
+
+---
+
 ## 0.1.4 — Remaining Compatibility Fixes
 
 - **#17** Popover/Tooltip/HoverCard: expose `collision_boundary`, `sticky`, `hide_when_detached`, `update_position_strategy` props through to PopperContent.

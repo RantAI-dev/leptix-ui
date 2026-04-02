@@ -206,6 +206,9 @@ pub fn SelectContent(
     /// Padding from viewport edge when avoiding collisions (pixels).
     #[prop(into, optional)]
     collision_padding: MaybeProp<f64>,
+    /// Positioning mode: "popper" (default, uses floating-ui) or "item-aligned" (selected item over trigger).
+    #[prop(into, optional)]
+    position: MaybeProp<String>,
     #[prop(into, optional)] as_child: MaybeProp<bool>,
     #[prop(into, optional)] node_ref: AnyNodeRef,
     children: TypedChildrenFn<impl IntoView + 'static>,
@@ -219,6 +222,7 @@ pub fn SelectContent(
     let popper_avoid_collisions = Signal::derive(move || avoid_collisions.get().unwrap_or(true));
     let popper_collision_padding =
         Signal::derive(move || Padding::All(collision_padding.get().unwrap_or(0.0)));
+    let is_item_aligned = Signal::derive(move || position.get().as_deref() == Some("item-aligned"));
 
     let ctx = expect_context::<SelectContextValue>();
     let present = Signal::derive(move || ctx.open.get());
@@ -244,59 +248,102 @@ pub fn SelectContent(
         }
     });
 
-    view! {
-        <Show when=move || presence.is_present.get()>
-            <PopperContent
-                side=popper_side
-                side_offset=popper_side_offset
-                align=popper_align
-                align_offset=popper_align_offset
-                avoid_collisions=popper_avoid_collisions
-                collision_padding=popper_collision_padding
-                as_child=as_child
-                node_ref=refs
-                attr:id=ctx.content_id.clone()
-                attr:role="listbox"
-                attr:data-state=move || if ctx.open.get() { "open" } else { "closed" }
-                attr:tabindex="-1"
-                on:keydown=move |event: KeyboardEvent| {
-                    match event.key().as_str() {
-                        "ArrowDown" => { event.prevent_default(); focus_select_item(&event, FocusTarget::Next); }
-                        "ArrowUp" => { event.prevent_default(); focus_select_item(&event, FocusTarget::Previous); }
-                        "Home" => { event.prevent_default(); focus_select_item(&event, FocusTarget::First); }
-                        "End" => { event.prevent_default(); focus_select_item(&event, FocusTarget::Last); }
-                        key => {
-                            // Typeahead: single printable characters that aren't modifier keys
-                            let is_modifier = event.ctrl_key() || event.alt_key() || event.meta_key();
-                            if !is_modifier && key.chars().count() == 1 {
-                                event.prevent_default();
-                                let ch = key.to_lowercase();
-                                let new_search = search_buffer.get() + &ch;
-                                search_buffer.set(new_search.clone());
+    let content_id = StoredValue::new(ctx.content_id.clone());
+    let trigger_ref = ctx.trigger_ref;
 
-                                // Clear previous timer and set a new one
-                                if let Some(w) = web_sys::window() {
-                                    w.clear_timeout_with_handle(timer_handle.get());
-                                    let cb = web_sys::wasm_bindgen::closure::Closure::once_into_js(move || {
-                                        search_buffer.set(String::new());
-                                    });
-                                    if let Ok(id) = w.set_timeout_with_callback_and_timeout_and_arguments_0(
-                                        cb.as_ref().unchecked_ref(),
-                                        1000,
-                                    ) {
-                                        timer_handle.set(id);
-                                    }
-                                }
+    // Shared keydown handler for both positioning modes
+    let handle_keydown = move |event: KeyboardEvent| match event.key().as_str() {
+        "ArrowDown" => {
+            event.prevent_default();
+            focus_select_item(&event, FocusTarget::Next);
+        }
+        "ArrowUp" => {
+            event.prevent_default();
+            focus_select_item(&event, FocusTarget::Previous);
+        }
+        "Home" => {
+            event.prevent_default();
+            focus_select_item(&event, FocusTarget::First);
+        }
+        "End" => {
+            event.prevent_default();
+            focus_select_item(&event, FocusTarget::Last);
+        }
+        key => {
+            let is_modifier = event.ctrl_key() || event.alt_key() || event.meta_key();
+            if !is_modifier && key.chars().count() == 1 {
+                event.prevent_default();
+                let ch = key.to_lowercase();
+                let new_search = search_buffer.get() + &ch;
+                search_buffer.set(new_search.clone());
 
-                                // Find matching item by text content
-                                typeahead_focus_item(&event, &new_search);
-                            }
-                        }
+                if let Some(w) = web_sys::window() {
+                    w.clear_timeout_with_handle(timer_handle.get());
+                    let cb = web_sys::wasm_bindgen::closure::Closure::once_into_js(move || {
+                        search_buffer.set(String::new());
+                    });
+                    if let Ok(id) = w.set_timeout_with_callback_and_timeout_and_arguments_0(
+                        cb.as_ref().unchecked_ref(),
+                        1000,
+                    ) {
+                        timer_handle.set(id);
                     }
                 }
-            >
-                {children.with_value(|c| c())}
-            </PopperContent>
+
+                typeahead_focus_item(&event, &new_search);
+            }
+        }
+    };
+
+    view! {
+        <Show when=move || presence.is_present.get()>
+            {move || {
+                if is_item_aligned.get() {
+                    // Item-aligned mode: position content over trigger using fixed positioning.
+                    // The selected item should visually align with the trigger.
+                    view! {
+                        <Primitive element=html::div
+                            node_ref=refs
+                            attr:id=content_id.get_value()
+                            attr:role="listbox"
+                            attr:data-state=move || if ctx.open.get() { "open" } else { "closed" }
+                            attr:tabindex="-1"
+                            attr:style=move || {
+                                let rect = trigger_ref.get()
+                                    .map(|el| el.get_bounding_client_rect());
+                                let left = rect.as_ref().map(|r| r.left()).unwrap_or(0.0);
+                                let top = rect.as_ref().map(|r| r.top()).unwrap_or(0.0);
+                                let width = rect.as_ref().map(|r| r.width()).unwrap_or(0.0);
+                                format!("position:fixed;left:{left}px;top:{top}px;min-width:{width}px;z-index:50;")
+                            }
+                            on:keydown=handle_keydown
+                        >
+                            {children.with_value(|c| c())}
+                        </Primitive>
+                    }.into_any()
+                } else {
+                    // Popper mode (default): use floating-ui for smart positioning.
+                    view! {
+                        <PopperContent
+                            side=popper_side
+                            side_offset=popper_side_offset
+                            align=popper_align
+                            align_offset=popper_align_offset
+                            avoid_collisions=popper_avoid_collisions
+                            collision_padding=popper_collision_padding
+                            as_child=as_child
+                            node_ref=refs
+                            attr:id=content_id.get_value()
+                            attr:role="listbox"
+                            attr:data-state=move || if ctx.open.get() { "open" } else { "closed" }
+                            attr:tabindex="-1"
+                            on:keydown=handle_keydown
+                        >
+                            {children.with_value(|c| c())}
+                        </PopperContent>
+                    }.into_any()
+                }
+            }}
         </Show>
     }
 }

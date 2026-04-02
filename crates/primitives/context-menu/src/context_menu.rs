@@ -68,8 +68,10 @@ pub fn ContextMenuTrigger(
             on:contextmenu=move |event: web_sys::MouseEvent| {
                 if !disabled.get() {
                     event.prevent_default();
-                    ctx.position_x.set(event.client_x() as f64);
-                    ctx.position_y.set(event.client_y() as f64);
+                    // Use page coordinates (includes scroll offset) with position:absolute
+                    // for correct positioning regardless of scroll position.
+                    ctx.position_x.set(event.page_x() as f64);
+                    ctx.position_y.set(event.page_y() as f64);
                     ctx.open.set(true);
                 }
             }
@@ -134,7 +136,7 @@ pub fn ContextMenuContent(
                 attr:role="menu"
                 attr:data-state=move || if ctx.open.get() { "open" } else { "closed" }
                 attr:tabindex="-1"
-                attr:style=move || format!("position:fixed;left:{}px;top:{}px;", ctx.position_x.get(), ctx.position_y.get())
+                attr:style=move || format!("position:absolute;left:{}px;top:{}px;z-index:50;", ctx.position_x.get(), ctx.position_y.get())
                 on:keydown=move |event: KeyboardEvent| {
                     match event.key().as_str() {
                         "Tab" => { event.prevent_default(); }
