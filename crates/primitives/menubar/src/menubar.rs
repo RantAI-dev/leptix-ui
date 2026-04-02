@@ -658,8 +658,14 @@ fn focus_menu_item_edge(event: &KeyboardEvent, first: bool) {
     }) else {
         return;
     };
-    let Ok(items) = container.query_selector_all(MENU_ITEM_SELECTOR) else { return; };
-    let target_idx = if first { 0 } else { items.length().saturating_sub(1) };
+    let Ok(items) = container.query_selector_all(MENU_ITEM_SELECTOR) else {
+        return;
+    };
+    let target_idx = if first {
+        0
+    } else {
+        items.length().saturating_sub(1)
+    };
     if let Some(node) = items.item(target_idx) {
         use web_sys::wasm_bindgen::JsCast;
         if let Ok(el) = node.dyn_into::<web_sys::HtmlElement>() {
@@ -681,7 +687,10 @@ fn handle_typeahead(
         return;
     };
     if let Some(id) = search_timer.get_untracked()
-        && let Some(w) = web_sys::window() { w.clear_timeout_with_handle(id); }
+        && let Some(w) = web_sys::window()
+    {
+        w.clear_timeout_with_handle(id);
+    }
     search_buffer.update(|buf| buf.push_str(key));
     let id = web_sys::window().and_then(|w| {
         w.set_timeout_with_callback_and_timeout_and_arguments_0(
@@ -697,16 +706,19 @@ fn handle_typeahead(
     search_timer.set(id);
 
     let search = search_buffer.get_untracked().to_lowercase();
-    let Ok(items) = container.query_selector_all(MENU_ITEM_SELECTOR) else { return; };
+    let Ok(items) = container.query_selector_all(MENU_ITEM_SELECTOR) else {
+        return;
+    };
     for i in 0..items.length() {
         if let Some(node) = items.item(i) {
             use web_sys::wasm_bindgen::JsCast;
             if let Some(text) = node.text_content()
                 && text.trim().to_lowercase().starts_with(&search)
-                    && let Ok(el) = node.dyn_into::<web_sys::HtmlElement>() {
-                        let _ = el.focus();
-                        return;
-                    }
+                && let Ok(el) = node.dyn_into::<web_sys::HtmlElement>()
+            {
+                let _ = el.focus();
+                return;
+            }
         }
     }
 }

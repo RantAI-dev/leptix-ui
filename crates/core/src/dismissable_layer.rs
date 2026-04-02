@@ -75,8 +75,7 @@ pub fn use_dismissable_layer(
             if disabled.get_untracked() {
                 return;
             }
-            let is_topmost =
-                stack.with_untracked(|v| v.last().copied() == Some(layer_id));
+            let is_topmost = stack.with_untracked(|v| v.last().copied() == Some(layer_id));
             if !is_topmost {
                 return;
             }
@@ -104,8 +103,7 @@ pub fn use_dismissable_layer(
             if event.button() == 2 {
                 return;
             }
-            let is_topmost =
-                stack.with_untracked(|v| v.last().copied() == Some(layer_id));
+            let is_topmost = stack.with_untracked(|v| v.last().copied() == Some(layer_id));
             if !is_topmost {
                 return;
             }
@@ -145,8 +143,7 @@ pub fn use_dismissable_layer(
             if disabled.get_untracked() {
                 return;
             }
-            let is_topmost =
-                stack.with_untracked(|v| v.last().copied() == Some(layer_id));
+            let is_topmost = stack.with_untracked(|v| v.last().copied() == Some(layer_id));
             if !is_topmost {
                 return;
             }

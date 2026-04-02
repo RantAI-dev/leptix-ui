@@ -206,10 +206,13 @@ pub fn DialogContent(
                 && let Some(body) = document.body()
             {
                 // Measure scrollbar width before hiding overflow
-                let scrollbar_width = window.inner_width().ok()
+                let scrollbar_width = window
+                    .inner_width()
+                    .ok()
                     .and_then(|w| w.as_f64())
                     .unwrap_or(0.0)
-                    - document.document_element()
+                    - document
+                        .document_element()
                         .map(|el| el.client_width() as f64)
                         .unwrap_or(0.0);
 

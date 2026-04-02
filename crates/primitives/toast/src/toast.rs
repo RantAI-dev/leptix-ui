@@ -419,20 +419,22 @@ pub fn ToastViewport(
     Effect::new(move |_| {
         // Attach document-level keydown for hotkey
         if let Some(document) = web_sys::window().and_then(|w| w.document()) {
-            let handler = web_sys::wasm_bindgen::closure::Closure::<dyn Fn(web_sys::KeyboardEvent)>::new(move |event: web_sys::KeyboardEvent| {
-                let keys = hotkeys.get_value();
-                if keys.iter().any(|k| k.eq_ignore_ascii_case(&event.key()))
-                    && let Some(el) = viewport_ref.get() {
-                        use web_sys::wasm_bindgen::JsCast;
-                        if let Ok(html_el) = el.dyn_into::<web_sys::HtmlElement>() {
-                            let _ = html_el.focus();
+            let handler =
+                web_sys::wasm_bindgen::closure::Closure::<dyn Fn(web_sys::KeyboardEvent)>::new(
+                    move |event: web_sys::KeyboardEvent| {
+                        let keys = hotkeys.get_value();
+                        if keys.iter().any(|k| k.eq_ignore_ascii_case(&event.key()))
+                            && let Some(el) = viewport_ref.get()
+                        {
+                            use web_sys::wasm_bindgen::JsCast;
+                            if let Ok(html_el) = el.dyn_into::<web_sys::HtmlElement>() {
+                                let _ = html_el.focus();
+                            }
                         }
-                    }
-            });
-            let _ = document.add_event_listener_with_callback(
-                "keydown",
-                handler.as_ref().unchecked_ref(),
-            );
+                    },
+                );
+            let _ = document
+                .add_event_listener_with_callback("keydown", handler.as_ref().unchecked_ref());
             // Leak the closure to keep it alive for the document listener lifetime.
             // This is acceptable for a global singleton viewport.
             handler.forget();

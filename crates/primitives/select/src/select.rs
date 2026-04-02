@@ -496,7 +496,8 @@ pub fn SelectScrollUpButton(
     // Check if viewport can scroll up
     let update_visibility = move || {
         if let Some(btn) = btn_ref.get()
-            && let Some(viewport) = btn.parent_element()
+            && let Some(viewport) = btn
+                .parent_element()
                 .and_then(|p| p.query_selector("[role='presentation']").ok().flatten())
         {
             can_scroll_up.set(viewport.scroll_top() > 0);
@@ -504,32 +505,33 @@ pub fn SelectScrollUpButton(
     };
 
     let start_scroll = move || {
-        let id = web_sys::window()
-            .and_then(|w| {
-                w.set_interval_with_callback_and_timeout_and_arguments_0(
-                    web_sys::wasm_bindgen::closure::Closure::<dyn Fn()>::new(move || {
-                        if let Some(btn) = btn_ref.get()
-                            && let Some(viewport) = btn.parent_element()
-                                .and_then(|p| p.query_selector("[role='presentation']").ok().flatten())
-                        {
-                            viewport.set_scroll_top(viewport.scroll_top() - 20);
-                            can_scroll_up.set(viewport.scroll_top() > 0);
-                        }
-                    })
-                    .into_js_value()
-                    .unchecked_ref(),
-                    50,
-                )
-                .ok()
-            });
+        let id = web_sys::window().and_then(|w| {
+            w.set_interval_with_callback_and_timeout_and_arguments_0(
+                web_sys::wasm_bindgen::closure::Closure::<dyn Fn()>::new(move || {
+                    if let Some(btn) = btn_ref.get()
+                        && let Some(viewport) = btn
+                            .parent_element()
+                            .and_then(|p| p.query_selector("[role='presentation']").ok().flatten())
+                    {
+                        viewport.set_scroll_top(viewport.scroll_top() - 20);
+                        can_scroll_up.set(viewport.scroll_top() > 0);
+                    }
+                })
+                .into_js_value()
+                .unchecked_ref(),
+                50,
+            )
+            .ok()
+        });
         scroll_timer.set(id);
     };
 
     let stop_scroll = move || {
         if let Some(id) = scroll_timer.get_untracked()
-            && let Some(w) = web_sys::window() {
-                w.clear_interval_with_handle(id);
-            }
+            && let Some(w) = web_sys::window()
+        {
+            w.clear_interval_with_handle(id);
+        }
         scroll_timer.set(None);
     };
 
@@ -565,42 +567,46 @@ pub fn SelectScrollDownButton(
 
     let update_visibility = move || {
         if let Some(btn) = btn_ref.get()
-            && let Some(viewport) = btn.parent_element()
+            && let Some(viewport) = btn
+                .parent_element()
                 .and_then(|p| p.query_selector("[role='presentation']").ok().flatten())
         {
-            let at_bottom = viewport.scroll_top() + viewport.client_height() >= viewport.scroll_height();
+            let at_bottom =
+                viewport.scroll_top() + viewport.client_height() >= viewport.scroll_height();
             can_scroll_down.set(!at_bottom);
         }
     };
 
     let start_scroll = move || {
-        let id = web_sys::window()
-            .and_then(|w| {
-                w.set_interval_with_callback_and_timeout_and_arguments_0(
-                    web_sys::wasm_bindgen::closure::Closure::<dyn Fn()>::new(move || {
-                        if let Some(btn) = btn_ref.get()
-                            && let Some(viewport) = btn.parent_element()
-                                .and_then(|p| p.query_selector("[role='presentation']").ok().flatten())
-                        {
-                            viewport.set_scroll_top(viewport.scroll_top() + 20);
-                            let at_bottom = viewport.scroll_top() + viewport.client_height() >= viewport.scroll_height();
-                            can_scroll_down.set(!at_bottom);
-                        }
-                    })
-                    .into_js_value()
-                    .unchecked_ref(),
-                    50,
-                )
-                .ok()
-            });
+        let id = web_sys::window().and_then(|w| {
+            w.set_interval_with_callback_and_timeout_and_arguments_0(
+                web_sys::wasm_bindgen::closure::Closure::<dyn Fn()>::new(move || {
+                    if let Some(btn) = btn_ref.get()
+                        && let Some(viewport) = btn
+                            .parent_element()
+                            .and_then(|p| p.query_selector("[role='presentation']").ok().flatten())
+                    {
+                        viewport.set_scroll_top(viewport.scroll_top() + 20);
+                        let at_bottom = viewport.scroll_top() + viewport.client_height()
+                            >= viewport.scroll_height();
+                        can_scroll_down.set(!at_bottom);
+                    }
+                })
+                .into_js_value()
+                .unchecked_ref(),
+                50,
+            )
+            .ok()
+        });
         scroll_timer.set(id);
     };
 
     let stop_scroll = move || {
         if let Some(id) = scroll_timer.get_untracked()
-            && let Some(w) = web_sys::window() {
-                w.clear_interval_with_handle(id);
-            }
+            && let Some(w) = web_sys::window()
+        {
+            w.clear_interval_with_handle(id);
+        }
         scroll_timer.set(None);
     };
 

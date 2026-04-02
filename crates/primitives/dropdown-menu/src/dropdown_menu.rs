@@ -658,7 +658,10 @@ pub fn DropdownMenuSubContent(
     let grace_timer: RwSignal<Option<i32>> = RwSignal::new(None);
     let clear_grace = move || {
         if let Some(id) = grace_timer.get_untracked()
-            && let Some(w) = web_sys::window() { w.clear_timeout_with_handle(id); }
+            && let Some(w) = web_sys::window()
+        {
+            w.clear_timeout_with_handle(id);
+        }
         grace_timer.set(None);
     };
 
@@ -777,7 +780,11 @@ fn focus_menu_item_edge(event: &KeyboardEvent, first: bool) {
         return;
     };
 
-    let target_idx = if first { 0 } else { items.length().saturating_sub(1) };
+    let target_idx = if first {
+        0
+    } else {
+        items.length().saturating_sub(1)
+    };
     if let Some(node) = items.item(target_idx) {
         use web_sys::wasm_bindgen::JsCast;
         if let Ok(el) = node.dyn_into::<web_sys::HtmlElement>() {
@@ -802,7 +809,10 @@ fn handle_typeahead(
 
     // Clear previous timer and start a new 1-second reset
     if let Some(id) = search_timer.get_untracked()
-        && let Some(w) = web_sys::window() { w.clear_timeout_with_handle(id); }
+        && let Some(w) = web_sys::window()
+    {
+        w.clear_timeout_with_handle(id);
+    }
     search_buffer.update(|buf| buf.push_str(key));
 
     let id = web_sys::window().and_then(|w| {
@@ -831,10 +841,11 @@ fn handle_typeahead(
             use web_sys::wasm_bindgen::JsCast;
             if let Some(text) = node.text_content()
                 && text.trim().to_lowercase().starts_with(&search)
-                    && let Ok(el) = node.dyn_into::<web_sys::HtmlElement>() {
-                        let _ = el.focus();
-                        return;
-                    }
+                && let Ok(el) = node.dyn_into::<web_sys::HtmlElement>()
+            {
+                let _ = el.focus();
+                return;
+            }
         }
     }
 }

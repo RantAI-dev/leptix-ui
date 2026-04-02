@@ -332,7 +332,9 @@ fn focus_nav_trigger(event: &KeyboardEvent, forward: bool) {
         }
     };
     let Some(nav) = nav else { return };
-    let Ok(buttons) = nav.query_selector_all("button[aria-expanded]") else { return };
+    let Ok(buttons) = nav.query_selector_all("button[aria-expanded]") else {
+        return;
+    };
 
     let mut nodes = vec![];
     for i in 0..buttons.length() {
@@ -354,7 +356,8 @@ fn focus_nav_trigger(event: &KeyboardEvent, forward: bool) {
     };
 
     if let Some(node) = nodes.get(next)
-        && let Ok(el) = node.clone().dyn_into::<web_sys::HtmlElement>() {
-            let _ = el.focus();
-        }
+        && let Ok(el) = node.clone().dyn_into::<web_sys::HtmlElement>()
+    {
+        let _ = el.focus();
+    }
 }
