@@ -2066,3 +2066,124 @@ kbd {
     border-color: var(--accent);
     box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.15);
 }
+
+/* ===========================================================================
+   Portal-safe styles
+   When Portal teleports content to document.body, descendant-based selectors
+   (e.g. .demo-X [role="Y"]) no longer match. These global rules use the same
+   styles as the scoped rules above, but target portaled content directly via
+   role/data attributes at body level.
+   =========================================================================== */
+
+/* --- Menus (Context Menu, Dropdown Menu, Menubar menus) --- */
+body > div > [role="menu"] {
+    background: var(--bg-panel);
+    border-radius: var(--radius-sm);
+    padding: 4px;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.12), 0 0 0 1px rgba(0,0,0,0.04);
+    min-width: 180px;
+    z-index: 50;
+}
+[data-theme="dark"] body > div > [role="menu"] {
+    box-shadow: 0 8px 30px rgba(0,0,0,0.4), 0 0 0 1px rgba(255,255,255,0.06);
+}
+body > div > [role="menu"] [role="menuitem"],
+body > div > [role="menu"] [role="menuitemcheckbox"],
+body > div > [role="menu"] [role="menuitemradio"] {
+    display: flex;
+    align-items: center;
+    padding: 6px 8px;
+    font-size: 13px;
+    border-radius: 4px;
+    cursor: pointer;
+    color: var(--text);
+    outline: none;
+}
+body > div > [role="menu"] [role="menuitem"]:hover,
+body > div > [role="menu"] [role="menuitem"]:focus,
+body > div > [role="menu"] [role="menuitemcheckbox"]:hover,
+body > div > [role="menu"] [role="menuitemradio"]:hover {
+    background: var(--accent-subtle);
+    color: var(--accent-light);
+}
+body > div > [role="menu"] [role="separator"] {
+    height: 1px;
+    background: var(--border-subtle);
+    margin: 4px 0;
+}
+
+/* --- Popover / Hover Card --- */
+body > div > [role="dialog"] {
+    background: var(--bg-panel);
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 10px 38px -10px rgba(22,23,24,0.35),
+                0 10px 20px -15px rgba(22,23,24,0.2);
+    width: 260px;
+    font-size: 14px;
+    color: var(--text-secondary);
+    line-height: 1.6;
+    z-index: 50;
+    animation: popoverFadeIn 0.2s ease-out;
+}
+body > div > [role="dialog"] p {
+    margin: 0 0 12px;
+}
+body > div > [role="dialog"] p:last-of-type {
+    margin-bottom: 0;
+}
+[data-theme="dark"] body > div > [role="dialog"] {
+    box-shadow: 0 10px 38px -10px rgba(0,0,0,0.5),
+                0 0 0 1px rgba(255,255,255,0.06);
+}
+
+/* --- Select --- */
+body > div > [role="listbox"],
+body > div > div > [role="listbox"],
+body > div [role="presentation"] {
+    background: var(--bg-panel);
+    border-radius: var(--radius-sm);
+    padding: 4px;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.12), 0 0 0 1px rgba(0,0,0,0.04);
+    min-width: 180px;
+    z-index: 50;
+}
+body > div [role="option"] {
+    display: flex;
+    align-items: center;
+    padding: 6px 8px;
+    font-size: 13px;
+    border-radius: 4px;
+    cursor: pointer;
+    color: var(--text);
+    outline: none;
+}
+body > div [role="option"]:hover,
+body > div [role="option"]:focus {
+    background: var(--accent-subtle);
+    color: var(--accent-light);
+}
+body > div [role="option"][data-state="checked"] {
+    font-weight: 500;
+}
+
+/* --- Dialog / Alert Dialog overlays (portaled) --- */
+body > div > [role="dialog"][aria-modal] {
+    width: auto;
+    animation: none;
+}
+
+/* --- Tooltip (portaled) --- */
+body > div > [role="tooltip"] {
+    background: var(--text);
+    color: var(--bg);
+    border-radius: 4px;
+    padding: 6px 10px;
+    font-size: 12px;
+    line-height: 1.4;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+    z-index: 50;
+    animation: tooltipFadeIn 0.15s ease-out;
+    max-width: 200px;
+    word-wrap: break-word;
+}
