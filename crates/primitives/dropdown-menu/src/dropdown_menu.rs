@@ -145,10 +145,13 @@ pub fn DropdownMenuPortal(
 ) -> impl IntoView {
     let children = StoredValue::new(children.into_inner());
     let ctx = expect_context::<MenuContextValue>();
+    let ctx_for_portal = StoredValue::new(ctx.clone());
     view! {
         <Show when=move || ctx.open.get()>
             <Portal container=container container_ref=container_ref>
-                {children.with_value(|c| c())}
+                <Provider value=ctx_for_portal.get_value()>
+                    {children.with_value(|c| c())}
+                </Provider>
             </Portal>
         </Show>
     }

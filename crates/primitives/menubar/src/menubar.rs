@@ -122,10 +122,17 @@ pub fn MenubarPortal(
 ) -> impl IntoView {
     let children = StoredValue::new(children.into_inner());
     let ctx = expect_context::<MenubarMenuContextValue>();
+    let bar_ctx = expect_context::<MenubarContextValue>();
+    let ctx_for_portal = StoredValue::new(ctx.clone());
+    let bar_ctx_for_portal = StoredValue::new(bar_ctx.clone());
     view! {
         <Show when=move || ctx.open.get()>
             <Portal container=container container_ref=container_ref>
-                {children.with_value(|c| c())}
+                <Provider value=ctx_for_portal.get_value()>
+                    <Provider value=bar_ctx_for_portal.get_value()>
+                        {children.with_value(|c| c())}
+                    </Provider>
+                </Provider>
             </Portal>
         </Show>
     }

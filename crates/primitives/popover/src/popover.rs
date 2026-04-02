@@ -103,10 +103,13 @@ pub fn PopoverPortal(
     let children = StoredValue::new(children.into_inner());
     let context = expect_context::<PopoverContextValue>();
 
+    let context_for_portal = StoredValue::new(context.clone());
     view! {
         <Show when=move || context.open.get()>
             <Portal container=container>
-                {children.with_value(|children| children())}
+                <Provider value=context_for_portal.get_value()>
+                    {children.with_value(|children| children())}
+                </Provider>
             </Portal>
         </Show>
     }

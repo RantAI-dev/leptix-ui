@@ -102,12 +102,17 @@ pub fn DialogPortal(
     children: TypedChildrenFn<impl IntoView + 'static>,
 ) -> impl IntoView {
     let children = StoredValue::new(children.into_inner());
+    // Capture context before the Portal boundary — mount_to creates a new
+    // reactive owner, so we must re-provide context inside the portal.
     let context = expect_context::<DialogContextValue>();
+    let context_for_portal = StoredValue::new(context.clone());
 
     view! {
         <Show when=move || context.open.get()>
             <Portal container=container container_ref=container_ref>
-                {children.with_value(|children| children())}
+                <Provider value=context_for_portal.get_value()>
+                    {children.with_value(|children| children())}
+                </Provider>
             </Portal>
         </Show>
     }
