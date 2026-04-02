@@ -15,6 +15,9 @@ pub fn Portal(
     let children = StoredValue::new(children);
 
     // TODO: pass attrs to primitive
+    // The wrapper div uses `display:contents` so it doesn't create a
+    // containing block or stacking context — fixed-position children
+    // (overlays, dialogs) stack correctly against the viewport.
     view! {
         // <AttributeInterceptor let:attrs>
             <LeptosPortal mount=container mount_ref=container_ref>
@@ -22,6 +25,7 @@ pub fn Portal(
                     element=html::div
                     as_child=as_child
                     node_ref={node_ref}
+                    attr:style="display:contents"
                     // {..attrs}
                 >
                     {children.with_value(|children| children())}

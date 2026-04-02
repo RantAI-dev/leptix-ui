@@ -2076,7 +2076,7 @@ kbd {
    =========================================================================== */
 
 /* --- Menus (Context Menu, Dropdown Menu, Menubar menus) --- */
-body > div > [role="menu"] {
+body > [role="menu"] {
     background: var(--bg-panel);
     border-radius: var(--radius-sm);
     padding: 4px;
@@ -2084,12 +2084,12 @@ body > div > [role="menu"] {
     min-width: 180px;
     z-index: 50;
 }
-[data-theme="dark"] body > div > [role="menu"] {
+[data-theme="dark"] body > [role="menu"] {
     box-shadow: 0 8px 30px rgba(0,0,0,0.4), 0 0 0 1px rgba(255,255,255,0.06);
 }
-body > div > [role="menu"] [role="menuitem"],
-body > div > [role="menu"] [role="menuitemcheckbox"],
-body > div > [role="menu"] [role="menuitemradio"] {
+body > [role="menu"] [role="menuitem"],
+body > [role="menu"] [role="menuitemcheckbox"],
+body > [role="menu"] [role="menuitemradio"] {
     display: flex;
     align-items: center;
     padding: 6px 8px;
@@ -2099,21 +2099,21 @@ body > div > [role="menu"] [role="menuitemradio"] {
     color: var(--text);
     outline: none;
 }
-body > div > [role="menu"] [role="menuitem"]:hover,
-body > div > [role="menu"] [role="menuitem"]:focus,
-body > div > [role="menu"] [role="menuitemcheckbox"]:hover,
-body > div > [role="menu"] [role="menuitemradio"]:hover {
+body > [role="menu"] [role="menuitem"]:hover,
+body > [role="menu"] [role="menuitem"]:focus,
+body > [role="menu"] [role="menuitemcheckbox"]:hover,
+body > [role="menu"] [role="menuitemradio"]:hover {
     background: var(--accent-subtle);
     color: var(--accent-light);
 }
-body > div > [role="menu"] [role="separator"] {
+body > [role="menu"] [role="separator"] {
     height: 1px;
     background: var(--border-subtle);
     margin: 4px 0;
 }
 
 /* --- Popover / Hover Card --- */
-body > div > [role="dialog"] {
+body > [role="dialog"] {
     background: var(--bg-panel);
     border-radius: 8px;
     padding: 20px;
@@ -2126,21 +2126,20 @@ body > div > [role="dialog"] {
     z-index: 50;
     animation: popoverFadeIn 0.2s ease-out;
 }
-body > div > [role="dialog"] p {
+body > [role="dialog"] p {
     margin: 0 0 12px;
 }
-body > div > [role="dialog"] p:last-of-type {
+body > [role="dialog"] p:last-of-type {
     margin-bottom: 0;
 }
-[data-theme="dark"] body > div > [role="dialog"] {
+[data-theme="dark"] body > [role="dialog"] {
     box-shadow: 0 10px 38px -10px rgba(0,0,0,0.5),
                 0 0 0 1px rgba(255,255,255,0.06);
 }
 
 /* --- Select --- */
-body > div > [role="listbox"],
-body > div > div > [role="listbox"],
-body > div [role="presentation"] {
+body > [role="listbox"],
+body [role="presentation"] {
     background: var(--bg-panel);
     border-radius: var(--radius-sm);
     padding: 4px;
@@ -2148,7 +2147,7 @@ body > div [role="presentation"] {
     min-width: 180px;
     z-index: 50;
 }
-body > div [role="option"] {
+body [role="option"] {
     display: flex;
     align-items: center;
     padding: 6px 8px;
@@ -2158,23 +2157,23 @@ body > div [role="option"] {
     color: var(--text);
     outline: none;
 }
-body > div [role="option"]:hover,
-body > div [role="option"]:focus {
+body [role="option"]:hover,
+body [role="option"]:focus {
     background: var(--accent-subtle);
     color: var(--accent-light);
 }
-body > div [role="option"][data-state="checked"] {
+body [role="option"][data-state="checked"] {
     font-weight: 500;
 }
 
 /* --- Dialog / Alert Dialog overlays (portaled) --- */
-body > div > [role="dialog"][aria-modal] {
+body > [role="dialog"][aria-modal] {
     width: auto;
     animation: none;
 }
 
 /* --- Tooltip (portaled) --- */
-body > div > [role="tooltip"] {
+body > [role="tooltip"] {
     background: var(--text);
     color: var(--bg);
     border-radius: 4px;
