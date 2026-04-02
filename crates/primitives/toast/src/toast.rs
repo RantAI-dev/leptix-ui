@@ -143,6 +143,23 @@ pub fn Toast(
         timer_id,
     };
 
+    // Self-register with the provider so "pause all" / "dismiss all" is possible.
+    let provider_for_reg = use_context::<ToastProviderContextValue>();
+    if let Some(ref pctx) = provider_for_reg {
+        pctx.add_toast.run(ToastEntry {
+            id: id.clone(),
+            open: open_state,
+        });
+    }
+    {
+        let id_for_cleanup = id.clone();
+        on_cleanup(move || {
+            if let Some(ref pctx) = provider_for_reg {
+                pctx.remove_toast.run(id_for_cleanup.clone());
+            }
+        });
+    }
+
     // Build the auto-close closure once, wrapped for Send+Sync
     let close_closure: Arc<SendWrapper<Closure<dyn Fn()>>> =
         Arc::new(SendWrapper::new(Closure::new(move || {

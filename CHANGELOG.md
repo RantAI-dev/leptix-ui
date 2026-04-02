@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.1.4 — Remaining Compatibility Fixes
+
+- **#17** Popover/Tooltip/HoverCard: expose `collision_boundary`, `sticky`, `hide_when_detached`, `update_position_strategy` props through to PopperContent.
+- **#14** DropdownMenu safe triangle: pointer-aware grace period using trigger rect geometry instead of flat timer.
+- **#26** HoverCard: `on_open_auto_focus`/`on_close_auto_focus` callbacks now invoked on open/close transitions.
+- **#34** Toast: `Toast` components self-register with `ToastProvider` on mount and deregister on cleanup.
+
+---
+
 ## 0.1.3 — Radix Compatibility Audit
 
 33 Radix UI compatibility issues fixed for shadcn/ui (rustcn) parity.

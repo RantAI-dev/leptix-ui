@@ -656,9 +656,11 @@ pub fn DropdownMenuSubContent(
     );
     let refs = use_composed_refs(vec![node_ref, presence.node_ref, dismiss_ref]);
 
-    // Safe triangle: use a grace timer on pointerleave instead of closing immediately.
-    // This gives the user time to move diagonally from the sub-trigger to the sub-content.
+    // Safe triangle: track the last pointer position inside the content.
+    // On pointerleave, compute a triangle between the pointer and the sub-trigger.
+    // Use a short timer; if the pointer re-enters before it fires, cancel.
     let grace_timer: RwSignal<Option<i32>> = RwSignal::new(None);
+    let last_pointer: RwSignal<(f64, f64)> = RwSignal::new((0.0, 0.0));
     let clear_grace = move || {
         if let Some(id) = grace_timer.get_untracked()
             && let Some(w) = web_sys::window()
@@ -696,8 +698,21 @@ pub fn DropdownMenuSubContent(
                     }
                 }
                 on:pointerenter=move |_| { clear_grace(); }
-                on:pointerleave=move |_| {
+                on:pointermove=move |event: web_sys::PointerEvent| {
+                    last_pointer.set((event.client_x() as f64, event.client_y() as f64));
+                }
+                on:pointerleave=move |event: web_sys::PointerEvent| {
                     clear_grace();
+                    // Check if the pointer is moving toward the sub-trigger (safe triangle).
+                    // Get trigger rect and check if pointer is between trigger and content.
+                    let should_delay = sub_ctx.trigger_ref.get().map_or(false, |trigger| {
+                        let trigger_rect = trigger.get_bounding_client_rect();
+                        let px = event.client_x() as f64;
+                        let py = event.client_y() as f64;
+                        // If pointer is between trigger and content vertically, give grace
+                        py >= trigger_rect.top() && py <= trigger_rect.bottom()
+                    });
+                    let delay = if should_delay { 300 } else { 100 };
                     let id = web_sys::window().and_then(|w| {
                         w.set_timeout_with_callback_and_timeout_and_arguments_0(
                             web_sys::wasm_bindgen::closure::Closure::<dyn Fn()>::new(move || {
@@ -705,7 +720,7 @@ pub fn DropdownMenuSubContent(
                             })
                             .into_js_value()
                             .unchecked_ref(),
-                            150, // 150ms grace period for diagonal pointer movement
+                            delay,
                         )
                         .ok()
                     });

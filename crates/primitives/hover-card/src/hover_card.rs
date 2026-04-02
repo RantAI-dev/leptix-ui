@@ -2,7 +2,8 @@ use std::sync::Arc;
 
 use floating_ui_leptos::Padding;
 use leptix_core::popper::{
-    Popper, PopperAnchor, PopperArrow, PopperContent, parse_align, parse_side,
+    Popper, PopperAnchor, PopperArrow, PopperContent, Sticky, UpdatePositionStrategy, parse_align,
+    parse_side,
 };
 use leptix_core::portal::Portal;
 use leptix_core::presence::use_presence;
@@ -234,6 +235,10 @@ pub fn HoverCardContent(
     /// Padding from viewport edge when avoiding collisions (pixels).
     #[prop(into, optional)]
     collision_padding: MaybeProp<f64>,
+    #[prop(into, optional)] collision_boundary: MaybeProp<Vec<web_sys::Element>>,
+    #[prop(into, optional)] sticky: MaybeProp<String>,
+    #[prop(into, optional)] hide_when_detached: MaybeProp<bool>,
+    #[prop(into, optional)] update_position_strategy: MaybeProp<String>,
     #[prop(into, optional)] force_mount: MaybeProp<bool>,
     #[prop(into, optional)] on_open_auto_focus: Option<Callback<web_sys::Event>>,
     #[prop(into, optional)] on_close_auto_focus: Option<Callback<web_sys::Event>>,
@@ -241,10 +246,6 @@ pub fn HoverCardContent(
     #[prop(into, optional)] node_ref: AnyNodeRef,
     children: TypedChildrenFn<impl IntoView + 'static>,
 ) -> impl IntoView {
-    // Auto-focus callbacks stored for consumers; not directly wired to focus_scope
-    // since HoverCard doesn't trap focus, but they're available for custom behavior.
-    let _on_open_auto_focus = on_open_auto_focus;
-    let _on_close_auto_focus = on_close_auto_focus;
     let children = StoredValue::new(children.into_inner());
     let force_mount = Signal::derive(move || force_mount.get().unwrap_or(false));
 
@@ -255,11 +256,40 @@ pub fn HoverCardContent(
     let popper_avoid_collisions = Signal::derive(move || avoid_collisions.get().unwrap_or(true));
     let popper_collision_padding =
         Signal::derive(move || Padding::All(collision_padding.get().unwrap_or(0.0)));
+    let popper_collision_boundary =
+        Signal::derive(move || SendWrapper::new(collision_boundary.get().unwrap_or_default()));
+    let popper_sticky = Signal::derive(move || match sticky.get().as_deref() {
+        Some("always") => Sticky::Always,
+        _ => Sticky::Partial,
+    });
+    let popper_hide_when_detached =
+        Signal::derive(move || hide_when_detached.get().unwrap_or(false));
+    let popper_update_position_strategy =
+        Signal::derive(move || match update_position_strategy.get().as_deref() {
+            Some("always") => UpdatePositionStrategy::Always,
+            _ => UpdatePositionStrategy::Optimized,
+        });
 
     let context = expect_context::<HoverCardContextValue>();
 
     let present = Signal::derive(move || context.open.get());
     let presence = use_presence(present);
+
+    // Fire auto-focus callbacks when content opens/closes.
+    let prev_open = RwSignal::new(false);
+    Effect::new(move |_| {
+        let is_open = context.open.get();
+        if is_open && !prev_open.get_untracked() {
+            if let Some(cb) = on_open_auto_focus {
+                cb.run(web_sys::Event::new("focusin").unwrap());
+            }
+        } else if !is_open && prev_open.get_untracked() {
+            if let Some(cb) = on_close_auto_focus {
+                cb.run(web_sys::Event::new("focusout").unwrap());
+            }
+        }
+        prev_open.set(is_open);
+    });
 
     let composed_refs =
         leptix_core::compose_refs::use_composed_refs(vec![node_ref, presence.node_ref]);
@@ -297,6 +327,10 @@ pub fn HoverCardContent(
                 align_offset=popper_align_offset
                 avoid_collisions=popper_avoid_collisions
                 collision_padding=popper_collision_padding
+                collision_boundary=popper_collision_boundary
+                sticky=popper_sticky
+                hide_when_detached=popper_hide_when_detached
+                update_position_strategy=popper_update_position_strategy
                 node_ref=composed_refs
                 as_child=as_child
                 attr:id=content_id.with_value(|id| id.clone())

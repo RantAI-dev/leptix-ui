@@ -2,7 +2,8 @@ use std::sync::Arc;
 
 use floating_ui_leptos::Padding;
 use leptix_core::popper::{
-    Popper, PopperAnchor, PopperArrow, PopperContent, parse_align, parse_side,
+    Popper, PopperAnchor, PopperArrow, PopperContent, Sticky, UpdatePositionStrategy, parse_align,
+    parse_side,
 };
 use leptix_core::portal::Portal;
 use leptix_core::presence::use_presence;
@@ -289,6 +290,10 @@ pub fn TooltipContent(
     /// Padding from viewport edge when avoiding collisions (pixels).
     #[prop(into, optional)]
     collision_padding: MaybeProp<f64>,
+    #[prop(into, optional)] collision_boundary: MaybeProp<Vec<web_sys::Element>>,
+    #[prop(into, optional)] sticky: MaybeProp<String>,
+    #[prop(into, optional)] hide_when_detached: MaybeProp<bool>,
+    #[prop(into, optional)] update_position_strategy: MaybeProp<String>,
     #[prop(into, optional)] force_mount: MaybeProp<bool>,
     #[prop(into, optional)] as_child: MaybeProp<bool>,
     #[prop(into, optional)] node_ref: AnyNodeRef,
@@ -305,6 +310,19 @@ pub fn TooltipContent(
     let popper_avoid_collisions = Signal::derive(move || avoid_collisions.get().unwrap_or(true));
     let popper_collision_padding =
         Signal::derive(move || Padding::All(collision_padding.get().unwrap_or(0.0)));
+    let popper_collision_boundary =
+        Signal::derive(move || SendWrapper::new(collision_boundary.get().unwrap_or_default()));
+    let popper_sticky = Signal::derive(move || match sticky.get().as_deref() {
+        Some("always") => Sticky::Always,
+        _ => Sticky::Partial,
+    });
+    let popper_hide_when_detached =
+        Signal::derive(move || hide_when_detached.get().unwrap_or(false));
+    let popper_update_position_strategy =
+        Signal::derive(move || match update_position_strategy.get().as_deref() {
+            Some("always") => UpdatePositionStrategy::Always,
+            _ => UpdatePositionStrategy::Optimized,
+        });
 
     let present = Signal::derive(move || context.open.get());
     let presence = use_presence(present);
@@ -327,6 +345,10 @@ pub fn TooltipContent(
                 align_offset=popper_align_offset
                 avoid_collisions=popper_avoid_collisions
                 collision_padding=popper_collision_padding
+                collision_boundary=popper_collision_boundary
+                sticky=popper_sticky
+                hide_when_detached=popper_hide_when_detached
+                update_position_strategy=popper_update_position_strategy
                 as_child=as_child
                 node_ref=composed_refs
                 attr:id=content_id.get_value()
