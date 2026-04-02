@@ -1,5 +1,40 @@
 # Changelog
 
+## 0.1.3 — Radix Compatibility Audit
+
+33 Radix UI compatibility issues fixed for shadcn/ui (rustcn) parity.
+
+### Core Infrastructure
+- **Portal**: All portals (Dialog, DropdownMenu, ContextMenu, Menubar, Popover, Tooltip, HoverCard, Select) now teleport to `document.body` via `mount_to`. Portal wrapper uses `display:contents` to avoid stacking context issues. Context re-provided across `mount_to` boundary.
+- **DismissableLayer**: Global layer stack — only topmost layer responds to Escape/pointer-outside. Right-clicks no longer dismiss.
+- **Presence**: Collapsible/Accordion content unmounts immediately when no CSS animation exists (fallback for `prefers-reduced-motion`).
+- **FocusScope**: Uses `getComputedStyle` instead of inline style checks. Skips elements inside `[inert]` subtrees.
+
+### Component Fixes
+- **Menubar**: Native item components replace broken re-exports that caused runtime panics.
+- **RadioGroup**: Hidden `<input type="radio">` for native form submission.
+- **ContextMenu**: 9 new sub-components (CheckboxItem, RadioGroup, RadioItem, ItemIndicator, Sub, SubTrigger, SubContent, Arrow).
+- **DropdownMenu**: Sub-menus use Popper for floating positioning. Grace timer on pointerleave (safe triangle).
+- **Accordion**: Removed double `<h3>` nesting; `AccordionHeader` is now required wrapper for `AccordionTrigger`. Content has `aria-labelledby`.
+- **Tooltip**: Removed duplicate `VisuallyHidden` render. Added `instant-open` data-state.
+- **Dialog**: Body scroll lock compensates for scrollbar width. Cleanup on Portal unmount.
+- **Select**: `SelectItemIndicator` auto-hides when item not selected. Scroll buttons functional with pointer-hold scrolling. Spurious `on_open_change` on initial render fixed.
+- **Slider**: Auto-assigns thumb index from render order.
+- **ScrollArea**: `Hover` type shows scrollbar only on pointer hover. `Scroll` type shows only while scrolling.
+- **NavigationMenu**: Full keyboard navigation (Arrow keys, Enter/Space, Escape).
+- **Checkbox/Switch**: `form` prop for out-of-form submission.
+- **Toast**: `hotkey` prop on Viewport. `data-swipe` absent when no swipe active.
+- **AlertDialog**: `force_mount` prop passthrough.
+- **HoverCard**: `on_open_auto_focus`/`on_close_auto_focus` props.
+- **CheckboxIndicator**: Presence `node_ref` composed for animation tracking.
+
+### All Menus (DropdownMenu, ContextMenu, Menubar)
+- Typeahead character search with 1s buffer reset.
+- Home/End/PageUp/PageDown focus navigation.
+- Tab key prevention.
+
+---
+
 ## 1.0.0
 
 Leptix 1.0.0 — Radix UI Primitives for Leptos.
