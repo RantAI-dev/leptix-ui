@@ -198,6 +198,18 @@ pub fn DialogContent(
     // Body scroll lock: only when modal is true.
     // Compensates for scrollbar width to prevent layout shift.
     let is_modal = context.modal;
+
+    let restore_body_scroll = move || {
+        if let Some(body) = web_sys::window()
+            .and_then(|w| w.document())
+            .and_then(|d| d.body())
+        {
+            let style = body.unchecked_ref::<web_sys::HtmlElement>().style();
+            let _ = style.remove_property("overflow");
+            let _ = style.remove_property("padding-right");
+        }
+    };
+
     Effect::new(move |_| {
         let is_open = context.open.get();
         if is_modal && is_open {
@@ -223,17 +235,16 @@ pub fn DialogContent(
                 }
             }
         } else if is_modal {
-            // Restore when modal dialog closes.
-            if let Some(body) = web_sys::window()
-                .and_then(|w| w.document())
-                .and_then(|d| d.body())
-            {
-                let style = body.unchecked_ref::<web_sys::HtmlElement>().style();
-                let _ = style.remove_property("overflow");
-                let _ = style.remove_property("padding-right");
-            }
+            restore_body_scroll();
         }
     });
+
+    // Safety net: when the Portal unmounts this component, the Effect above
+    // won't re-run with open=false (the reactive scope is destroyed).
+    // Ensure body scroll is restored on cleanup.
+    if is_modal {
+        on_cleanup(restore_body_scroll);
+    }
 
     let aria_modal = if context.modal { Some("true") } else { None };
 
