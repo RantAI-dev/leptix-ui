@@ -77,7 +77,7 @@ pub fn ScrollAreaPage() -> impl IntoView {
             <table class="props-table">
                 <thead><tr><th>"Prop"</th><th>"Type"</th><th>"Description"</th></tr></thead>
                 <tbody>
-                    <tr><td>"r#type"</td><td>"MaybeProp<ScrollAreaType>"</td><td>"Describes the nature of scrollbar visibility."</td></tr>
+                    <tr><td>"r#type"</td><td>"ScrollAreaType"</td><td>"Describes the nature of scrollbar visibility: Hover (show on hover), Scroll (show while scrolling), Auto (show when content overflows), Always (always visible). Default: Hover."</td></tr>
                     <tr><td>"scroll_hide_delay"</td><td>"MaybeProp<i32>"</td><td>"Delay in ms before hiding the scrollbar after the user stops scrolling. Default: 600."</td></tr>
                 </tbody>
             </table>

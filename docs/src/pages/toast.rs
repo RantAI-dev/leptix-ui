@@ -95,6 +95,15 @@ pub fn ToastPage() -> impl IntoView {
 
         <h3 id="viewport">"Viewport"</h3>
         <p>"A fixed region where toasts appear. Users can jump to by pressing a hotkey."</p>
+        <div class="props-table-wrapper">
+            <table class="props-table">
+                <thead><tr><th>"Prop"</th><th>"Type"</th><th>"Description"</th></tr></thead>
+                <tbody>
+                    <tr><td>"label"</td><td>"MaybeProp<String>"</td><td>"An author-localized label for the toast region. Default: \"Notifications\"."</td></tr>
+                    <tr><td>"hotkey"</td><td>"Option<Vec<String>>"</td><td>"Keyboard shortcut(s) that focus the viewport. Default: [\"F8\"]."</td></tr>
+                </tbody>
+            </table>
+        </div>
 
         // ---- Accessibility ----
         <h2 id="accessibility">"Accessibility"</h2>

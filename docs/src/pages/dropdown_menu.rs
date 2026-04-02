@@ -60,7 +60,7 @@ pub fn DropdownMenuPage() -> impl IntoView {
         // ---- Anatomy ----
         <h2 id="anatomy">"Anatomy"</h2>
         <p>"Import all parts and piece them together."</p>
-        <div class="anatomy-block">{"use leptix_dropdown_menu::*;\n\nview! {\n    <DropdownMenu>\n        <DropdownMenuTrigger />\n        <DropdownMenuPortal>\n            <DropdownMenuContent>\n                <DropdownMenuItem />\n                <DropdownMenuItem />\n            </DropdownMenuContent>\n        </DropdownMenuPortal>\n    </DropdownMenu>\n}"}</div>
+        <div class="anatomy-block">{"use leptix_dropdown_menu::*;\n\nview! {\n    <DropdownMenu>\n        <DropdownMenuTrigger />\n        <DropdownMenuPortal>\n            <DropdownMenuContent>\n                <DropdownMenuLabel />\n                <DropdownMenuItem />\n                <DropdownMenuGroup>\n                    <DropdownMenuItem />\n                </DropdownMenuGroup>\n                <DropdownMenuCheckboxItem />\n                <DropdownMenuRadioGroup>\n                    <DropdownMenuRadioItem />\n                </DropdownMenuRadioGroup>\n                <DropdownMenuSub>\n                    <DropdownMenuSubTrigger />\n                    <DropdownMenuSubContent />\n                </DropdownMenuSub>\n                <DropdownMenuSeparator />\n                <DropdownMenuItemIndicator />\n                <DropdownMenuArrow />\n            </DropdownMenuContent>\n        </DropdownMenuPortal>\n    </DropdownMenu>\n}"}</div>
 
         // ---- API Reference ----
         <h2 id="api-reference">"API Reference"</h2>
@@ -131,6 +131,37 @@ pub fn DropdownMenuPage() -> impl IntoView {
                 <tr><td>"[data-highlighted]"</td><td>"Present when highlighted"</td></tr>
             </tbody>
         </table>
+
+        <h3 id="checkbox-item">"CheckboxItem"</h3>
+        <p>"An item that can be controlled and rendered like a checkbox."</p>
+        <div class="props-table-wrapper">
+            <table class="props-table">
+                <thead><tr><th>"Prop"</th><th>"Type"</th><th>"Description"</th></tr></thead>
+                <tbody>
+                    <tr><td>"checked"</td><td>"MaybeProp<bool>"</td><td>"The controlled checked state."</td></tr>
+                    <tr><td>"on_checked_change"</td><td>"Callback<bool>"</td><td>"Event handler called when the checked state changes."</td></tr>
+                    <tr><td>"disabled"</td><td>"MaybeProp<bool>"</td><td>"When true, prevents interaction."</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h3 id="radio-group">"RadioGroup"</h3>
+        <p>"Used to group multiple radio items."</p>
+
+        <h3 id="radio-item">"RadioItem"</h3>
+        <p>"An item that can be controlled and rendered like a radio button."</p>
+
+        <h3 id="item-indicator">"ItemIndicator"</h3>
+        <p>"Renders when the parent CheckboxItem or RadioItem is checked."</p>
+
+        <h3 id="sub">"Sub"</h3>
+        <p>"Contains all parts of a submenu."</p>
+
+        <h3 id="sub-trigger">"SubTrigger"</h3>
+        <p>"An item that opens a submenu. Must be rendered inside Sub."</p>
+
+        <h3 id="sub-content">"SubContent"</h3>
+        <p>"The floating content that pops out when a submenu is open. Positioned relative to the SubTrigger."</p>
 
         <h3 id="arrow">"Arrow"</h3>
         <p>"An optional arrow element to render alongside the dropdown menu."</p>

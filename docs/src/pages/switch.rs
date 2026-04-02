@@ -66,6 +66,7 @@ pub fn SwitchPage() -> impl IntoView {
                     <tr><td>"required"</td><td>"MaybeProp<bool>"</td><td>"When true, indicates that the user must check the switch before the form can be submitted."</td></tr>
                     <tr><td>"name"</td><td>"MaybeProp<String>"</td><td>"The name of the switch. Submitted with its owning form as part of a name/value pair."</td></tr>
                     <tr><td>"value"</td><td>"MaybeProp<String>"</td><td>"The value given as data when submitted with a name. Default: \"on\"."</td></tr>
+                    <tr><td>"form"</td><td>"MaybeProp<String>"</td><td>"The id of the form the switch belongs to. Allows submitting outside of the parent form."</td></tr>
                 </tbody>
             </table>
         </div>

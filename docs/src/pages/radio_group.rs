@@ -47,6 +47,7 @@ pub fn RadioGroupPage() -> impl IntoView {
             <div class="highlight-item"><span class="highlight-check">"✓"</span>"Full keyboard navigation."</div>
             <div class="highlight-item"><span class="highlight-check">"✓"</span>"Supports horizontal/vertical orientation."</div>
             <div class="highlight-item"><span class="highlight-check">"✓"</span>"Can be controlled or uncontrolled."</div>
+            <div class="highlight-item"><span class="highlight-check">"✓"</span>"Native form submission with hidden radio inputs."</div>
         </div>
 
         // ---- Installation ----

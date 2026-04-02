@@ -117,6 +117,15 @@ pub fn DialogPage() -> impl IntoView {
 
         <h3 id="portal">"Portal"</h3>
         <p>"When used, portals your overlay and content parts into the body."</p>
+        <div class="props-table-wrapper">
+            <table class="props-table">
+                <thead><tr><th>"Prop"</th><th>"Type"</th><th>"Description"</th></tr></thead>
+                <tbody>
+                    <tr><td>"container"</td><td>"MaybeProp<SendWrapper<Element>>"</td><td>"Specify a container element to portal into. Defaults to document.body."</td></tr>
+                    <tr><td>"force_mount"</td><td>"MaybeProp<bool>"</td><td>"Used to force mounting when more control is needed."</td></tr>
+                </tbody>
+            </table>
+        </div>
 
         <h3 id="overlay">"Overlay"</h3>
         <p>"A layer that covers the inert portion of the view when the dialog is open."</p>

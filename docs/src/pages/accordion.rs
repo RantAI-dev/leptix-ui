@@ -16,28 +16,34 @@ pub fn AccordionPage() -> impl IntoView {
             <div class="demo-accordion">
                 <Accordion r#type=AccordionType::Single collapsible=true default_value=vec!["item-1".to_string()]>
                     <AccordionItem value="item-1">
-                        <AccordionTrigger>
-                            "Is it accessible?"
-                            <span class="demo-accordion-chevron" inner_html="<svg width='15' height='15' viewBox='0 0 15 15' fill='none' xmlns='http://www.w3.org/2000/svg'><path d='M3.13523 6.15803C3.3241 5.95657 3.64052 5.94637 3.84197 6.13523L7.5 9.56464L11.158 6.13523C11.3595 5.94637 11.6759 5.95657 11.8648 6.15803C12.0536 6.35949 12.0434 6.67591 11.842 6.86477L7.84197 10.6148C7.64964 10.7951 7.35036 10.7951 7.15803 10.6148L3.15803 6.86477C2.95657 6.67591 2.94637 6.35949 3.13523 6.15803Z' fill='currentColor' fill-rule='evenodd' clip-rule='evenodd'></path></svg>" />
-                        </AccordionTrigger>
+                        <AccordionHeader>
+                            <AccordionTrigger>
+                                "Is it accessible?"
+                                <span class="demo-accordion-chevron" inner_html="<svg width='15' height='15' viewBox='0 0 15 15' fill='none' xmlns='http://www.w3.org/2000/svg'><path d='M3.13523 6.15803C3.3241 5.95657 3.64052 5.94637 3.84197 6.13523L7.5 9.56464L11.158 6.13523C11.3595 5.94637 11.6759 5.95657 11.8648 6.15803C12.0536 6.35949 12.0434 6.67591 11.842 6.86477L7.84197 10.6148C7.64964 10.7951 7.35036 10.7951 7.15803 10.6148L3.15803 6.86477C2.95657 6.67591 2.94637 6.35949 3.13523 6.15803Z' fill='currentColor' fill-rule='evenodd' clip-rule='evenodd'></path></svg>" />
+                            </AccordionTrigger>
+                        </AccordionHeader>
                         <AccordionContent>
                             "Yes. It adheres to the WAI-ARIA design pattern."
                         </AccordionContent>
                     </AccordionItem>
                     <AccordionItem value="item-2">
-                        <AccordionTrigger>
-                            "Is it unstyled?"
-                            <span class="demo-accordion-chevron" inner_html="<svg width='15' height='15' viewBox='0 0 15 15' fill='none' xmlns='http://www.w3.org/2000/svg'><path d='M3.13523 6.15803C3.3241 5.95657 3.64052 5.94637 3.84197 6.13523L7.5 9.56464L11.158 6.13523C11.3595 5.94637 11.6759 5.95657 11.8648 6.15803C12.0536 6.35949 12.0434 6.67591 11.842 6.86477L7.84197 10.6148C7.64964 10.7951 7.35036 10.7951 7.15803 10.6148L3.15803 6.86477C2.95657 6.67591 2.94637 6.35949 3.13523 6.15803Z' fill='currentColor' fill-rule='evenodd' clip-rule='evenodd'></path></svg>" />
-                        </AccordionTrigger>
+                        <AccordionHeader>
+                            <AccordionTrigger>
+                                "Is it unstyled?"
+                                <span class="demo-accordion-chevron" inner_html="<svg width='15' height='15' viewBox='0 0 15 15' fill='none' xmlns='http://www.w3.org/2000/svg'><path d='M3.13523 6.15803C3.3241 5.95657 3.64052 5.94637 3.84197 6.13523L7.5 9.56464L11.158 6.13523C11.3595 5.94637 11.6759 5.95657 11.8648 6.15803C12.0536 6.35949 12.0434 6.67591 11.842 6.86477L7.84197 10.6148C7.64964 10.7951 7.35036 10.7951 7.15803 10.6148L3.15803 6.86477C2.95657 6.67591 2.94637 6.35949 3.13523 6.15803Z' fill='currentColor' fill-rule='evenodd' clip-rule='evenodd'></path></svg>" />
+                            </AccordionTrigger>
+                        </AccordionHeader>
                         <AccordionContent>
                             "Yes. It ships with zero styles so you have full control over the look and feel."
                         </AccordionContent>
                     </AccordionItem>
                     <AccordionItem value="item-3">
-                        <AccordionTrigger>
-                            "Can it be animated?"
-                            <span class="demo-accordion-chevron" inner_html="<svg width='15' height='15' viewBox='0 0 15 15' fill='none' xmlns='http://www.w3.org/2000/svg'><path d='M3.13523 6.15803C3.3241 5.95657 3.64052 5.94637 3.84197 6.13523L7.5 9.56464L11.158 6.13523C11.3595 5.94637 11.6759 5.95657 11.8648 6.15803C12.0536 6.35949 12.0434 6.67591 11.842 6.86477L7.84197 10.6148C7.64964 10.7951 7.35036 10.7951 7.15803 10.6148L3.15803 6.86477C2.95657 6.67591 2.94637 6.35949 3.13523 6.15803Z' fill='currentColor' fill-rule='evenodd' clip-rule='evenodd'></path></svg>" />
-                        </AccordionTrigger>
+                        <AccordionHeader>
+                            <AccordionTrigger>
+                                "Can it be animated?"
+                                <span class="demo-accordion-chevron" inner_html="<svg width='15' height='15' viewBox='0 0 15 15' fill='none' xmlns='http://www.w3.org/2000/svg'><path d='M3.13523 6.15803C3.3241 5.95657 3.64052 5.94637 3.84197 6.13523L7.5 9.56464L11.158 6.13523C11.3595 5.94637 11.6759 5.95657 11.8648 6.15803C12.0536 6.35949 12.0434 6.67591 11.842 6.86477L7.84197 10.6148C7.64964 10.7951 7.35036 10.7951 7.15803 10.6148L3.15803 6.86477C2.95657 6.67591 2.94637 6.35949 3.13523 6.15803Z' fill='currentColor' fill-rule='evenodd' clip-rule='evenodd'></path></svg>" />
+                            </AccordionTrigger>
+                        </AccordionHeader>
                         <AccordionContent>
                             "Yes. You can animate the open and close transitions using CSS or a Leptos animation library."
                         </AccordionContent>
@@ -47,11 +53,11 @@ pub fn AccordionPage() -> impl IntoView {
             </div>
         </div>
         <HeroCodeBlock
-            css_usage="use leptix_ui::accordion::*;\n\nview! {\n    <Accordion attr:class=\"AccordionRoot\" r#type=AccordionType::Single collapsible=true default_value=vec![\"item-1\".to_string()]>\n        <AccordionItem attr:class=\"AccordionItem\" value=\"item-1\">\n            <AccordionTrigger attr:class=\"AccordionTrigger\">\"Is it accessible?\"</AccordionTrigger>\n            <AccordionContent attr:class=\"AccordionContent\">\"Yes. It adheres to the WAI-ARIA design pattern.\"</AccordionContent>\n        </AccordionItem>\n    </Accordion>\n}"
+            css_usage="use leptix_ui::accordion::*;\n\nview! {\n    <Accordion attr:class=\"AccordionRoot\" r#type=AccordionType::Single collapsible=true default_value=vec![\"item-1\".to_string()]>\n        <AccordionItem attr:class=\"AccordionItem\" value=\"item-1\">\n            <AccordionHeader>\n                <AccordionTrigger attr:class=\"AccordionTrigger\">\"Is it accessible?\"</AccordionTrigger>\n            </AccordionHeader>\n            <AccordionContent attr:class=\"AccordionContent\">\"Yes. It adheres to the WAI-ARIA design pattern.\"</AccordionContent>\n        </AccordionItem>\n    </Accordion>\n}"
             css_styles=".AccordionRoot {\n  border-radius: 6px;\n  width: 300px;\n  background-color: var(--mauve-6);\n  box-shadow: 0 2px 10px var(--black-a4);\n}\n\n.AccordionItem {\n  overflow: hidden;\n  margin-top: 1px;\n}\n.AccordionItem:first-child {\n  margin-top: 0;\n  border-top-left-radius: 4px;\n  border-top-right-radius: 4px;\n}\n.AccordionItem:last-child {\n  border-bottom-left-radius: 4px;\n  border-bottom-right-radius: 4px;\n}\n\n.AccordionTrigger {\n  font-family: inherit;\n  padding: 0 20px;\n  height: 45px;\n  flex: 1;\n  display: flex;\n  align-items: center;\n  justify-content: space-between;\n  font-size: 15px;\n  line-height: 1;\n  background-color: white;\n  cursor: pointer;\n}\n.AccordionTrigger[data-state=\"open\"] {\n  background-color: var(--mauve-2);\n}\n\n.AccordionContent {\n  overflow: hidden;\n  font-size: 15px;\n  color: var(--mauve-11);\n  background-color: var(--mauve-2);\n  padding: 15px 20px;\n}\n.AccordionContent[data-state=\"closed\"] {\n  display: none;\n}"
-            modules_usage="// import styles from \"./accordion.module.css\";\nuse leptix_ui::accordion::*;\n\nview! {\n    <Accordion attr:class=styles.root r#type=AccordionType::Single collapsible=true default_value=vec![\"item-1\".to_string()]>\n        <AccordionItem attr:class=styles.item value=\"item-1\">\n            <AccordionTrigger attr:class=styles.trigger>\"Is it accessible?\"</AccordionTrigger>\n            <AccordionContent attr:class=styles.content>\"Yes. It adheres to the WAI-ARIA design pattern.\"</AccordionContent>\n        </AccordionItem>\n    </Accordion>\n}"
+            modules_usage="// import styles from \"./accordion.module.css\";\nuse leptix_ui::accordion::*;\n\nview! {\n    <Accordion attr:class=styles.root r#type=AccordionType::Single collapsible=true default_value=vec![\"item-1\".to_string()]>\n        <AccordionItem attr:class=styles.item value=\"item-1\">\n            <AccordionHeader>\n                <AccordionTrigger attr:class=styles.trigger>\"Is it accessible?\"</AccordionTrigger>\n            </AccordionHeader>\n            <AccordionContent attr:class=styles.content>\"Yes. It adheres to the WAI-ARIA design pattern.\"</AccordionContent>\n        </AccordionItem>\n    </Accordion>\n}"
             modules_styles=".root {\n  border-radius: 6px;\n  width: 300px;\n  background-color: var(--mauve-6);\n  box-shadow: 0 2px 10px var(--black-a4);\n}\n\n.item {\n  overflow: hidden;\n  margin-top: 1px;\n}\n.item:first-child {\n  margin-top: 0;\n  border-top-left-radius: 4px;\n  border-top-right-radius: 4px;\n}\n.item:last-child {\n  border-bottom-left-radius: 4px;\n  border-bottom-right-radius: 4px;\n}\n\n.trigger {\n  font-family: inherit;\n  padding: 0 20px;\n  height: 45px;\n  flex: 1;\n  display: flex;\n  align-items: center;\n  justify-content: space-between;\n  font-size: 15px;\n  line-height: 1;\n  background-color: white;\n  cursor: pointer;\n}\n.trigger[data-state=\"open\"] {\n  background-color: var(--mauve-2);\n}\n\n.content {\n  overflow: hidden;\n  font-size: 15px;\n  color: var(--mauve-11);\n  background-color: var(--mauve-2);\n  padding: 15px 20px;\n}\n.content[data-state=\"closed\"] {\n  display: none;\n}"
-            tailwind_usage="use leptix_ui::accordion::*;\n\nview! {\n    <Accordion attr:class=\"rounded-md w-[300px] bg-gray-200 shadow-md\" r#type=AccordionType::Single collapsible=true default_value=vec![\"item-1\".to_string()]>\n        <AccordionItem attr:class=\"overflow-hidden mt-px first:mt-0 first:rounded-t last:rounded-b\" value=\"item-1\">\n            <AccordionTrigger attr:class=\"font-inherit px-5 h-[45px] flex-1 flex items-center justify-between text-sm bg-white cursor-pointer data-[state=open]:bg-gray-50\">\n                \"Is it accessible?\"\n            </AccordionTrigger>\n            <AccordionContent attr:class=\"overflow-hidden text-sm text-gray-500 bg-gray-50 px-5 py-4 data-[state=closed]:hidden\">\n                \"Yes. It adheres to the WAI-ARIA design pattern.\"\n            </AccordionContent>\n        </AccordionItem>\n    </Accordion>\n}"
+            tailwind_usage="use leptix_ui::accordion::*;\n\nview! {\n    <Accordion attr:class=\"rounded-md w-[300px] bg-gray-200 shadow-md\" r#type=AccordionType::Single collapsible=true default_value=vec![\"item-1\".to_string()]>\n        <AccordionItem attr:class=\"overflow-hidden mt-px first:mt-0 first:rounded-t last:rounded-b\" value=\"item-1\">\n            <AccordionHeader>\n                <AccordionTrigger attr:class=\"font-inherit px-5 h-[45px] flex-1 flex items-center justify-between text-sm bg-white cursor-pointer data-[state=open]:bg-gray-50\">\n                    \"Is it accessible?\"\n                </AccordionTrigger>\n            </AccordionHeader>\n            <AccordionContent attr:class=\"overflow-hidden text-sm text-gray-500 bg-gray-50 px-5 py-4 data-[state=closed]:hidden\">\n                \"Yes. It adheres to the WAI-ARIA design pattern.\"\n            </AccordionContent>\n        </AccordionItem>\n    </Accordion>\n}"
             tailwind_config="import type { Config } from \"tailwindcss\";\n\nexport default {\n  theme: {\n    extend: {\n      colors: {\n        accordion: {\n          bg: \"var(--mauve-6)\",\n          content: \"var(--mauve-2)\",\n          text: \"var(--mauve-11)\",\n        },\n      },\n      boxShadow: {\n        accordion: \"0 2px 10px var(--black-a4)\",\n      },\n      borderRadius: {\n        accordion: \"6px\",\n      },\n    },\n  },\n} satisfies Config;"
         />
 
@@ -73,7 +79,7 @@ pub fn AccordionPage() -> impl IntoView {
         // ---- Anatomy ----
         <h2 id="anatomy">"Anatomy"</h2>
         <p>"Import all parts and piece them together."</p>
-        <div class="anatomy-block">{"use leptix_accordion::*;\n\nview! {\n    <Accordion r#type=AccordionType::Single>\n        <AccordionItem value=\"item-1\">\n            <AccordionTrigger />\n            <AccordionContent />\n        </AccordionItem>\n    </Accordion>\n}"}</div>
+        <div class="anatomy-block">{"use leptix_accordion::*;\n\nview! {\n    <Accordion r#type=AccordionType::Single>\n        <AccordionItem value=\"item-1\">\n            <AccordionHeader>\n                <AccordionTrigger />\n            </AccordionHeader>\n            <AccordionContent />\n        </AccordionItem>\n    </Accordion>\n}"}</div>
 
         // ---- API Reference ----
         <h2 id="api-reference">"API Reference"</h2>
@@ -121,8 +127,19 @@ pub fn AccordionPage() -> impl IntoView {
             </tbody>
         </table>
 
+        <h3 id="header">"Header"</h3>
+        <p>"Wraps the trigger as an "<code>"h3"</code>" heading element."</p>
+        <table class="data-attrs-table">
+            <thead><tr><th>"Data Attribute"</th><th>"Values"</th></tr></thead>
+            <tbody>
+                <tr><td>"[data-state]"</td><td>"\"open\" | \"closed\""</td></tr>
+                <tr><td>"[data-disabled]"</td><td>"Present when disabled"</td></tr>
+                <tr><td>"[data-orientation]"</td><td>"\"horizontal\" | \"vertical\""</td></tr>
+            </tbody>
+        </table>
+
         <h3 id="trigger">"Trigger"</h3>
-        <p>"Toggles the collapsed state of its associated item."</p>
+        <p>"Toggles the collapsed state of its associated item. Must be nested inside an "<code>"AccordionHeader"</code>"."</p>
         <table class="data-attrs-table">
             <thead><tr><th>"Data Attribute"</th><th>"Values"</th></tr></thead>
             <tbody>

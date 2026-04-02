@@ -61,7 +61,7 @@ pub fn ContextMenuPage() -> impl IntoView {
         // ---- Anatomy ----
         <h2 id="anatomy">"Anatomy"</h2>
         <p>"Import all parts and piece them together."</p>
-        <div class="anatomy-block">{"use leptix_context_menu::*;\n\nview! {\n    <ContextMenu>\n        <ContextMenuTrigger />\n        <ContextMenuPortal>\n            <ContextMenuContent>\n                <ContextMenuItem />\n                <ContextMenuSeparator />\n                <ContextMenuItem />\n            </ContextMenuContent>\n        </ContextMenuPortal>\n    </ContextMenu>\n}"}</div>
+        <div class="anatomy-block">{"use leptix_context_menu::*;\n\nview! {\n    <ContextMenu>\n        <ContextMenuTrigger />\n        <ContextMenuPortal>\n            <ContextMenuContent>\n                <ContextMenuLabel />\n                <ContextMenuItem />\n                <ContextMenuGroup>\n                    <ContextMenuItem />\n                </ContextMenuGroup>\n                <ContextMenuCheckboxItem />\n                <ContextMenuRadioGroup>\n                    <ContextMenuRadioItem />\n                </ContextMenuRadioGroup>\n                <ContextMenuSub>\n                    <ContextMenuSubTrigger />\n                    <ContextMenuSubContent />\n                </ContextMenuSub>\n                <ContextMenuSeparator />\n                <ContextMenuItemIndicator />\n                <ContextMenuArrow />\n            </ContextMenuContent>\n        </ContextMenuPortal>\n    </ContextMenu>\n}"}</div>
 
         // ---- API Reference ----
         <h2 id="api-reference">"API Reference"</h2>
@@ -98,6 +98,58 @@ pub fn ContextMenuPage() -> impl IntoView {
             </table>
         </div>
 
+        <h3 id="checkbox-item">"CheckboxItem"</h3>
+        <p>"An item that can be controlled and rendered like a checkbox."</p>
+        <div class="props-table-wrapper">
+            <table class="props-table">
+                <thead><tr><th>"Prop"</th><th>"Type"</th><th>"Description"</th></tr></thead>
+                <tbody>
+                    <tr><td>"checked"</td><td>"MaybeProp<bool>"</td><td>"The controlled checked state."</td></tr>
+                    <tr><td>"on_checked_change"</td><td>"Callback<bool>"</td><td>"Event handler called when the checked state changes."</td></tr>
+                    <tr><td>"disabled"</td><td>"MaybeProp<bool>"</td><td>"When true, prevents the user from interacting with the item."</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h3 id="radio-group">"RadioGroup"</h3>
+        <p>"Used to group multiple radio items."</p>
+        <div class="props-table-wrapper">
+            <table class="props-table">
+                <thead><tr><th>"Prop"</th><th>"Type"</th><th>"Description"</th></tr></thead>
+                <tbody>
+                    <tr><td>"value"</td><td>"MaybeProp<String>"</td><td>"The value of the selected item in the group."</td></tr>
+                    <tr><td>"on_value_change"</td><td>"Callback<String>"</td><td>"Event handler called when the value changes."</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h3 id="radio-item">"RadioItem"</h3>
+        <p>"An item that can be controlled and rendered like a radio button. Must be used within a RadioGroup."</p>
+        <div class="props-table-wrapper">
+            <table class="props-table">
+                <thead><tr><th>"Prop"</th><th>"Type"</th><th>"Description"</th></tr></thead>
+                <tbody>
+                    <tr><td>"value"</td><td>"String"</td><td>"The unique value of the item."</td></tr>
+                    <tr><td>"disabled"</td><td>"MaybeProp<bool>"</td><td>"When true, prevents the user from interacting with the item."</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h3 id="item-indicator">"ItemIndicator"</h3>
+        <p>"Renders when the parent CheckboxItem or RadioItem is checked. Style this element to show a checkmark or indicator."</p>
+
+        <h3 id="sub">"Sub"</h3>
+        <p>"Contains all parts of a submenu."</p>
+
+        <h3 id="sub-trigger">"SubTrigger"</h3>
+        <p>"An item that opens a submenu. Must be rendered inside a Sub."</p>
+
+        <h3 id="sub-content">"SubContent"</h3>
+        <p>"The component that pops out when a submenu is open. Must be rendered inside a Sub."</p>
+
+        <h3 id="arrow">"Arrow"</h3>
+        <p>"An optional arrow element to render alongside the context menu."</p>
+
         // ---- Accessibility ----
         <h2 id="accessibility">"Accessibility"</h2>
         <p>"Uses roving tabindex to manage focus movement among menu items."</p>
@@ -110,6 +162,10 @@ pub fn ContextMenuPage() -> impl IntoView {
                 <tr><td><kbd>"Enter"</kbd></td><td>"Activates the focused item."</td></tr>
                 <tr><td><kbd>"ArrowDown"</kbd></td><td>"Moves focus to the next item."</td></tr>
                 <tr><td><kbd>"ArrowUp"</kbd></td><td>"Moves focus to the previous item."</td></tr>
+                <tr><td><kbd>"ArrowRight"</kbd></td><td>"When focus is on a SubTrigger, opens the submenu."</td></tr>
+                <tr><td><kbd>"ArrowLeft"</kbd></td><td>"When focus is in a submenu, closes it."</td></tr>
+                <tr><td><kbd>"Home"</kbd></td><td>"Moves focus to the first item."</td></tr>
+                <tr><td><kbd>"End"</kbd></td><td>"Moves focus to the last item."</td></tr>
                 <tr><td><kbd>"Escape"</kbd></td><td>"Closes the context menu."</td></tr>
             </tbody>
         </table>

@@ -115,6 +115,7 @@ pub fn AlertDialogPage() -> impl IntoView {
                     <tr><td>"on_open_auto_focus"</td><td>"Callback<Event>"</td><td>"Event handler called when focus moves into the component after opening. Can be prevented."</td></tr>
                     <tr><td>"on_close_auto_focus"</td><td>"Callback<Event>"</td><td>"Event handler called when focus moves to the trigger after closing. Can be prevented."</td></tr>
                     <tr><td>"on_escape_key_down"</td><td>"Callback<KeyboardEvent>"</td><td>"Event handler called when the escape key is down. Can be prevented."</td></tr>
+                    <tr><td>"force_mount"</td><td>"MaybeProp<bool>"</td><td>"Used to force mounting when more control is needed. Useful when controlling animation with animation libraries."</td></tr>
                 </tbody>
             </table>
         </div>

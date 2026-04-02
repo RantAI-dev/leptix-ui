@@ -71,7 +71,7 @@ pub fn MenubarPage() -> impl IntoView {
         // ---- Anatomy ----
         <h2 id="anatomy">"Anatomy"</h2>
         <p>"Import all parts and piece them together."</p>
-        <div class="anatomy-block">{"use leptix_menubar::*;\n\nview! {\n    <Menubar>\n        <MenubarMenu>\n            <MenubarTrigger />\n            <MenubarPortal>\n                <MenubarContent>\n                    <MenubarItem />\n                    <MenubarSeparator />\n                    <MenubarItem />\n                </MenubarContent>\n            </MenubarPortal>\n        </MenubarMenu>\n    </Menubar>\n}"}</div>
+        <div class="anatomy-block">{"use leptix_menubar::*;\n\nview! {\n    <Menubar>\n        <MenubarMenu>\n            <MenubarTrigger />\n            <MenubarPortal>\n                <MenubarContent>\n                    <MenubarLabel />\n                    <MenubarItem />\n                    <MenubarCheckboxItem />\n                    <MenubarRadioGroup>\n                        <MenubarRadioItem />\n                    </MenubarRadioGroup>\n                    <MenubarSub>\n                        <MenubarSubTrigger />\n                        <MenubarSubContent />\n                    </MenubarSub>\n                    <MenubarSeparator />\n                    <MenubarItemIndicator />\n                </MenubarContent>\n            </MenubarPortal>\n        </MenubarMenu>\n    </Menubar>\n}"}</div>
 
         // ---- API Reference ----
         <h2 id="api-reference">"API Reference"</h2>
@@ -120,13 +120,45 @@ pub fn MenubarPage() -> impl IntoView {
 
         <h3 id="item">"Item"</h3>
         <p>"The component that contains the menubar items."</p>
-        <table class="data-attrs-table">
-            <thead><tr><th>"Data Attribute"</th><th>"Values"</th></tr></thead>
-            <tbody>
-                <tr><td>"[data-highlighted]"</td><td>"Present when highlighted"</td></tr>
-                <tr><td>"[data-disabled]"</td><td>"Present when disabled"</td></tr>
-            </tbody>
-        </table>
+        <div class="props-table-wrapper">
+            <table class="props-table">
+                <thead><tr><th>"Prop"</th><th>"Type"</th><th>"Description"</th></tr></thead>
+                <tbody>
+                    <tr><td>"disabled"</td><td>"MaybeProp<bool>"</td><td>"When true, prevents interaction."</td></tr>
+                    <tr><td>"on_select"</td><td>"Callback<()>"</td><td>"Event handler called when the user selects an item."</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h3 id="checkbox-item">"CheckboxItem"</h3>
+        <p>"An item that can be controlled and rendered like a checkbox."</p>
+        <div class="props-table-wrapper">
+            <table class="props-table">
+                <thead><tr><th>"Prop"</th><th>"Type"</th><th>"Description"</th></tr></thead>
+                <tbody>
+                    <tr><td>"checked"</td><td>"MaybeProp<bool>"</td><td>"The controlled checked state."</td></tr>
+                    <tr><td>"on_checked_change"</td><td>"Callback<bool>"</td><td>"Event handler called when the checked state changes."</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h3 id="radio-group">"RadioGroup"</h3>
+        <p>"Used to group multiple radio items."</p>
+
+        <h3 id="radio-item">"RadioItem"</h3>
+        <p>"An item that can be controlled and rendered like a radio button."</p>
+
+        <h3 id="item-indicator">"ItemIndicator"</h3>
+        <p>"Renders when the parent CheckboxItem or RadioItem is checked."</p>
+
+        <h3 id="sub">"Sub"</h3>
+        <p>"Contains all parts of a submenu."</p>
+
+        <h3 id="sub-trigger">"SubTrigger"</h3>
+        <p>"An item that opens a submenu."</p>
+
+        <h3 id="sub-content">"SubContent"</h3>
+        <p>"The floating content that pops out when a submenu is open."</p>
 
         // ---- Accessibility ----
         <h2 id="accessibility">"Accessibility"</h2>

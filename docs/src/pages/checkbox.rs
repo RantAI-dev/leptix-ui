@@ -68,6 +68,7 @@ pub fn CheckboxPage() -> impl IntoView {
                     <tr><td>"required"</td><td>"MaybeProp<bool>"</td><td>"When true, indicates that the user must check the checkbox before the form can be submitted."</td></tr>
                     <tr><td>"name"</td><td>"MaybeProp<String>"</td><td>"The name of the checkbox. Submitted with its owning form as part of a name/value pair."</td></tr>
                     <tr><td>"value"</td><td>"MaybeProp<String>"</td><td>"The value given as data when submitted with a name. Default: \"on\"."</td></tr>
+                    <tr><td>"form"</td><td>"MaybeProp<String>"</td><td>"The id of the form the checkbox belongs to. Allows submitting outside of the parent form."</td></tr>
                 </tbody>
             </table>
         </div>

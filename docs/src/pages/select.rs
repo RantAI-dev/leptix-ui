@@ -64,7 +64,7 @@ pub fn SelectPage() -> impl IntoView {
         // ---- Anatomy ----
         <h2 id="anatomy">"Anatomy"</h2>
         <p>"Import all parts and piece them together."</p>
-        <div class="anatomy-block">{"use leptix_select::*;\n\nview! {\n    <Select>\n        <SelectTrigger>\n            <SelectValue placeholder=\"Pick one\" />\n        </SelectTrigger>\n        <SelectPortal>\n            <SelectContent>\n                <SelectViewport>\n                    <SelectItem value=\"…\">\n                        <SelectItemText />\n                    </SelectItem>\n                </SelectViewport>\n            </SelectContent>\n        </SelectPortal>\n    </Select>\n}"}</div>
+        <div class="anatomy-block">{"use leptix_select::*;\n\nview! {\n    <Select>\n        <SelectTrigger>\n            <SelectValue placeholder=\"Pick one\" />\n            <SelectIcon />\n        </SelectTrigger>\n        <SelectPortal>\n            <SelectContent>\n                <SelectScrollUpButton />\n                <SelectViewport>\n                    <SelectGroup>\n                        <SelectLabel />\n                        <SelectItem value=\"…\">\n                            <SelectItemText />\n                            <SelectItemIndicator />\n                        </SelectItem>\n                    </SelectGroup>\n                    <SelectSeparator />\n                </SelectViewport>\n                <SelectScrollDownButton />\n            </SelectContent>\n        </SelectPortal>\n    </Select>\n}"}</div>
 
         // ---- API Reference ----
         <h2 id="api-reference">"API Reference"</h2>
@@ -109,6 +109,24 @@ pub fn SelectPage() -> impl IntoView {
                 </tbody>
             </table>
         </div>
+
+        <h3 id="item-indicator">"ItemIndicator"</h3>
+        <p>"Renders when the parent item is selected. Automatically hidden when the item is not selected."</p>
+
+        <h3 id="scroll-up-button">"ScrollUpButton"</h3>
+        <p>"An optional button used to scroll up in the viewport. Automatically shown when the viewport can scroll up and hidden when it cannot. Scrolls on pointer hold."</p>
+
+        <h3 id="scroll-down-button">"ScrollDownButton"</h3>
+        <p>"An optional button used to scroll down in the viewport. Automatically shown when the viewport can scroll down and hidden when it cannot. Scrolls on pointer hold."</p>
+
+        <h3 id="group">"Group"</h3>
+        <p>"Used to group multiple items. Use in conjunction with SelectLabel for accessibility."</p>
+
+        <h3 id="label">"Label"</h3>
+        <p>"Used to render the label of a group."</p>
+
+        <h3 id="separator">"Separator"</h3>
+        <p>"Used to visually separate items in the select."</p>
 
         // ---- Accessibility ----
         <h2 id="accessibility">"Accessibility"</h2>
