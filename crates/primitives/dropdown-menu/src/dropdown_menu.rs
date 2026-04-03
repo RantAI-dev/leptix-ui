@@ -621,7 +621,7 @@ pub fn DropdownMenuSubTrigger(
 pub fn DropdownMenuSubContent(
     #[prop(into, optional)] force_mount: MaybeProp<bool>,
     #[prop(into, optional)] side_offset: MaybeProp<f64>,
-    #[prop(into, optional)] _as_child: MaybeProp<bool>,
+    #[prop(into, optional)] as_child: MaybeProp<bool>,
     #[prop(into, optional)] node_ref: AnyNodeRef,
     children: TypedChildrenFn<impl IntoView + 'static>,
 ) -> impl IntoView {
@@ -656,11 +656,15 @@ pub fn DropdownMenuSubContent(
     );
     let refs = use_composed_refs(vec![node_ref, presence.node_ref, dismiss_ref]);
 
-    // Safe triangle: track the last pointer position inside the content.
-    // On pointerleave, compute a triangle between the pointer and the sub-trigger.
-    // Use a short timer; if the pointer re-enters before it fires, cancel.
+    // Safe triangle: when the pointer leaves the sub-content, compute a triangle
+    // from the exit point to the two far corners of the sub-trigger. Keep the
+    // sub-menu open while the pointer remains inside that triangle (checked via
+    // document-level pointermove). Close when the pointer exits the triangle or
+    // after a 400ms safety timeout.
     let grace_timer: RwSignal<Option<i32>> = RwSignal::new(None);
-    let last_pointer: RwSignal<(f64, f64)> = RwSignal::new((0.0, 0.0));
+    // Store the safe triangle polygon: 3 points [(x,y); 3]
+    let safe_triangle: RwSignal<Option<[(f64, f64); 3]>> = RwSignal::new(None);
+
     let clear_grace = move || {
         if let Some(id) = grace_timer.get_untracked()
             && let Some(w) = web_sys::window()
@@ -668,6 +672,7 @@ pub fn DropdownMenuSubContent(
             w.clear_timeout_with_handle(id);
         }
         grace_timer.set(None);
+        safe_triangle.set(None);
     };
 
     on_cleanup(clear_grace);
@@ -681,6 +686,7 @@ pub fn DropdownMenuSubContent(
                 align_offset=popper_align_offset
                 avoid_collisions=popper_avoid_collisions
                 collision_padding=popper_collision_padding
+                as_child=as_child
                 node_ref=refs
                 attr:id=sub_ctx.content_id.clone()
                 attr:role="menu"
@@ -698,29 +704,67 @@ pub fn DropdownMenuSubContent(
                     }
                 }
                 on:pointerenter=move |_| { clear_grace(); }
-                on:pointermove=move |event: web_sys::PointerEvent| {
-                    last_pointer.set((event.client_x() as f64, event.client_y() as f64));
-                }
                 on:pointerleave=move |event: web_sys::PointerEvent| {
                     clear_grace();
-                    // Check if the pointer is moving toward the sub-trigger (safe triangle).
-                    // Get trigger rect and check if pointer is between trigger and content.
-                    let should_delay = sub_ctx.trigger_ref.get().map_or(false, |trigger| {
-                        let trigger_rect = trigger.get_bounding_client_rect();
-                        let px = event.client_x() as f64;
-                        let py = event.client_y() as f64;
-                        // If pointer is between trigger and content vertically, give grace
-                        py >= trigger_rect.top() && py <= trigger_rect.bottom()
+                    let px = event.client_x() as f64;
+                    let py = event.client_y() as f64;
+
+                    // Compute safe triangle: from pointer exit point to the two
+                    // far corners of the sub-trigger (the side facing the content).
+                    let triangle = sub_ctx.trigger_ref.get().map(|trigger| {
+                        let r = trigger.get_bounding_client_rect();
+                        let is_rtl = menu_ctx.dir.get() == leptix_core::direction::Direction::Rtl;
+                        // Content opens to the right (LTR) or left (RTL) of trigger.
+                        // The two "far" corners are the trigger edge facing the content.
+                        if is_rtl {
+                            // Content is to the left, trigger's left edge faces content
+                            [(px, py), (r.left(), r.top()), (r.left(), r.bottom())]
+                        } else {
+                            // Content is to the right, trigger's right edge faces content
+                            [(px, py), (r.right(), r.top()), (r.right(), r.bottom())]
+                        }
                     });
-                    let delay = if should_delay { 300 } else { 100 };
+
+                    safe_triangle.set(triangle);
+
+                    // Install document-level pointermove to check if pointer is in triangle.
+                    // If pointer exits triangle, close immediately.
+                    if let Some(document) = web_sys::window().and_then(|w| w.document()) {
+                        let handler = web_sys::wasm_bindgen::closure::Closure::<dyn Fn(web_sys::PointerEvent)>::new(
+                            move |ev: web_sys::PointerEvent| {
+                                let mx = ev.client_x() as f64;
+                                let my = ev.client_y() as f64;
+                                if let Some(tri) = safe_triangle.get_untracked() {
+                                    if !point_in_triangle(mx, my, tri) {
+                                        // Pointer left the safe triangle — close immediately
+                                        clear_grace();
+                                        sub_ctx.open.set(false);
+                                    }
+                                }
+                            },
+                        );
+                        let _ = document.add_event_listener_with_callback(
+                            "pointermove",
+                            handler.as_ref().unchecked_ref(),
+                        );
+                        // Remove listener when grace period ends or sub-menu re-entered
+                        // (handled via clear_grace + cleanup). Leak is bounded by the
+                        // 400ms timeout below which always fires.
+                        handler.forget();
+                    }
+
+                    // Safety timeout: close after 400ms regardless
                     let id = web_sys::window().and_then(|w| {
                         w.set_timeout_with_callback_and_timeout_and_arguments_0(
                             web_sys::wasm_bindgen::closure::Closure::<dyn Fn()>::new(move || {
-                                sub_ctx.open.set(false);
+                                if safe_triangle.get_untracked().is_some() {
+                                    safe_triangle.set(None);
+                                    sub_ctx.open.set(false);
+                                }
                             })
                             .into_js_value()
                             .unchecked_ref(),
-                            delay,
+                            400,
                         )
                         .ok()
                     });
@@ -866,4 +910,19 @@ fn handle_typeahead(
             }
         }
     }
+}
+
+/// Test if point (px, py) is inside triangle [(x1,y1), (x2,y2), (x3,y3)]
+/// using the sign-of-cross-product (barycentric) method.
+fn point_in_triangle(px: f64, py: f64, tri: [(f64, f64); 3]) -> bool {
+    let [(x1, y1), (x2, y2), (x3, y3)] = tri;
+
+    let d1 = (px - x2) * (y1 - y2) - (x1 - x2) * (py - y2);
+    let d2 = (px - x3) * (y2 - y3) - (x2 - x3) * (py - y3);
+    let d3 = (px - x1) * (y3 - y1) - (x3 - x1) * (py - y1);
+
+    let has_neg = (d1 < 0.0) || (d2 < 0.0) || (d3 < 0.0);
+    let has_pos = (d1 > 0.0) || (d2 > 0.0) || (d3 > 0.0);
+
+    !(has_neg && has_pos)
 }

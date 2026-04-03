@@ -23,6 +23,8 @@ struct SliderContextValue {
     active_thumb: RwSignal<Option<usize>>,
     /// Auto-incrementing counter for thumb index assignment.
     thumb_count: RwSignal<usize>,
+    /// Thumb alignment: "center" (default) or "contain" (stays within track bounds).
+    thumb_alignment: Signal<String>,
 }
 
 #[component]
@@ -38,6 +40,9 @@ pub fn Slider(
     #[prop(into, optional)] orientation: MaybeProp<String>,
     #[prop(into, optional)] dir: MaybeProp<Direction>,
     #[prop(into, optional)] inverted: MaybeProp<bool>,
+    /// Thumb alignment: "center" (default) or "contain" (thumb stays within track bounds).
+    #[prop(into, optional)]
+    thumb_alignment: MaybeProp<String>,
     #[prop(into, optional)] as_child: MaybeProp<bool>,
     #[prop(into, optional)] node_ref: AnyNodeRef,
     children: TypedChildrenFn<impl IntoView + 'static>,
@@ -50,6 +55,8 @@ pub fn Slider(
     let orientation = Signal::derive(move || orientation.get().unwrap_or("horizontal".into()));
     let direction = use_direction(dir);
     let inverted = Signal::derive(move || inverted.get().unwrap_or(false));
+    let thumb_alignment =
+        Signal::derive(move || thumb_alignment.get().unwrap_or_else(|| "center".into()));
 
     let (value, set_value) = use_controllable_state(UseControllableStateParams {
         prop: value,
@@ -79,6 +86,7 @@ pub fn Slider(
         on_value_commit,
         active_thumb: RwSignal::new(None),
         thumb_count: RwSignal::new(0),
+        thumb_alignment,
     };
 
     // Drag state lives at the root so it works from track, range, or thumb
@@ -312,14 +320,27 @@ pub fn SliderThumb(
 
     let is_horizontal = Signal::derive(move || context.orientation.get() == "horizontal");
 
+    let is_contain = Signal::derive(move || context.thumb_alignment.get() == "contain");
+
     view! {
         <span
             style=move || {
                 let pos = percent.get();
-                if is_horizontal.get() {
-                    format!("position:absolute;left:{}%;transform:translateX(-50%);pointer-events:none", pos)
+                if is_contain.get() {
+                    // "contain" mode: thumb stays within track bounds.
+                    // Use linear interpolation: at 0% thumb left edge is at 0, at 100% right edge is at 100%.
+                    if is_horizontal.get() {
+                        format!("position:absolute;left:{pos}%;pointer-events:none")
+                    } else {
+                        format!("position:absolute;bottom:{pos}%;pointer-events:none")
+                    }
                 } else {
-                    format!("position:absolute;bottom:{}%;transform:translateY(50%);pointer-events:none", pos)
+                    // "center" mode (default): thumb center is at the value position.
+                    if is_horizontal.get() {
+                        format!("position:absolute;left:{pos}%;transform:translateX(-50%);pointer-events:none")
+                    } else {
+                        format!("position:absolute;bottom:{pos}%;transform:translateY(50%);pointer-events:none")
+                    }
                 }
             }
         >

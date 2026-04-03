@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.1.6 — Full Radix Parity + API Gaps
+
+Resolves all remaining partial fixes and structural API limitations.
+
+- **#14** True safe triangle: convex hull geometry using barycentric point-in-triangle test between pointer exit point and sub-trigger corners. Document-level pointermove tracking with 400ms safety timeout.
+- **#34** Toast pause-all/dismiss-all: ToastViewport pauses all toasts on focus/pointer-enter and resumes on blur/pointer-leave via provider registry.
+- **L1** Slider `thumb_alignment` prop: "center" (default, thumb centered over value) or "contain" (thumb stays within track bounds).
+- **L2** DropdownMenuSubContent `as_child` prop now wired through to PopperContent.
+
+---
+
 ## 0.1.5 — Final Audit Fixes (36/36)
 
 All 36 Radix compatibility issues resolved.

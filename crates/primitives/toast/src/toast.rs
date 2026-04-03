@@ -36,11 +36,12 @@ struct ToastProviderContextValue {
     default_duration: Signal<i32>,
 }
 
-#[allow(dead_code)]
 #[derive(Clone, Debug)]
 struct ToastEntry {
     id: String,
     open: RwSignal<bool>,
+    /// When true, the auto-close timer is paused.
+    paused: RwSignal<bool>,
 }
 
 #[component]
@@ -145,10 +146,12 @@ pub fn Toast(
 
     // Self-register with the provider so "pause all" / "dismiss all" is possible.
     let provider_for_reg = use_context::<ToastProviderContextValue>();
+    let paused = RwSignal::new(false);
     if let Some(ref pctx) = provider_for_reg {
         pctx.add_toast.run(ToastEntry {
             id: id.clone(),
             open: open_state,
+            paused,
         });
     }
     {
@@ -166,11 +169,12 @@ pub fn Toast(
             on_close_cb.run(());
         })));
 
-    // Start auto-close timer when open becomes true
+    // Start auto-close timer when open becomes true; pause/resume via `paused` signal.
     let close_closure_for_effect = close_closure.clone();
     Effect::new(move |_| {
         let is_open = open_state.get();
-        if is_open {
+        let is_paused = paused.get();
+        if is_open && !is_paused {
             // Clear any existing timer
             if let Some(id) = timer_id.get_untracked() {
                 clear_timeout(id);
@@ -179,6 +183,12 @@ pub fn Toast(
             if dur > 0 {
                 let id = set_timeout(&close_closure_for_effect, dur);
                 timer_id.set(Some(id));
+            }
+        } else if is_paused {
+            // Paused — clear timer but keep toast open
+            if let Some(id) = timer_id.get_untracked() {
+                clear_timeout(id);
+                timer_id.set(None);
             }
         } else {
             // Toast closed, clear timer
@@ -458,11 +468,29 @@ pub fn ToastViewport(
         }
     });
 
+    // Access provider registry for pause-all / resume-all on viewport focus.
+    // Extract the signal (Copy) so closures can share it without move conflicts.
+    let toasts_signal = use_context::<ToastProviderContextValue>().map(|ctx| ctx.toasts);
+
+    let set_all_paused = move |paused: bool| {
+        if let Some(toasts) = toasts_signal {
+            toasts.with_untracked(|list| {
+                for toast in list {
+                    toast.paused.set(paused);
+                }
+            });
+        }
+    };
+
     view! {
         <Primitive element=html::ol as_child=as_child node_ref=refs
             attr:role="region"
             attr:aria-label=move || label.get()
             attr:tabindex="-1"
+            on:focusin=move |_| set_all_paused(true)
+            on:focusout=move |_| set_all_paused(false)
+            on:pointerenter=move |_| set_all_paused(true)
+            on:pointerleave=move |_| set_all_paused(false)
         >
             {children.with_value(|c| c.as_ref().map(|c| c()))}
         </Primitive>
